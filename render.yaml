@@ -1,0 +1,14 @@
+# Configuració per desplegar la demo a Render (pla gratuït).
+services:
+  - type: web
+    name: scoutup-demo
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npx next start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
