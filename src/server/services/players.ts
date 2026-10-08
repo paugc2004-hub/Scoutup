@@ -145,7 +145,7 @@ export function presentPlayer(p: PlayerRow, ctx: PlayerCtx, opts: { full?: boole
     location: minor && !full ? p.comarca : loc,
     comarca: p.comarca,
     club_id: p.club_id,
-    club_name: p.club_name ?? p.club_name_free ?? "Sense equip",
+    club_name: p.club_name ?? p.club_name_free ?? "Sin equipo",
     club_short: p.club_short,
     club_initials: p.club_initials,
     club_color: p.club_color,

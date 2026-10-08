@@ -28,11 +28,11 @@ export function ClubInbox({ u, activeId }: { u: SessionUser & { club_id: string 
     <div className="grid h-[calc(100dvh-8rem)] min-h-[520px] overflow-hidden rounded-2xl border border-line bg-surface shadow-card md:grid-cols-[320px_1fr]">
       <div className={cn("flex min-h-0 flex-col border-r border-line", active && "hidden md:flex")}>
         <div className="border-b border-line px-4 py-3.5">
-          <p className="text-[15px] font-bold">Missatges</p>
-          <p className="text-[12px] text-muted">{convs.length} converses · {reqs.filter((r) => r.status.startsWith("pendent")).length} sol·licituds pendents</p>
+          <p className="text-[15px] font-bold">Mensajes</p>
+          <p className="text-[12px] text-muted">{convs.length} conversaciones · {reqs.filter((r) => r.status.startsWith("pendent")).length} solicitudes pendientes</p>
         </div>
         <div className="scroll-thin flex-1 overflow-y-auto">
-          {convs.length === 0 && <p className="px-4 py-10 text-center text-[13px] text-subtle">Encara no hi ha converses.</p>}
+          {convs.length === 0 && <p className="px-4 py-10 text-center text-[13px] text-subtle">Todavía no hay conversaciones.</p>}
           {convs.map((c) => (
             <Link key={c.id} href={`/club/missatges/${c.id}`} className={cn("flex gap-3 border-b border-line px-4 py-3 transition hover:bg-bg", active?.conv.id === c.id && "bg-accent-soft/50")}>
               <Avatar initials={c.player_name.split(" ").map((w) => w[0]).slice(0, 2).join("")} hue={c.player_hue} size={40} />
@@ -51,7 +51,7 @@ export function ClubInbox({ u, activeId }: { u: SessionUser & { club_id: string 
           ))}
           {reqs.length > 0 && (
             <>
-              <p className="px-4 pb-1.5 pt-4 text-[11px] font-bold uppercase tracking-[0.12em] text-subtle">Sol·licituds enviades</p>
+              <p className="px-4 pb-1.5 pt-4 text-[11px] font-bold uppercase tracking-[0.12em] text-subtle">Solicitudes enviadas</p>
               {reqs.map((r) => (
                 <Link key={r.id} href={`/club/jugadors/${r.player_id}`} className="flex items-center gap-3 px-4 py-2.5 transition hover:bg-bg">
                   <Avatar initials={r.player_name.split(" ").map((w) => w[0]).slice(0, 2).join("")} hue={r.player_hue} size={32} />
@@ -70,10 +70,10 @@ export function ClubInbox({ u, activeId }: { u: SessionUser & { club_id: string 
         {active ? (
           <>
             <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3 md:px-5">
-              <Link href="/club/missatges" className="grid size-8 place-items-center rounded-lg hover:bg-sunken md:hidden" aria-label="Tornar"><ArrowLeft className="size-4" /></Link>
+              <Link href="/club/missatges" className="grid size-8 place-items-center rounded-lg hover:bg-sunken md:hidden" aria-label="Volver"><ArrowLeft className="size-4" /></Link>
               <Avatar initials={active.item.player_name.split(" ").map((w) => w[0]).slice(0, 2).join("")} hue={active.item.player_hue} size={38} />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[14.5px] font-bold">{active.item.player_name} {isMinor(active.item.player_birth) && <Badge tone="violet" className="ml-1">Menor · tutor informat</Badge>}</p>
+                <p className="truncate text-[14.5px] font-bold">{active.item.player_name} {isMinor(active.item.player_birth) && <Badge tone="violet" className="ml-1">Menor · tutor informado</Badge>}</p>
                 <p className="truncate text-[12px] text-muted">{active.conv.subject}{active.item.team_name ? ` · ${active.item.team_name}` : ""}</p>
               </div>
               <div className="flex flex-wrap items-center gap-1.5">
@@ -95,7 +95,7 @@ export function ClubInbox({ u, activeId }: { u: SessionUser & { club_id: string 
           </>
         ) : (
           <div className="grid flex-1 place-items-center p-8">
-            <EmptyState icon={<MessagesSquare className="size-5" />} title="Selecciona una conversa" text="Les converses s'obren quan un jugador (o el seu tutor) accepta la sol·licitud de contacte del club." />
+            <EmptyState icon={<MessagesSquare className="size-5" />} title="Selecciona una conversación" text="Las conversaciones se abren cuando un jugador (o su tutor) acepta la solicitud de contacto del club." />
           </div>
         )}
       </div>

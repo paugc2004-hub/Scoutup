@@ -44,10 +44,10 @@ export function api<C = { params: Promise<Record<string, string>> }>(fn: Handler
         return NextResponse.json({ error: e.message }, { status: e.status, headers: h });
       }
       if (e instanceof ZodError) {
-        return NextResponse.json({ error: "Dades no vàlides: " + e.issues.slice(0, 5).map((i) => (i.path.length ? i.path.join(".") + " " : "") + i.message).join("; ") }, { status: 400 });
+        return NextResponse.json({ error: "Datos no válidos: " + e.issues.slice(0, 5).map((i) => (i.path.length ? i.path.join(".") + " " : "") + i.message).join("; ") }, { status: 400 });
       }
       log.error("api.unhandled", { method: req.method, path: new URL(req.url).pathname, error: e });
-      return NextResponse.json({ error: "Ha ocorregut un error. Torna-ho a provar d'aquí a una estona." }, { status: 500 });
+      return NextResponse.json({ error: "Ha ocurrido un error. Vuelve a intentarlo en un rato." }, { status: 500 });
     }
   };
 }
@@ -55,7 +55,7 @@ export function api<C = { params: Promise<Record<string, string>> }>(fn: Handler
 export class RateLimitError extends ApiError {
   retryAfterMs: number;
   constructor(retryAfterMs: number) {
-    super(429, "Massa peticions seguides. Espera un moment i torna-ho a provar.");
+    super(429, "Demasiadas peticiones seguidas. Espera un momento y vuelve a intentarlo.");
     this.retryAfterMs = retryAfterMs;
   }
 }
@@ -76,8 +76,8 @@ export function rateLimit(rule: RuleName, key: string): void {
 
 export async function apiUser(roles?: readonly Role[]): Promise<SessionUser> {
   const u = await currentUser();
-  if (!u) throw new ApiError(401, "Cal iniciar sessió.");
-  if (roles && !roles.includes(u.role)) throw new ApiError(403, "No tens permís per fer aquesta acció.");
+  if (!u) throw new ApiError(401, "Debes iniciar sesión.");
+  if (roles && !roles.includes(u.role)) throw new ApiError(403, "No tienes permiso para hacer esta acción.");
   return u;
 }
 
@@ -85,14 +85,14 @@ export type Staff = SessionUser & { club_id: string };
 
 export async function apiStaff(perm?: Permission): Promise<Staff> {
   const u = await apiUser(CLUB_ROLES);
-  if (!u.club_id) throw new ApiError(403, "Usuari sense club.");
+  if (!u.club_id) throw new ApiError(403, "Usuario sin club.");
   const s = u as Staff;
   if (perm) requirePermission(s, perm);
   return s;
 }
 
 /** Comprova un permís del RBAC i registra el rebuig a l'auditoria. */
-export function requirePermission(u: Staff, perm: Permission, message = "El teu rol no permet fer aquesta acció."): void {
+export function requirePermission(u: Staff, perm: Permission, message = "Tu rol no permite hacer esta acción."): void {
   if (hasPermission(u.role, perm)) return;
   audit({ actor: u, action: `permission.${perm}`, result: "denied", detail: `rol ${u.role}` });
   throw new ApiError(403, message);
@@ -100,20 +100,20 @@ export function requirePermission(u: Staff, perm: Permission, message = "El teu 
 
 export async function apiPlayer(): Promise<SessionUser & { player_id: string }> {
   const u = await apiUser(["player"]);
-  if (!u.player_id) throw new ApiError(403, "Usuari sense perfil de jugador.");
+  if (!u.player_id) throw new ApiError(403, "Usuario sin perfil de jugador.");
   return u as SessionUser & { player_id: string };
 }
 
 export async function body<T = Record<string, unknown>>(req: Request): Promise<T> {
   const len = Number(req.headers.get("content-length") ?? 0);
-  if (len > MAX_BODY_BYTES) throw new ApiError(413, "La petició és massa gran.");
+  if (len > MAX_BODY_BYTES) throw new ApiError(413, "La petición es demasiado grande.");
   const text = await req.text();
-  if (text.length > MAX_BODY_BYTES) throw new ApiError(413, "La petició és massa gran.");
+  if (text.length > MAX_BODY_BYTES) throw new ApiError(413, "La petición es demasiado grande.");
   try {
     const v = JSON.parse(text || "{}");
     if (v === null || typeof v !== "object" || Array.isArray(v)) throw new Error("not an object");
     return v as T;
   } catch {
-    throw new ApiError(400, "Cos de la petició no vàlid.");
+    throw new ApiError(400, "Cuerpo de la petición no válido.");
   }
 }

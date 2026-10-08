@@ -25,7 +25,7 @@ export interface CompetitionDataProvider {
 
 export class MockCompetitionProvider implements CompetitionDataProvider {
   readonly id = "mock" as const;
-  readonly label = "Dades de demostració (fictícies)";
+  readonly label = "Datos de demostración (ficticios)";
   readonly isOfficial = false;
   competitionForTeam(teamId: string, seasonId: string): Competition | null {
     return get<Competition>("SELECT c.* FROM team_seasons ts JOIN competitions c ON c.id = ts.competition_id WHERE ts.team_id = ? AND ts.season_id = ?", teamId, seasonId) ?? null;
@@ -41,10 +41,10 @@ export class MockCompetitionProvider implements CompetitionDataProvider {
 /** Esquelet per a una futura integració oficial. Deliberadament no implementat. */
 export class FCFCompetitionProvider implements CompetitionDataProvider {
   readonly id = "fcf" as const;
-  readonly label = "Font oficial (no disponible: pendent de definir amb la FCF)";
+  readonly label = "Fuente oficial (no disponible: pendiente de definir con la FCF)";
   readonly isOfficial = true;
   private unavailable(): never {
-    throw new Error("FCFCompetitionProvider no està implementat: no hi ha cap connexió ni acord amb la FCF.");
+    throw new Error("FCFCompetitionProvider no está implementado: no hay ninguna conexión ni acuerdo con la FCF.");
   }
   competitionForTeam(): Competition | null { return this.unavailable(); }
   standings(): Standing[] { return this.unavailable(); }
@@ -54,7 +54,7 @@ export class FCFCompetitionProvider implements CompetitionDataProvider {
 /** La demo sempre fa servir el proveïdor mock, independentment de la configuració. */
 export function competitionProvider(): CompetitionDataProvider {
   if (process.env.COMPETITION_PROVIDER === "fcf") {
-    console.warn("[ScoutUp] COMPETITION_PROVIDER=fcf no està disponible a la demo. S'utilitzen dades de demostració.");
+    console.warn("[ScoutUp] COMPETITION_PROVIDER=fcf no está disponible en la demo. Se usan datos de demostració.");
   }
   return new MockCompetitionProvider();
 }

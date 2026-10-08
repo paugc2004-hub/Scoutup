@@ -10,7 +10,7 @@ import { Badge, Card, CardHeader, PageHeader, cn } from "@/components/ui";
 import { GENDER_LABEL, POSITION_LABEL } from "@/lib/domain";
 import type { Position } from "@/lib/domain";
 
-export const metadata = { title: "Equips i competició" };
+export const metadata = { title: "Equipos y competición" };
 
 export default async function TeamsPage({ searchParams }: { searchParams: Promise<{ team?: string }> }) {
   const u = await requireClubStaff();
@@ -40,13 +40,13 @@ export default async function TeamsPage({ searchParams }: { searchParams: Promis
 
   return (
     <div>
-      <PageHeader eyebrow="Estructura esportiva" title="Equips i competició" subtitle={`Temporada ${season.label}. ${!can.allTeams(u) ? "Com a entrenador veus el teu equip." : `${teams.length} equips al club.`}`} />
+      <PageHeader eyebrow="Estructura deportiva" title="Equipos y competición" subtitle={`Temporada ${season.label}. ${!can.allTeams(u) ? "Como entrenador ves tu equipo." : `${teams.length} equipos en el club.`}`} />
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
           <Link key={c.t.id} href={`/club/equips?team=${c.t.id}`} className={cn("rounded-2xl border bg-surface p-4 shadow-card transition hover:border-line-strong", c.t.id === team.id ? "border-ink ring-1 ring-ink" : "border-line")}>
-            <div className="flex items-center justify-between"><p className="text-[15px] font-bold">{c.t.name}</p>{c.t.is_first_team ? <Badge tone="dark">Primer equip</Badge> : null}</div>
+            <div className="flex items-center justify-between"><p className="text-[15px] font-bold">{c.t.name}</p>{c.t.is_first_team ? <Badge tone="dark">Primer equipo</Badge> : null}</div>
             <p className="mt-0.5 text-[12.5px] text-muted">{c.t.category} · {GENDER_LABEL[c.t.gender]}</p>
-            <p className="mt-3 truncate text-[12.5px] font-semibold">{c.comp?.name ?? "Sense competició"}</p>
+            <p className="mt-3 truncate text-[12.5px] font-semibold">{c.comp?.name ?? "Sin competición"}</p>
             <div className="mt-2 flex items-center gap-3 text-[12px] text-muted">
               {c.st && <span className="inline-flex items-center gap-1"><Trophy className="size-3.5" /> {c.st.pos}a · {c.st.points} pts</span>}
               <span className="inline-flex items-center gap-1"><Users className="size-3.5" /> {c.n}</span>
@@ -57,11 +57,11 @@ export default async function TeamsPage({ searchParams }: { searchParams: Promis
 
       <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
         <Card>
-          <CardHeader title={sel.comp?.name ?? "Classificació"} subtitle={`${season.label} · jornada ${standings[0]?.played ?? 0}`} icon={<Trophy className="size-4" />} action={<Badge tone="warn">Dades fictícies</Badge>} />
+          <CardHeader title={sel.comp?.name ?? "Clasificación"} subtitle={`${season.label} · jornada ${standings[0]?.played ?? 0}`} icon={<Trophy className="size-4" />} action={<Badge tone="warn">Datos ficticios</Badge>} />
           {standings.length ? (
             <div className="scroll-thin overflow-x-auto">
               <table className="w-full min-w-[560px] text-[13px]">
-                <thead><tr className="border-b border-line text-[11.5px] font-bold uppercase tracking-wider text-subtle"><th className="py-2 text-left">#</th><th className="py-2 text-left">Equip</th>{["PJ", "G", "E", "P", "GF", "GC", "DG", "Pts"].map((h) => <th key={h} className="px-2 py-2 text-right">{h}</th>)}</tr></thead>
+                <thead><tr className="border-b border-line text-[11.5px] font-bold uppercase tracking-wider text-subtle"><th className="py-2 text-left">#</th><th className="py-2 text-left">Equipo</th>{["PJ", "G", "E", "P", "GF", "GC", "DG", "Pts"].map((h) => <th key={h} className="px-2 py-2 text-right">{h}</th>)}</tr></thead>
                 <tbody>
                   {standings.map((s) => (
                     <tr key={s.pos} className={cn("border-b border-line last:border-0", s.team_id === team.id && "bg-accent-soft font-bold", s.club_id && s.team_id !== team.id && "")}>
@@ -73,29 +73,29 @@ export default async function TeamsPage({ searchParams }: { searchParams: Promis
                 </tbody>
               </table>
             </div>
-          ) : <p className="text-[13px] text-muted">Aquest equip no té competició assignada.</p>}
+          ) : <p className="text-[13px] text-muted">Este equipo no tiene competición asignada.</p>}
           <div className="mt-4 flex gap-2.5 rounded-xl border border-dashed border-line-strong p-3.5 text-[12.5px] leading-relaxed text-muted">
             <Info className="mt-0.5 size-4 shrink-0" />
-            <span>Font: <strong className="text-ink-2">{provider.label}</strong>. L'aplicació llegeix aquestes dades a través d'un <code className="rounded bg-sunken px-1">CompetitionDataProvider</code>. En un futur, si s'acordés amb la FCF, un proveïdor oficial podria substituir-lo sense canviar la resta de l'aplicació.</span>
+            <span>Fuente: <strong className="text-ink-2">{provider.label}</strong>. La aplicación lee estos datos a través de un <code className="rounded bg-sunken px-1">CompetitionDataProvider</code>. En el futuro, si se acordara con la FCF, un proveedor oficial podría sustituirlo sin cambiar el resto de la aplicación (pendiente de validación FCF, legal y técnica).</span>
           </div>
         </Card>
         <div className="space-y-5">
           <Card>
-            <CardHeader title="Cos tècnic" icon={<Shirt className="size-4" />} />
+            <CardHeader title="Cuerpo técnico" icon={<Shirt className="size-4" />} />
             <dl className="space-y-2 text-[13px]">
-              {[["Entrenador", ts?.coach_name], ["Coordinació", ts?.coordinator_name], ["Delegat", ts?.delegate_name], ...staff.map((s) => [s.role, s.name])].filter(([, v]) => v).map(([k, v]) => (
+              {[["Entrenador", ts?.coach_name], ["Coordinación", ts?.coordinator_name], ["Delegado", ts?.delegate_name], ...staff.map((s) => [s.role, s.name])].filter(([, v]) => v).map(([k, v]) => (
                 <div key={k as string} className="flex justify-between border-b border-line pb-2 last:border-0"><dt className="text-muted">{k}</dt><dd className="font-semibold">{v}</dd></div>
               ))}
             </dl>
           </Card>
           <Card>
-            <CardHeader title="Objectius i necessitats" icon={<Target className="size-4" />} />
+            <CardHeader title="Objetivos y necesidades" icon={<Target className="size-4" />} />
             {ts?.objectives && <p className="text-[13px] leading-relaxed text-ink-2">{ts.objectives}</p>}
             <div className="mt-3 space-y-2">
               {needs.map((n, i) => <div key={i} className="rounded-xl bg-bg p-2.5 text-[12.5px]"><Badge tone={n.priority === "alta" ? "danger" : "warn"}>{POSITION_LABEL[n.position as Position]}</Badge> <span className="ml-1">{n.text}</span></div>)}
               {offers.map((o) => <Link key={o.id} href={`/club/oportunitats/${o.id}`} className="block rounded-xl border border-line p-2.5 text-[12.5px] font-semibold hover:border-line-strong">Oportunitat oberta: {o.title} →</Link>)}
             </div>
-            <Link href={`/club/plantilla?team=${team.id}`} className="mt-3 inline-block text-[12.5px] font-semibold text-accent-ink hover:underline">Veure la plantilla →</Link>
+            <Link href={`/club/plantilla?team=${team.id}`} className="mt-3 inline-block text-[12.5px] font-semibold text-accent-ink hover:underline">Ver la plantilla →</Link>
           </Card>
           {history.length > 0 && (
             <Card>

@@ -6,9 +6,9 @@ import type { Attrs, AttrKey } from "@/lib/domain";
 import { fmtDate } from "@/lib/time";
 
 export function StatsTable({ stats, hidden }: { stats: SeasonStats[]; hidden?: boolean }) {
-  if (hidden) return <EmptyState icon={<Info className="size-5" />} title="Estadístiques ocultes" text="El jugador ha decidit no mostrar les estadístiques als clubs." />;
-  if (!stats.length) return <EmptyState title="Sense estadístiques" text="Encara no hi ha dades de cap temporada." />;
-  const cols: [keyof SeasonStats, string][] = [["callups", "Conv."], ["matches", "PJ"], ["starts", "Tit."], ["minutes", "Min."], ["goals", "Gols"], ["assists", "Assist."], ["yellow", "TG"], ["red", "TV"]];
+  if (hidden) return <EmptyState icon={<Info className="size-5" />} title="Estadísticas ocultas" text="El jugador ha decidido no mostrar las estadísticas a los clubes." />;
+  if (!stats.length) return <EmptyState title="Sin estadísticas" text="Todavía no hay datos de ninguna temporada." />;
+  const cols: [keyof SeasonStats, string][] = [["callups", "Conv."], ["matches", "PJ"], ["starts", "Tit."], ["minutes", "Min."], ["goals", "Goles"], ["assists", "Assist."], ["yellow", "TA"], ["red", "TR"]];
   return (
     <div className="scroll-thin overflow-x-auto">
       <table className="w-full min-w-[640px] text-[13px]">
@@ -16,7 +16,7 @@ export function StatsTable({ stats, hidden }: { stats: SeasonStats[]; hidden?: b
           <tr className="border-b border-line text-left text-[11.5px] font-bold uppercase tracking-wider text-subtle">
             <th className="py-2 pr-3">Temporada</th>
             {cols.map(([, l]) => <th key={l} className="px-2 py-2 text-right">{l}</th>)}
-            <th className="py-2 pl-3 text-right">Font</th>
+            <th className="py-2 pl-3 text-right">Fuente</th>
           </tr>
         </thead>
         <tbody>
@@ -26,19 +26,19 @@ export function StatsTable({ stats, hidden }: { stats: SeasonStats[]; hidden?: b
                 <p className="font-bold">{s.label}</p>
                 <p className="text-[11.5px] text-muted">{s.team_name ?? "—"}</p>
               </td>
-              {cols.map(([k]) => <td key={k} className="px-2 py-2.5 text-right font-semibold tabular">{k === "minutes" ? (s[k] as number).toLocaleString("ca-ES") : String(s[k])}</td>)}
+              {cols.map(([k]) => <td key={k} className="px-2 py-2.5 text-right font-semibold tabular">{k === "minutes" ? (s[k] as number).toLocaleString("es-ES") : String(s[k])}</td>)}
               <td className="py-2.5 pl-3 text-right"><VerificationBadge status={s.verification} /></td>
             </tr>
           ))}
         </tbody>
       </table>
-      <p className="mt-2 text-[11.5px] text-subtle">Conv.: convocatòries · PJ: partits jugats · Tit.: titularitats · TG/TV: targetes grogues/vermelles. Dades de demostració.</p>
+      <p className="mt-2 text-[11.5px] text-subtle">Conv.: convocatorias · PJ: partidos jugados · Tit.: titularidades · TA/TR: tarjetas amarillas/rojas. Datos de demostración.</p>
     </div>
   );
 }
 
 export function CareerList({ career }: { career: CareerRow[] }) {
-  if (!career.length) return <EmptyState title="Sense trajectòria" />;
+  if (!career.length) return <EmptyState title="Sin trayectoria" />;
   return (
     <ol className="relative space-y-4 border-l border-line pl-5">
       {career.map((c, i) => (
@@ -58,8 +58,8 @@ export function CareerList({ career }: { career: CareerRow[] }) {
 }
 
 export function VideoGrid({ videos, hidden }: { videos: VideoRow[]; hidden?: boolean }) {
-  if (hidden) return <EmptyState icon={<Film className="size-5" />} title="Vídeos privats" text="El jugador només comparteix els vídeos amb clubs verificats o amb qui té contacte." />;
-  if (!videos.length) return <EmptyState icon={<Film className="size-5" />} title="Encara no hi ha vídeos" />;
+  if (hidden) return <EmptyState icon={<Film className="size-5" />} title="Vídeos privados" text="El jugador solo comparte los vídeos con clubes verificados o con quien tiene contacto." />;
+  if (!videos.length) return <EmptyState icon={<Film className="size-5" />} title="Todavía no hay vídeos" />;
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {videos.map((v, i) => (
@@ -72,11 +72,11 @@ export function VideoGrid({ videos, hidden }: { videos: VideoRow[]; hidden?: boo
               <span className="grid size-12 place-items-center rounded-full bg-white/90 text-night shadow-pop transition group-hover:scale-105"><Play className="ml-0.5 size-5 fill-night" /></span>
             </span>
             <span className="absolute bottom-2 right-2 rounded-md bg-black/60 px-1.5 py-0.5 text-[11px] font-bold text-white tabular">{Math.floor(v.duration_s / 60)}:{String(v.duration_s % 60).padStart(2, "0")}</span>
-            <span className="absolute left-2 top-2 rounded-md bg-black/50 px-1.5 py-0.5 text-[10.5px] font-bold uppercase tracking-wider text-white/80">Vídeo de demostració</span>
+            <span className="absolute left-2 top-2 rounded-md bg-black/50 px-1.5 py-0.5 text-[10.5px] font-bold uppercase tracking-wider text-white/80">Vídeo de demostración</span>
           </div>
           <div className="p-3">
             <p className="truncate text-[13.5px] font-semibold">{v.title}</p>
-            <p className="text-[12px] text-muted">{fmtDate(v.recorded_at, { short: true, year: true })} · {v.views} visualitzacions</p>
+            <p className="text-[12px] text-muted">{fmtDate(v.recorded_at, { short: true, year: true })} · {v.views} visualizaciones</p>
           </div>
         </div>
       ))}
@@ -85,7 +85,7 @@ export function VideoGrid({ videos, hidden }: { videos: VideoRow[]; hidden?: boo
 }
 
 export function Achievements({ items, experiences }: { items: AchievementRow[]; experiences: { id: string; title: string; year: number | null }[] }) {
-  if (!items.length && !experiences.length) return <p className="text-[13px] text-subtle">Sense assoliments registrats.</p>;
+  if (!items.length && !experiences.length) return <p className="text-[13px] text-subtle">Sin logros registrados.</p>;
   return (
     <div className="flex flex-wrap gap-2">
       {items.map((a) => (
@@ -121,7 +121,7 @@ export function PositionPitch({ primary, secondary, size = 150 }: { primary: Pos
   const w = size;
   const h = size * 1.35;
   return (
-    <svg viewBox="0 0 100 135" width={w} height={h} role="img" aria-label="Posició al camp" className="shrink-0">
+    <svg viewBox="0 0 100 135" width={w} height={h} role="img" aria-label="Posición en el campo" className="shrink-0">
       <rect x="1" y="1" width="98" height="133" rx="6" fill="#0f5132" />
       <g stroke="rgba(255,255,255,.35)" strokeWidth="0.8" fill="none">
         <rect x="6" y="6" width="88" height="123" rx="2" />

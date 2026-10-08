@@ -12,7 +12,7 @@ import { EVAL_DECISIONS, POSITION_LABEL, SCOUT_RECOMMENDATION } from "@/lib/doma
 import type { Position, Stage } from "@/lib/domain";
 import { fmtDate, fmtDateTime, fmtRelative, madridAt } from "@/lib/time";
 
-export const metadata = { title: "Avaluacions" };
+export const metadata = { title: "Evaluaciones" };
 
 export default async function ScoutingPage() {
   const u = await requireClubStaff();
@@ -44,13 +44,13 @@ export default async function ScoutingPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Anàlisi i decisió" title="Avaluacions" subtitle="Avaluacions per àrees, informes d'observació en partits i jugadors guardats. Tot és privat del teu club: el jugador no ho veu mai." actions={<ScoutReportButton players={visible.map((p) => ({ id: p.id, name: `${p.first_name} ${p.last_name}`, pos: p.primary_position })).sort((a, b) => a.name.localeCompare(b.name, "ca"))} />} />
+      <PageHeader eyebrow="Análisis y decisión" title="Evaluaciones" subtitle="Evaluaciones por áreas, informes de observación en partidos y jugadores guardados. Todo es privado de tu club: el jugador nunca lo ve." actions={<ScoutReportButton players={visible.map((p) => ({ id: p.id, name: `${p.first_name} ${p.last_name}`, pos: p.primary_position })).sort((a, b) => a.name.localeCompare(b.name, "es"))} />} />
       <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
         <div className="min-w-0 space-y-5">
         <Card>
-          <CardHeader title="Avaluacions recents" subtitle={`${evals.length} avaluacions · per autor, data i context`} icon={<ClipboardCheck className="size-4" />} />
+          <CardHeader title="Evaluaciones recientes" subtitle={`${evals.length} evaluaciones · por autor, fecha y contexto`} icon={<ClipboardCheck className="size-4" />} />
           {evals.length === 0 ? (
-            <EmptyState title="Encara no hi ha avaluacions" text="Obre el perfil d'un jugador i fes servir la pestanya «Avaluació»." action={<Link href="/club/cercar" className="text-[13px] font-semibold text-accent-ink hover:underline">Explorar jugadors</Link>} />
+            <EmptyState title="Todavía no hay evaluaciones" text="Abre el perfil de un jugador y usa la pestaña «Evaluación»." action={<Link href="/club/cercar" className="text-[13px] font-semibold text-accent-ink hover:underline">Explorar jugadores</Link>} />
           ) : (
             <div className="divide-y divide-line">
               {evals.map((e) => (
@@ -71,8 +71,8 @@ export default async function ScoutingPage() {
           )}
         </Card>
         <Card>
-          <CardHeader title="Informes d'observació" subtitle={`${reports.length} informes`} icon={<Binoculars className="size-4" />} />
-          {reports.length === 0 ? <EmptyState title="Encara no hi ha informes" /> : (
+          <CardHeader title="Informes de observación" subtitle={`${reports.length} informes`} icon={<Binoculars className="size-4" />} />
+          {reports.length === 0 ? <EmptyState title="Todavía no hay informes" /> : (
             <div className="space-y-3">
               {reports.map((r) => (
                 <div key={r.id} className="rounded-2xl border border-line p-4 transition hover:border-line-strong">
@@ -80,7 +80,7 @@ export default async function ScoutingPage() {
                     <Avatar initials={(r.first_name[0] + r.last_name[0]).toUpperCase()} hue={r.avatar_hue} size={40} />
                     <div className="min-w-0 flex-1">
                       <Link href={`/club/jugadors/${r.player_id}`} className="text-[14.5px] font-bold hover:underline">{r.first_name} {r.last_name}</Link>
-                      <p className="text-[12.5px] text-muted">{r.match_title}{r.competition ? ` · ${r.competition}` : ""} · {fmtDate(r.match_date, { short: true, year: true })}{r.position_observed ? ` · com a ${POSITION_LABEL[r.position_observed as Position].toLowerCase()}` : ""}</p>
+                      <p className="text-[12.5px] text-muted">{r.match_title}{r.competition ? ` · ${r.competition}` : ""} · {fmtDate(r.match_date, { short: true, year: true })}{r.position_observed ? ` · como ${POSITION_LABEL[r.position_observed as Position].toLowerCase()}` : ""}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       {r.stage && <StageBadge stage={r.stage} />}
@@ -89,7 +89,7 @@ export default async function ScoutingPage() {
                     </div>
                   </div>
                   <p className="mt-3 text-[13.5px] leading-relaxed text-ink-2">{r.observations}</p>
-                  <p className="mt-2 flex flex-wrap items-center gap-3 text-[11.5px] text-subtle"><span>{r.author_name} · {fmtRelative(r.match_date)}</span>{r.reminder_at && <span className="inline-flex items-center gap-1 text-warn"><BellRing className="size-3" /> Recordatori {fmtDate(r.reminder_at, { short: true })}</span>}</p>
+                  <p className="mt-2 flex flex-wrap items-center gap-3 text-[11.5px] text-subtle"><span>{r.author_name} · {fmtRelative(r.match_date)}</span>{r.reminder_at && <span className="inline-flex items-center gap-1 text-warn"><BellRing className="size-3" /> Recordatorio {fmtDate(r.reminder_at, { short: true })}</span>}</p>
                 </div>
               ))}
             </div>
@@ -98,8 +98,8 @@ export default async function ScoutingPage() {
         </div>
         <div className="space-y-5">
           <Card>
-            <CardHeader title="Pròxims seguiments" icon={<CalendarClock className="size-4" />} />
-            {upcoming.length === 0 ? <p className="text-[13px] text-subtle">Cap seguiment programat.</p> : (
+            <CardHeader title="Próximos seguimientos" icon={<CalendarClock className="size-4" />} />
+            {upcoming.length === 0 ? <p className="text-[13px] text-subtle">Ningún seguimiento programado.</p> : (
               <div className="space-y-2.5">
                 {upcoming.map((e) => (
                   <div key={e.id} className="rounded-xl bg-bg p-3">
@@ -111,8 +111,8 @@ export default async function ScoutingPage() {
             )}
           </Card>
           <Card>
-            <CardHeader title="Jugadors guardats" subtitle="La teva llista" icon={<Star className="size-4" />} />
-            {favs.length === 0 ? <EmptyState title="No tens jugadors guardats" text="Marca'ls amb l'estrella des del perfil o la cerca." action={<Link href="/club/cercar" className="text-[13px] font-semibold text-accent-ink hover:underline">Descobrir jugadors</Link>} /> : (
+            <CardHeader title="Jugadores guardados" subtitle="Tu lista" icon={<Star className="size-4" />} />
+            {favs.length === 0 ? <EmptyState title="No tienes jugadores guardados" text="Márcalos con la estrella desde el perfil o la búsqueda." action={<Link href="/club/cercar" className="text-[13px] font-semibold text-accent-ink hover:underline">Descubrir jugadores</Link>} /> : (
               <div className="space-y-1">
                 {favs.map((p) => (
                   <div key={p.id} className="flex items-center gap-3 rounded-xl px-1 py-1.5">

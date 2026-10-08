@@ -21,7 +21,7 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeader eyebrow="Assistent de captació" title={<span className="inline-flex items-center gap-2.5">ScoutUp Intelligence <Sparkles className="size-6 text-accent-600" /><Badge tone="warn">IA demo · copilot</Badge></span>} subtitle="Descriu en llenguatge natural el jugador que necessites. L'assistent ho converteix en criteris, ordena els perfils visibles per al teu club i t'explica per què encaixen. És un copilot: proposa i explica, però la decisió és sempre del club i no inventa dades." />
+      <PageHeader eyebrow="Asistente de captación" title={<span className="inline-flex items-center gap-2.5">ScoutUp Intelligence <Sparkles className="size-6 text-accent-600" /><Badge tone="warn">IA demo · copilot</Badge></span>} subtitle="Describe en lenguaje natural el jugador que necesitas. El asistente lo convierte en criterios, ordena los perfiles visibles para tu club y te explica por qué encajan. Es un copiloto: propone y explica, pero la decisión es siempre del club y no inventa datos." />
       <IntelligenceBox initial={q ?? ""} autoFocus={!q} />
 
       {res && (
@@ -31,7 +31,7 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
               <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-accent text-night"><Sparkles className="size-4" /></span>
               <div className="min-w-0 flex-1">
                 <p className="text-[15px] font-semibold leading-relaxed">{res.summary}</p>
-                <p className="mb-2 mt-4 text-[11px] font-bold uppercase tracking-[0.14em] text-night-muted">He interpretat</p>
+                <p className="mb-2 mt-4 text-[11px] font-bold uppercase tracking-[0.14em] text-night-muted">He interpretado</p>
                 <div className="flex flex-wrap gap-1.5">
                   {res.chips.map((c) => (
                     <span key={c.key} className="inline-flex items-center gap-1.5 rounded-full border border-night-line bg-night-2 px-2.5 py-1 text-[12.5px]"><span className="text-night-muted">{c.label}:</span> <span className="font-semibold">{c.value}</span></span>
@@ -40,14 +40,14 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
               </div>
             </div>
             <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-night-line pt-4">
-              {can.manageOffers(u) && <Link href={newOfferHref} className="inline-flex h-8 items-center gap-1.5 rounded-xl bg-accent px-3 text-[12.5px] font-bold text-night hover:bg-accent-600"><Megaphone className="size-3.5" /> Convertir en oportunitat</Link>}
-              <Link href={`/club/cercar?pos=${res.offer.position}&foot=${res.offer.foot === "indiferent" ? "" : res.offer.foot}&g=${res.offer.gender}`} className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-night-line px-3 text-[12.5px] font-semibold text-night-text hover:bg-night-2">Obrir a la cerca avançada <ArrowRight className="size-3.5" /></Link>
-              <span className="ml-auto inline-flex items-center gap-1.5 text-[11.5px] text-night-muted"><Cpu className="size-3.5" /> Motor determinista local · sense IA externa</span>
+              {can.manageOffers(u) && <Link href={newOfferHref} className="inline-flex h-8 items-center gap-1.5 rounded-xl bg-accent px-3 text-[12.5px] font-bold text-night hover:bg-accent-600"><Megaphone className="size-3.5" /> Convertir en oportunidad</Link>}
+              <Link href={`/club/cercar?pos=${res.offer.position}&foot=${res.offer.foot === "indiferent" ? "" : res.offer.foot}&g=${res.offer.gender}`} className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-night-line px-3 text-[12.5px] font-semibold text-night-text hover:bg-night-2">Abrir en la búsqueda avanzada <ArrowRight className="size-3.5" /></Link>
+              <span className="ml-auto inline-flex items-center gap-1.5 text-[11.5px] text-night-muted"><Cpu className="size-3.5" /> Motor determinista local · sin IA externa</span>
             </div>
           </Card>
 
           {res.results.length === 0 ? (
-            <EmptyState title="Cap resultat" text="Cap perfil visible per al teu club compleix aquests criteris. Prova d'ampliar la zona o el nivell." />
+            <EmptyState title="Sin resultados" text="Ningún perfil visible para tu club cumple estos criterios. Prueba a ampliar la zona o el nivel." />
           ) : (
             <div className="space-y-3">
               {res.results.map((c, i) => (
@@ -58,7 +58,7 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
                       <Avatar initials={c.player.initials} hue={c.player.hue} size={46} />
                       <div className="min-w-0">
                         <Link href={`/club/jugadors/${c.player.id}`} className="block truncate text-[15px] font-bold hover:underline">{c.player.name}</Link>
-                        <p className="truncate text-[12.5px] text-muted">{c.player.position_label} · {c.player.age} anys</p>
+                        <p className="truncate text-[12.5px] text-muted">{c.player.position_label} · {c.player.age} años</p>
                         <p className="truncate text-[12.5px] text-muted">{c.player.club_name} · {c.player.level_label}</p>
                       </div>
                     </div>
@@ -67,7 +67,7 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
                       <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
                         <FactorStrip factors={c.match.factors} />
                         <VerificationBadge status={c.player.verification} />
-                        <Badge>Peu {FOOT_LABEL[c.player.foot].toLowerCase()}</Badge>
+                        <Badge>Pie {FOOT_LABEL[c.player.foot].toLowerCase()}</Badge>
                         {c.player.height && <Badge>{c.player.height} cm</Badge>}
                         <Badge>{c.player.location} · {Math.round(c.km)} km</Badge>
                         {c.player.minor && <Badge tone="violet">Menor</Badge>}
@@ -83,7 +83,7 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
                   </div>
                 </Card>
               ))}
-              <p className="pt-2 text-center text-[12px] text-subtle">Mostrant els {res.results.length} millors de {res.total} perfils compatibles (≥45%).</p>
+              <p className="pt-2 text-center text-[12px] text-subtle">Mostrando los {res.results.length} mejores de {res.total} perfiles compatibles (≥45 %).</p>
             </div>
           )}
         </div>
@@ -92,13 +92,13 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
       {!res && (
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {[
-            ["1 · Interpreta", "Detecta posició, peu, edat o categoria, zona, nivell, alçada i característiques (joc aeri, velocitat, visió…)."],
-            ["2 · Cerca", "Aplica el mateix motor de compatibilitat de les oportunitats, només sobre perfils que la privacitat permet veure."],
-            ["3 · Explica", "Cada resultat ve amb el seu perquè: què compleix i què cal tenir en compte."],
+            ["1 · Interpreta", "Detecta posición, pie, edad o categoría, zona, nivel, altura y características (juego aéreo, velocidad, visión…)."],
+            ["2 · Cerca", "Aplica el mismo motor de compatibilidad de las oportunidades, solo sobre perfiles que la privacidad permite ver."],
+            ["3 · Explica", "Cada resultado viene con su porqué: qué cumple y qué hay que tener en cuenta."],
           ].map(([t, d]) => (
             <div key={t} className="rounded-2xl border border-line bg-surface p-5"><p className="text-[14px] font-bold">{t}</p><p className="mt-1.5 text-[13px] leading-relaxed text-muted">{d}</p></div>
           ))}
-          <p className="md:col-span-3 text-center text-[12px] text-subtle"><Cpu className="mr-1 inline size-3.5" />ScoutUp Intelligence funciona amb regles deterministes locals. No envia dades a cap servei extern. <Link href="/club/cercar" className={btnClass("ghost", "sm")}>Cerca avançada</Link></p>
+          <p className="md:col-span-3 text-center text-[12px] text-subtle"><Cpu className="mr-1 inline size-3.5" />ScoutUp Intelligence funciona con reglas deterministas locales. No envía datos a ningún servicio externo. <Link href="/club/cercar" className={btnClass("ghost", "sm")}>Búsqueda avanzada</Link></p>
         </div>
       )}
     </div>

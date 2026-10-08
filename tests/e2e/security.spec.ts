@@ -54,7 +54,7 @@ test.describe("autorització per rol", () => {
     await loginAs(page, "coach");
     await page.goto("/club/configuracio");
     await expect(page.getByRole("heading", { level: 1, name: "Permisos" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Convidar usuari" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Invitar usuario" })).toHaveCount(0);
   });
 });
 
@@ -70,7 +70,7 @@ test.describe("aïllament entre clubs (IDOR)", () => {
   test("les notes privades del Club A no apareixen al perfil vist pel Club B", async ({ page }) => {
     await loginAs(page, "clubB");
     await page.goto("/club/jugadors/p_arnau");
-    await expect(page.getByText("Li hem demanat que vingui a la prova")).toHaveCount(0);
+    await expect(page.getByText("Le hemos pedido que venga a la prueba")).toHaveCount(0);
   });
 });
 

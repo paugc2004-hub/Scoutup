@@ -10,22 +10,22 @@ export function navFor(u: SessionUser): { items: NavItem[]; search?: { action: s
     const unread = get<{ n: number }>(`SELECT COUNT(*) AS n FROM messages m JOIN conversations c ON c.id = m.conversation_id WHERE c.club_id = ? AND m.sender_side = 'player' AND m.read_by_club_at IS NULL AND ${cf.sql}`, u.club_id, ...cf.params)?.n ?? 0;
     const of = teamFilterSql(u, "o.team_id");
     const newApps = get<{ n: number }>(`SELECT COUNT(*) AS n FROM applications a JOIN offers o ON o.id = a.offer_id WHERE o.club_id = ? AND a.status = 'enviada' AND ${of.sql}`, u.club_id, ...of.params)?.n ?? 0;
-    // Navegació seguint el flux central: necessitat → oportunitat → descobriment → pipeline → avaluació → contacte.
+    // Navegación siguiendo el flujo central: necesidad → oportunidad → descubrimiento → pipeline → evaluación → contacto.
     return {
-      search: { action: "/club/cercar", placeholder: "Cerca jugadors per nom, posició o municipi…" },
+      search: { action: "/club/cercar", placeholder: "Busca jugadores por nombre, posición o municipio…" },
       items: [
-        { href: "/club", label: "Inici", icon: "dashboard", exact: true },
-        { href: "/club/oportunitats", label: "Oportunitats", icon: "megaphone", badge: newApps },
-        { href: "/club/cercar", label: "Jugadors", icon: "search" },
+        { href: "/club", label: "Inicio", icon: "dashboard", exact: true },
+        { href: "/club/oportunitats", label: "Oportunidades", icon: "megaphone", badge: newApps },
+        { href: "/club/cercar", label: "Jugadores", icon: "search" },
         { href: "/club/intelligence", label: "IA · Copilot", icon: "sparkles" },
         { href: "/club/pipeline", label: "Pipeline", icon: "kanban" },
-        { href: "/club/avaluacions", label: "Avaluacions", icon: "clipboard" },
-        { href: "/club/missatges", label: "Missatges", icon: "messages", badge: unread },
-        { href: "/club/calendari", label: "Calendari", icon: "calendar" },
-        { href: "/club/equips", label: "Equips i competició", icon: "trophy", section: "El club" },
+        { href: "/club/avaluacions", label: "Evaluaciones", icon: "clipboard" },
+        { href: "/club/missatges", label: "Mensajes", icon: "messages", badge: unread },
+        { href: "/club/calendari", label: "Calendario", icon: "calendar" },
+        { href: "/club/equips", label: "Equipos y competición", icon: "trophy", section: "El club" },
         { href: "/club/plantilla", label: "Plantilla", icon: "shirt", section: "El club" },
         { href: "/club/perfil", label: "Perfil del club", icon: "building", section: "El club" },
-        { href: "/club/configuracio", label: hasPermission(u.role, "users.manage") ? "Usuaris i permisos" : "Permisos", icon: "settings", section: "El club" },
+        { href: "/club/configuracio", label: hasPermission(u.role, "users.manage") ? "Usuarios y permisos" : "Permisos", icon: "settings", section: "El club" },
       ],
     };
   }
@@ -35,21 +35,21 @@ export function navFor(u: SessionUser): { items: NavItem[]; search?: { action: s
     return {
       bottomNav: true,
       items: [
-        { href: "/jugador", label: "Inici", icon: "dashboard", exact: true, mobile: true },
-        { href: "/jugador/oportunitats", label: "Oportunitats", icon: "compass", mobile: true },
-        { href: "/jugador/seguiment", label: "Seguiment", icon: "route", mobile: true },
-        { href: "/jugador/missatges", label: "Missatges", icon: "messages", badge: unread + pending, mobile: true },
-        { href: "/jugador/clubs", label: "Descobrir clubs", icon: "landmark" },
-        { href: "/jugador/calendari", label: "Calendari", icon: "calendar" },
-        { href: "/jugador/perfil", label: "El meu perfil", icon: "user", section: "Jo", mobile: true },
-        { href: "/jugador/privacitat", label: "Privacitat i seguretat", icon: "shield", section: "Jo" },
+        { href: "/jugador", label: "Inicio", icon: "dashboard", exact: true, mobile: true },
+        { href: "/jugador/oportunitats", label: "Oportunidades", icon: "compass", mobile: true },
+        { href: "/jugador/seguiment", label: "Seguimiento", icon: "route", mobile: true },
+        { href: "/jugador/missatges", label: "Mensajes", icon: "messages", badge: unread + pending, mobile: true },
+        { href: "/jugador/clubs", label: "Descubrir clubes", icon: "landmark" },
+        { href: "/jugador/calendari", label: "Calendario", icon: "calendar" },
+        { href: "/jugador/perfil", label: "Mi perfil", icon: "user", section: "Yo", mobile: true },
+        { href: "/jugador/privacitat", label: "Privacidad y seguridad", icon: "shield", section: "Yo" },
       ],
     };
   }
   return {
     items: [
-      { href: "/tutor", label: "Panell del tutor", icon: "shield", exact: true },
-      { href: "/notificacions", label: "Notificacions", icon: "bell" },
+      { href: "/tutor", label: "Panel del tutor", icon: "shield", exact: true },
+      { href: "/notificacions", label: "Notificaciones", icon: "bell" },
     ],
   };
 }

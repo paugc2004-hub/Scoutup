@@ -76,7 +76,7 @@ export function patchProfile(u: Me, d: z.infer<typeof ProfilePatch>) {
   if (d.birth_date) {
     patch.birth_date = d.birth_date;
     const cat = categoryForBirthYear(Number(d.birth_date.slice(0, 4)), currentSeasonStartYear());
-    patch.category = cat === "Infantil" ? "Cadet" : cat;
+    patch.category = cat === "Infantil" ? "Cadete" : cat;
   }
   if (d.city) {
     const pl = placeByCity(d.city);
@@ -110,8 +110,8 @@ export function deleteVideo(u: Me, id: string) {
   return recompute(u.player_id);
 }
 export function upsertStats(u: Me, d: { season_id: string; team_name: string | null; matches: number; starts: number; minutes: number; goals: number; assists: number; yellow: number; red: number; callups: number; clean_sheets: number }) {
-  if (d.starts > d.matches) throw new ApiError(400, "Les titularitats no poden superar els partits jugats.");
-  if (d.matches > d.callups && d.callups > 0) throw new ApiError(400, "Els partits jugats no poden superar les convocatòries.");
+  if (d.starts > d.matches) throw new ApiError(400, "Las titularidades no pueden superar los partidos jugados.");
+  if (d.matches > d.callups && d.callups > 0) throw new ApiError(400, "Los partidos jugados no pueden superar las convocatorias.");
   const ex = get<{ id: string }>("SELECT id FROM player_stats WHERE player_id = ? AND season_id = ?", u.player_id, d.season_id);
   if (ex) update("player_stats", ex.id, { ...d, verification: "updated", updated_at: nowIso() });
   else insert("player_stats", { id: uid("ps_"), player_id: u.player_id, ...d, verification: "self", updated_at: nowIso() });
@@ -137,18 +137,18 @@ export function deleteAchievement(u: Me, id: string) {
 
 // ─── Tutor legal ──────────────────────────────────────────────────────────────
 export function setGuardianConsent(u: SessionUser, consent: boolean) {
-  if (u.role !== "guardian" || !u.player_id) throw new ApiError(403, "Només el tutor legal pot fer aquesta acció.");
+  if (u.role !== "guardian" || !u.player_id) throw new ApiError(403, "Solo el tutor legal puede hacer esta acción.");
   run("UPDATE players SET guardian_consent = ?, updated_at = ? WHERE id = ?", consent ? 1 : 0, nowIso(), u.player_id);
   const p = playerRow(u.player_id)!;
-  notify(p.user_id, "system", consent ? "El teu tutor ha activat la visibilitat del perfil" : "El teu tutor ha desactivat la visibilitat del perfil", consent ? "Els clubs verificats ja poden veure el teu perfil." : "Els clubs no poden veure el teu perfil fins que es torni a activar.", "/jugador/privacitat");
+  notify(p.user_id, "system", consent ? "Tu tutor ha activado la visibilidad del perfil" : "Tu tutor ha desactivado la visibilidad del perfil", consent ? "Los clubes verificados ya pueden ver tu perfil." : "Los clubes no pueden ver tu perfil hasta que se vuelva a activar.", "/jugador/privacitat");
 }
 export function revokeClub(u: SessionUser, clubId: string) {
-  if (u.role !== "guardian" || !u.player_id) throw new ApiError(403, "Només el tutor legal pot fer aquesta acció.");
+  if (u.role !== "guardian" || !u.player_id) throw new ApiError(403, "Solo el tutor legal puede hacer esta acción.");
   if (!get("SELECT id FROM blocks WHERE player_id = ? AND club_id = ?", u.player_id, clubId)) insert("blocks", { id: uid("b_"), player_id: u.player_id, club_id: clubId, created_at: nowIso() });
   run("UPDATE conversations SET status = 'tancada' WHERE player_id = ? AND club_id = ?", u.player_id, clubId);
 }
 export function guardianPrivacy(u: SessionUser, privacy: Record<string, unknown>) {
-  if (u.role !== "guardian" || !u.player_id) throw new ApiError(403, "Només el tutor legal pot fer aquesta acció.");
+  if (u.role !== "guardian" || !u.player_id) throw new ApiError(403, "Solo el tutor legal puede hacer esta acción.");
   const p = playerRow(u.player_id)!;
   const cur = privacyOf(p);
   const next = { ...cur, ...privacy };

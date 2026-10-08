@@ -4,8 +4,8 @@ import { ActionButton } from "@/components/client/kit";
 
 export function BlockButton({ clubId, blocked, icon }: { clubId: string; blocked: boolean; icon?: ReactNode }) {
   return blocked ? (
-    <ActionButton url="/api/blocks" body={{ clubId, blocked: false }} ok="Club desbloquejat" size="sm" variant="secondary" icon={icon}>Desbloquejar</ActionButton>
+    <ActionButton url="/api/blocks" body={{ clubId, blocked: false }} ok="Club desbloqueado" size="sm" variant="secondary" icon={icon}>Desbloquear</ActionButton>
   ) : (
-    <ActionButton url="/api/blocks" body={{ clubId, blocked: true }} ok="Club bloquejat" okSub="No podrà veure el teu perfil ni contactar-te." size="sm" variant="ghost" icon={icon} confirm="Si bloqueges aquest club, no podrà veure el teu perfil ni enviar-te sol·licituds. Ho pots desfer quan vulguis.">Bloquejar</ActionButton>
+    <ActionButton url="/api/blocks" body={{ clubId, blocked: true }} ok="Club bloqueado" okSub="No podrá ver tu perfil ni contactarte." size="sm" variant="ghost" icon={icon} confirm="Si bloqueas a este club, no podrá ver tu perfil ni enviarte solicitudes. Puedes deshacerlo cuando quieras.">Bloquear</ActionButton>
   );
 }

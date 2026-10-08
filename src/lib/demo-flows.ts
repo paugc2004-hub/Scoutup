@@ -1,6 +1,6 @@
-/** Recorreguts guiats de la demo (els fa servir la pàgina /demo i la guia flotant). */
+/** Recorridos guiados de la demo (los usan la página /demo y la guía flotante). */
 
-/** Comptes d'accés ràpid de la demo (vegeu /api/auth/demo). */
+/** Cuentas de acceso rápido de la demo (ver /api/auth/demo). */
 export type DemoAccount = "director" | "coordinator" | "coach" | "clubB" | "player" | "guardian";
 export const DEMO_EMAILS: Record<DemoAccount, string> = {
   director: "director@scoutup.demo",
@@ -17,57 +17,57 @@ export function demoAccountOf(email: string): DemoAccount | null {
 export type DemoStep = { role: DemoAccount; href: string; title: string; text: string };
 export type DemoFlow = { id: string; title: string; subtitle: string; minutes: string; steps: DemoStep[] };
 
-const BIEL = "/club/jugadors/p_biel?offer=o_vn_central";
+const HUGO = "/club/jugadors/p_hugo?offer=o_vn_ld";
 
 export const DEMO_FLOWS: DemoFlow[] = [
   {
     id: "estrella",
-    title: "Recorregut estrella · «El Juvenil A necessita un central»",
-    subtitle: "Necessitat → oportunitat → compatibles → perfil 87% → guardar → comparar → pipeline → avaluació → contacte → activitat.",
+    title: "Recorrido estrella · «El Cadete A necesita un lateral derecho»",
+    subtitle: "Necesidad → oportunidad → 18 compatibles → perfil al 87 % → guardar → comparar → pipeline → evaluación → contacto → actividad.",
     minutes: "5 min",
     steps: [
-      { role: "director", href: "/club", title: "Una necessitat real", text: "Entres com a directora esportiva del CF Vallès Nord. Al tauler, la necessitat del Juvenil A: dos centrals acaben etapa i cap no és esquerrà." },
-      { role: "director", href: "/club/oportunitats/o_vn_central", title: "L'oportunitat", text: "La necessitat ja és una oportunitat oberta. ScoutUp hi ordena els jugadors compatibles per % de compatibilitat (no és probabilitat de fitxatge)." },
-      { role: "director", href: BIEL, title: "Perfil · 87% compatible", text: "Obre el desglossament «Per què encaixa»: posició, nivell, edat, ubicació, disponibilitat, característiques i experiència, cadascun amb el seu pes." },
-      { role: "director", href: BIEL, title: "Guardar", text: "Prem l'estrella per guardar-lo a la llista del club. Queda registrat a l'activitat." },
-      { role: "director", href: "/club/comparar?ids=p_biel,p_arnau,p_pol&offer=o_vn_central", title: "Comparar candidats", text: "Tres centrals cara a cara: radar, estadístiques i compatibilitat amb la mateixa oportunitat." },
-      { role: "director", href: BIEL, title: "Afegir al pipeline", text: "«Afegir al pipeline» i mou-lo a «Interessant». El pipeline és compartit amb el cos tècnic segons els permisos de cadascú." },
-      { role: "director", href: `${BIEL}&tab=avaluacio`, title: "Avaluació privada", text: "Puntua per àrees, indica el context (partit, entrenament, vídeo) i la decisió. Les avaluacions mai no són visibles per al jugador." },
-      { role: "director", href: BIEL, title: "Contacte segur", text: "«Contactar» envia una sol·licitud per la plataforma. Amb «Simular resposta del jugador» (només demo) s'obre la conversa. Amb menors, sempre decideix el tutor." },
-      { role: "director", href: "/club", title: "Tot queda registrat", text: "Torna al tauler: l'activitat recent mostra el que acabes de fer (guardar, pipeline, avaluació, contacte)." },
+      { role: "director", href: "/club", title: "1 · Entramos como directora deportiva", text: "Marta Casanovas, CF Vallès Nord. El panel prioriza lo que hay que hacer hoy. Arriba aparece la necesidad: el Cadete A necesita un lateral derecho." },
+      { role: "director", href: "/club/oportunitats/o_vn_ld", title: "2 · Abrimos la oportunidad", text: "La necesidad ya es una oportunidad. ScoutUp encuentra 18 jugadores compatibles (≥ 70 %), ordenados por % de compatibilidad, que no es probabilidad de fichaje." },
+      { role: "director", href: HUGO, title: "3 · Hugo Navarro · 87 %", text: "Abrimos al primero. El bloque «¿Por qué encaja?» explica cada factor: posición, nivel, edad, ubicación, disponibilidad, características y experiencia." },
+      { role: "director", href: HUGO, title: "4 · Guardar", text: "Pulsa «Guardar». Queda en la lista del club y en la actividad." },
+      { role: "director", href: "/club/comparar?ids=p_hugo,p_006,p_013&offer=o_vn_ld", title: "5 · Comparar", text: "Tres laterales cara a cara: radar, estadísticas y compatibilidad con la misma oportunidad." },
+      { role: "director", href: HUGO, title: "6 · Añadir al pipeline", text: "«Añadir al pipeline» y muévelo a «Interesante». El cuerpo técnico lo verá según sus permisos." },
+      { role: "director", href: `${HUGO}&tab=avaluacio`, title: "7 · Evaluación privada", text: "Puntúa por áreas, indica el contexto (partido, entrenamiento, vídeo) y la decisión. El jugador nunca ve las evaluaciones." },
+      { role: "director", href: HUGO, title: "8 · Contacto seguro", text: "«Contactar». Hugo tiene 15 años: la solicitud va primero a su tutor legal y el club no puede escribirle hasta que lo autorice." },
+      { role: "director", href: "/club", title: "9 · Todo queda registrado", text: "Vuelve al panel: la actividad reciente muestra lo que acabas de hacer (guardar, pipeline, evaluación y contacto)." },
     ],
   },
   {
     id: "permisos",
-    title: "Rols, permisos i aïllament entre clubs",
-    subtitle: "Direcció, coordinació i entrenador veuen coses diferents; un altre club no veu res de privat.",
+    title: "Roles, permisos y aislamiento entre clubes",
+    subtitle: "Dirección, coordinación y entrenador ven cosas distintas; otro club no ve nada privado.",
     minutes: "3 min",
     steps: [
-      { role: "director", href: "/club/configuracio", title: "Usuaris i permisos", text: "La direcció esportiva canvia rols i equips. La matriu surt del mateix RBAC que aplica el servidor, i cada canvi queda al registre d'auditoria." },
-      { role: "coordinator", href: "/club/oportunitats", title: "Coordinació", text: "El coordinador veu tots els equips i pot gestionar oportunitats, però no pot editar el club ni els usuaris." },
-      { role: "coach", href: "/club/pipeline", title: "Entrenador", text: "L'entrenador del Juvenil A només veu el pipeline, les converses i les avaluacions del seu equip." },
-      { role: "clubB", href: "/club/pipeline", title: "Un altre club", text: "El FC Mediterrani (Club B) té el seu propi pipeline. No pot veure ni modificar res intern del CF Vallès Nord, encara que en conegui els identificadors." },
+      { role: "director", href: "/club/configuracio", title: "Usuarios y permisos", text: "La dirección deportiva cambia roles y equipos. La matriz sale del mismo RBAC que aplica el servidor y cada cambio queda en el registro de auditoría." },
+      { role: "coordinator", href: "/club/oportunitats", title: "Coordinación", text: "El coordinador ve todos los equipos y puede gestionar oportunidades, pero no puede editar el club ni los usuarios." },
+      { role: "coach", href: "/club/pipeline", title: "Entrenador", text: "El entrenador del Juvenil A solo ve el pipeline, las conversaciones y las evaluaciones de su equipo." },
+      { role: "clubB", href: "/club/pipeline", title: "Otro club", text: "El FC Mediterrani (Club B) tiene su propio pipeline. No puede ver ni modificar nada interno del CF Vallès Nord, aunque conozca los identificadores." },
+    ],
+  },
+  {
+    id: "central",
+    title: "Segundo caso · «Central zurdo sub-19» con IA copiloto",
+    subtitle: "Búsqueda en lenguaje natural y contacto con un jugador adulto (conversación simulada).",
+    minutes: "3 min",
+    steps: [
+      { role: "director", href: "/club/intelligence?q=Necesito%20un%20central%20zurdo%20sub-19%20de%20la%20zona%20del%20Vall%C3%A8s%20con%20buen%20juego%20a%C3%A9reo", title: "IA copiloto", text: "La petición en lenguaje natural se convierte en criterios y en una lista ordenada y explicada. Motor determinista: no inventa datos." },
+      { role: "director", href: "/club/jugadors/p_biel?offer=o_vn_central", title: "Biel Riera · 87 %", text: "Mayor de edad: el contacto va directo al jugador. Con «Simular respuesta del jugador» (solo demo) se abre la conversación." },
+      { role: "director", href: "/club/missatges", title: "Conversación", text: "Mensajería interna, con aviso si alguien intenta sacar la conversación fuera de la plataforma." },
     ],
   },
   {
     id: "menors",
-    title: "Protecció de menors",
-    subtitle: "Consentiment del tutor abans de qualsevol contacte.",
+    title: "Protección de menores",
+    subtitle: "Consentimiento del tutor antes de cualquier contacto.",
     minutes: "1 min",
     steps: [
-      { role: "guardian", href: "/tutor", title: "Panell del tutor", text: "El CF Vallès Nord vol contactar amb en Nil (16 anys). Sense l'autorització de la tutora, el club no pot escriure-li." },
-      { role: "guardian", href: "/tutor", title: "Autoritzar o denegar", text: "Si autoritza, s'obre la conversa i la tutora en pot consultar el contingut. Pot revocar la visibilitat en qualsevol moment." },
-    ],
-  },
-  {
-    id: "player",
-    title: "L'altra banda: el jugador (ScoutUp Player)",
-    subtitle: "Per entendre d'on surten les sol·licituds que rep el club.",
-    minutes: "2 min",
-    steps: [
-      { role: "player", href: "/jugador/oportunitats/o_vn_central", title: "Oportunitat compatible", text: "El jugador veu el mateix desglossament de compatibilitat, explicat des del seu punt de vista." },
-      { role: "player", href: "/jugador/oportunitats/o_vn_central", title: "M'interessa", text: "Prem «M'interessa» i envia la sol·licitud." },
-      { role: "director", href: "/club/oportunitats/o_vn_central?tab=sollicituds", title: "El club ho rep", text: "La sol·licitud apareix a la pestanya «Sol·licituds» de l'oportunitat, amb notificació." },
+      { role: "guardian", href: "/tutor", title: "Panel del tutor", text: "El CF Vallès Nord quiere contactar con Nil (16 años). Sin la autorización de la tutora, el club no puede escribirle." },
+      { role: "guardian", href: "/tutor", title: "Autorizar o denegar", text: "Si autoriza, se abre la conversación y la tutora puede consultar su contenido. Puede revocar la visibilidad en cualquier momento." },
     ],
   },
 ];

@@ -23,10 +23,10 @@ export function FavoriteButton({ type, id, initial, label = true, size = "md" }:
       }}
       icon={<Star className={cn("size-4", on && "fill-[#f5b301] text-[#f5b301]")} />}
       aria-pressed={on}
-      title={on ? "Treure de guardats" : "Guardar"}
-      aria-label={on ? "Treure de guardats" : "Guardar"}
+      title={on ? "Quitar de guardados" : "Guardar"}
+      aria-label={on ? "Quitar de guardados" : "Guardar"}
     >
-      {label && (on ? "Guardat" : "Guardar")}
+      {label && (on ? "Guardado" : "Guardar")}
     </Button>
   );
 }
@@ -43,8 +43,8 @@ export function PipelineControl({ playerId, entry, teams, offerId, canTeamSelect
             {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </Select>
         )}
-        <Button variant="dark" loading={pending} icon={<KanbanSquare className="size-4" />} onClick={() => call("/api/pipeline", { body: { playerId, teamId: team || null, offerId: offerId ?? null }, ok: "Afegit al pipeline", okSub: "Etapa: Nou" })}>
-          Afegir al pipeline
+        <Button variant="dark" loading={pending} icon={<KanbanSquare className="size-4" />} onClick={() => call("/api/pipeline", { body: { playerId, teamId: team || null, offerId: offerId ?? null }, ok: "Añadido al pipeline", okSub: "Etapa: Nuevo" })}>
+          Añadir al pipeline
         </Button>
       </div>
     );
@@ -57,14 +57,14 @@ export function PipelineControl({ playerId, entry, teams, offerId, canTeamSelect
       </button>
       {open && (
         <div className="absolute right-0 top-12 z-30 w-56 rounded-2xl border border-line bg-surface p-1.5 shadow-pop animate-pop">
-          <p className="px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-subtle">Moure a…</p>
+          <p className="px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-subtle">Mover a…</p>
           {PIPELINE_STAGES.map((s) => (
             <button
               key={s}
               disabled={s === entry.stage || pending}
               onClick={async () => {
                 setOpen(false);
-                await call(`/api/pipeline/${entry.id}`, { method: "PATCH", body: { stage: s }, ok: `Mogut a «${STAGE_LABEL[s]}»` });
+                await call(`/api/pipeline/${entry.id}`, { method: "PATCH", body: { stage: s }, ok: `Movido a «${STAGE_LABEL[s]}»` });
               }}
               className={cn("flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium hover:bg-sunken disabled:opacity-40", s === entry.stage && "bg-sunken")}
             >
@@ -72,8 +72,8 @@ export function PipelineControl({ playerId, entry, teams, offerId, canTeamSelect
             </button>
           ))}
           <div className="my-1 h-px bg-line" />
-          <button onClick={async () => { setOpen(false); await call(`/api/pipeline/${entry.id}`, { method: "DELETE", ok: "Retirat del pipeline" }); }} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-danger hover:bg-danger-soft">
-            <Trash2 className="size-4" /> Treure del pipeline
+          <button onClick={async () => { setOpen(false); await call(`/api/pipeline/${entry.id}`, { method: "DELETE", ok: "Retirado del pipeline" }); }} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-danger hover:bg-danger-soft">
+            <Trash2 className="size-4" /> Quitar del pipeline
           </button>
         </div>
       )}
@@ -91,17 +91,17 @@ export function ContactControl({ playerId, firstName, state, clubName, offerTitl
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState(offerTitle ? "oferta" : "seguiment");
   const [team, setTeam] = useState(defaultTeam ?? teams[0]?.id ?? "");
-  const [msg, setMsg] = useState(`Hola ${firstName}, t'escrivim des del ${clubName}.${offerTitle ? ` Hem vist el teu perfil i creiem que encaixes molt bé amb la nostra oportunitat «${offerTitle}».` : " Hem vist el teu perfil i ens agradaria conèixer-te."} T'agradaria que en parléssim?`);
+  const [msg, setMsg] = useState(`Hola ${firstName}, te escribimos desde el ${clubName}.${offerTitle ? ` Hem vist el teu perfil i creiem que encaixes molt bé amb la nostra oportunitat «${offerTitle}».` : " Hemos visto tu perfil y nos gustaría conocerte."} ¿Te gustaría que habláramos?`);
   const { call, pending } = useApi();
   const router = useRouter();
 
   if (state.kind === "conversation") {
-    return <Link href={`/club/missatges/${state.conversationId}`} className={btnClass("primary", "md")}><MessageSquare className="size-4" /> Obrir conversa</Link>;
+    return <Link href={`/club/missatges/${state.conversationId}`} className={btnClass("primary", "md")}><MessageSquare className="size-4" /> Abrir conversación</Link>;
   }
   if (state.kind === "blocked") {
     return (
       <span title={state.reason} className={cn(btnClass("secondary", "md"), "cursor-not-allowed opacity-60")}>
-        <Lock className="size-4" /> Contacte no disponible
+        <Lock className="size-4" /> Contacto no disponible
       </span>
     );
   }
@@ -109,23 +109,23 @@ export function ContactControl({ playerId, firstName, state, clubName, offerTitl
     return (
       <div className="flex flex-wrap items-center gap-2">
         <span className={cn(btnClass("secondary", "md"), "cursor-default")}>
-          <Clock3 className="size-4 text-warn" /> {state.status === "pendent_tutor" ? "Pendent del tutor legal" : "Sol·licitud pendent"}
+          <Clock3 className="size-4 text-warn" /> {state.status === "pendent_tutor" ? "Pendiente del tutor legal" : "Solicitud pendiente"}
         </span>
         {!state.minor && state.status === "pendent" && (
           <ActionButton
             url="/api/demo/simulate-accept"
             body={{ requestId: state.requestId }}
-            ok="El jugador ha acceptat la sol·licitud"
-            okSub="S'ha obert la conversa (simulació de demo)"
+            ok="El jugador ha aceptado la solicitud"
+            okSub="Se ha abierto la conversación (simulación de demo)"
             icon={<FlaskConical className="size-4" />}
             variant="ghost"
             onDone={(d) => d.conversationId && router.push(`/club/missatges/${d.conversationId}`)}
           >
-            Simular resposta del jugador
+            Simular respuesta del jugador
           </ActionButton>
         )}
-        <ActionButton url={`/api/contacts/${state.requestId}`} body={{ action: "cancel" }} ok="Sol·licitud cancel·lada" variant="ghost" size="sm" confirm="Vols cancel·lar la sol·licitud de contacte?">
-          Cancel·lar
+        <ActionButton url={`/api/contacts/${state.requestId}`} body={{ action: "cancel" }} ok="Solicitud cancelada" variant="ghost" size="sm" confirm="¿Quieres cancelar la solicitud de contacto?">
+          Cancelar
         </ActionButton>
       </div>
     );
@@ -137,20 +137,20 @@ export function ContactControl({ playerId, firstName, state, clubName, offerTitl
         open={open}
         onClose={() => setOpen(false)}
         title={`Contactar ${firstName}`}
-        subtitle="El jugador rep una sol·licitud i decideix si l'accepta. Fins llavors no s'obre cap conversa."
+        subtitle="El jugador recibe una solicitud y decide si la acepta. Hasta entonces no se abre ninguna conversación."
         footer={
           <>
-            <Button onClick={() => setOpen(false)}>Cancel·lar</Button>
+            <Button onClick={() => setOpen(false)}>Cancelar</Button>
             <Button
               variant="dark"
               loading={pending}
               icon={<Send className="size-4" />}
               onClick={async () => {
-                const d = await call<{ status: string }>("/api/contacts", { body: { playerId, reason, message: msg, teamId: team || null }, ok: state.needsGuardian ? "Sol·licitud enviada al tutor legal" : "Sol·licitud de contacte enviada", okSub: state.needsGuardian ? "El club no podrà escriure fins que el tutor ho autoritzi." : "Etapa del pipeline: Contactat" });
+                const d = await call<{ status: string }>("/api/contacts", { body: { playerId, reason, message: msg, teamId: team || null }, ok: state.needsGuardian ? "Solicitud enviada al tutor legal" : "Solicitud de contacto enviada", okSub: state.needsGuardian ? "El club no podrá escribir hasta que el tutor lo autorice." : "Etapa del pipeline: Contactado" });
                 if (d) setOpen(false);
               }}
             >
-              Enviar sol·licitud
+              Enviar solicitud
             </Button>
           </>
         }
@@ -158,21 +158,21 @@ export function ContactControl({ playerId, firstName, state, clubName, offerTitl
         {state.needsGuardian && (
           <div className="mb-4 flex gap-3 rounded-xl border border-[#ddd6fe] bg-violet-soft p-3 text-[12.5px] leading-relaxed text-ink-2">
             <Lock className="mt-0.5 size-4 shrink-0 text-violet" />
-            <span><strong>{firstName} és menor d'edat.</strong> La sol·licitud arribarà primer al seu tutor legal, que haurà d'autoritzar el contacte.</span>
+            <span><strong>{firstName} es menor de edad.</strong> La solicitud llegará primero a su tutor legal, que tendrá que autorizar el contacto.</span>
           </div>
         )}
         <div className="space-y-4">
-          <Field label="Motiu">
+          <Field label="Motivo">
             <div className="flex flex-wrap gap-2">
               {CONTACT_REASONS.map((r) => <Chip key={r.key} active={reason === r.key} onClick={() => setReason(r.key)}>{r.label}</Chip>)}
             </div>
           </Field>
           {teams.length > 1 && (
-            <Field label="Equip interessat">
+            <Field label="Equipo interesado">
               <Select value={team} onChange={(e) => setTeam(e.target.value)}>{teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}</Select>
             </Field>
           )}
-          <Field label="Missatge" hint="Evita demanar telèfons o xarxes socials: la comunicació es fa dins de ScoutUp.">
+          <Field label="Mensaje" hint="Evita pedir teléfonos o redes sociales: la comunicación se hace dentro de ScoutUp.">
             <Textarea rows={5} value={msg} onChange={(e) => setMsg(e.target.value)} />
           </Field>
         </div>
@@ -242,24 +242,24 @@ export function EvaluationForm({ playerId, initial }: { playerId: string; initia
           </div>
         ))}
         <div className="rounded-2xl border border-line p-4">
-          <p className="mb-3 text-[14px] font-bold">Decisió</p>
+          <p className="mb-3 text-[14px] font-bold">Decisión</p>
           <div className="flex flex-wrap gap-2">
             {Object.entries(EVAL_DECISIONS).map(([k, l]) => <Chip key={k} active={decision === k} onClick={() => setDecision(k)}>{l}</Chip>)}
           </div>
           <label className="mt-3 block">
-            <span className="mb-1 block text-[12.5px] font-semibold text-ink-2">Context</span>
-            <Input list="eval-contexts" maxLength={120} value={context} onChange={(e) => setContext(e.target.value)} placeholder="P. ex. Partit de lliga vs UE Serralada" />
-            <datalist id="eval-contexts"><option value="Partit de lliga" /><option value="Sessió d'entrenament" /><option value="Prova al club" /><option value="Vídeo del partit" /><option value="Torneig" /></datalist>
+            <span className="mb-1 block text-[12.5px] font-semibold text-ink-2">Contexto</span>
+            <Input list="eval-contexts" maxLength={120} value={context} onChange={(e) => setContext(e.target.value)} placeholder="P. ej. Partido de liga vs UE Serralada" />
+            <datalist id="eval-contexts"><option value="Partido de liga" /><option value="Sesión de entrenamiento" /><option value="Prueba en el club" /><option value="Vídeo del partido" /><option value="Torneo" /></datalist>
           </label>
           <label className="mt-3 block">
-            <span className="mb-1 block text-[12.5px] font-semibold text-ink-2">Observacions</span>
-            <Textarea rows={4} maxLength={1500} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Només visible per al club" />
+            <span className="mb-1 block text-[12.5px] font-semibold text-ink-2">Observaciones</span>
+            <Textarea rows={4} maxLength={1500} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Solo visible para el club" />
           </label>
         </div>
       </div>
       <div className="flex justify-end">
-        <Button variant="dark" loading={pending} onClick={() => call("/api/evaluations", { body: { playerId, scores, decision, comment, context: context.trim() || null }, ok: initial ? "Avaluació actualitzada" : "Avaluació guardada" })}>
-          {initial ? "Actualitzar la meva avaluació" : "Guardar avaluació"}
+        <Button variant="dark" loading={pending} onClick={() => call("/api/evaluations", { body: { playerId, scores, decision, comment, context: context.trim() || null }, ok: initial ? "Evaluación actualizada" : "Evaluación guardada" })}>
+          {initial ? "Actualizar mi evaluación" : "Guardar evaluación"}
         </Button>
       </div>
     </div>
@@ -272,16 +272,16 @@ export function NotesPanel({ playerId, notes, meId, isDirector }: { playerId: st
   return (
     <div>
       <div className="mb-3 flex items-center gap-2 rounded-xl border border-line bg-bg px-3 py-2 text-[12.5px] text-muted">
-        <Lock className="size-3.5" /> Les notes són privades del club. El jugador no les veu mai.
+        <Lock className="size-3.5" /> Las notas son privadas del club. El jugador nunca las ve.
       </div>
       <div className="flex gap-2">
-        <Textarea rows={2} value={text} onChange={(e) => setText(e.target.value)} placeholder="Escriu una nota privada…" className="!min-h-0" />
-        <Button variant="dark" loading={pending} disabled={!text.trim()} className="self-end" icon={<NotebookPen className="size-4" />} onClick={async () => { const d = await call("/api/notes", { body: { playerId, body: text }, ok: "Nota afegida" }); if (d) setText(""); }}>
-          Afegir
+        <Textarea rows={2} value={text} onChange={(e) => setText(e.target.value)} placeholder="Escribe una nota privada…" className="!min-h-0" />
+        <Button variant="dark" loading={pending} disabled={!text.trim()} className="self-end" icon={<NotebookPen className="size-4" />} onClick={async () => { const d = await call("/api/notes", { body: { playerId, body: text }, ok: "Nota añadida" }); if (d) setText(""); }}>
+          Añadir
         </Button>
       </div>
       <div className="mt-4 space-y-2.5">
-        {notes.length === 0 && <p className="py-6 text-center text-[13px] text-subtle">Encara no hi ha notes.</p>}
+        {notes.length === 0 && <p className="py-6 text-center text-[13px] text-subtle">Todavía no hay notas.</p>}
         {notes.map((n) => (
           <div key={n.id} className="group rounded-xl border border-line bg-[#fffdf5] p-3">
             <p className="whitespace-pre-line text-[13.5px] leading-relaxed">{n.body}</p>
@@ -305,14 +305,14 @@ export function InteractionForm({ playerId }: { playerId: string }) {
   const { call, pending } = useApi();
   return (
     <>
-      <Button size="sm" icon={<Plus className="size-3.5" />} onClick={() => setOpen(true)}>Registrar interacció</Button>
-      <Modal open={open} onClose={() => setOpen(false)} title="Registrar interacció" subtitle="Queda a l'historial del jugador al teu club." size="sm"
-        footer={<><Button onClick={() => setOpen(false)}>Cancel·lar</Button><Button variant="dark" loading={pending} disabled={text.trim().length < 2} onClick={async () => { const d = await call("/api/pipeline/interaction", { body: { playerId, kind, text }, ok: "Interacció registrada" }); if (d) { setOpen(false); setText(""); } }}>Guardar</Button></>}>
+      <Button size="sm" icon={<Plus className="size-3.5" />} onClick={() => setOpen(true)}>Registrar interacción</Button>
+      <Modal open={open} onClose={() => setOpen(false)} title="Registrar interacción" subtitle="Queda en el historial del jugador en tu club." size="sm"
+        footer={<><Button onClick={() => setOpen(false)}>Cancelar</Button><Button variant="dark" loading={pending} disabled={text.trim().length < 2} onClick={async () => { const d = await call("/api/pipeline/interaction", { body: { playerId, kind, text }, ok: "Interacción registrada" }); if (d) { setOpen(false); setText(""); } }}>Guardar</Button></>}>
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
-            {[["trucada", "Trucada"], ["reunio", "Reunió"], ["partit", "Vist en un partit"], ["familia", "Família"], ["entrenador", "Entrenador actual"], ["altre", "Altre"]].map(([k, l]) => <Chip key={k} active={kind === k} onClick={() => setKind(k)}>{l}</Chip>)}
+            {[["trucada", "Llamada"], ["reunio", "Reunión"], ["partit", "Visto en un partido"], ["familia", "Familia"], ["entrenador", "Entrenador actual"], ["altre", "Otro"]].map(([k, l]) => <Chip key={k} active={kind === k} onClick={() => setKind(k)}>{l}</Chip>)}
           </div>
-          <Textarea rows={4} value={text} onChange={(e) => setText(e.target.value)} placeholder="Què ha passat?" />
+          <Textarea rows={4} value={text} onChange={(e) => setText(e.target.value)} placeholder="¿Qué ha pasado?" />
         </div>
       </Modal>
     </>

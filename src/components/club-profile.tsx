@@ -26,12 +26,12 @@ export function ClubProfileView({ club, actions, offerHref }: { club: ClubRow; a
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-[26px] font-extrabold tracking-tight">{club.name}</h1>
-              {club.verified ? <Badge tone="accent" title="Club verificat a la demo (simulat)"><ShieldCheck className="size-3" /> Club verificat</Badge> : <Badge tone="warn"><ShieldQuestion className="size-3" /> Pendent de verificació</Badge>}
+              {club.verified ? <Badge tone="accent" title="Club verificado en la demo (simulado)"><ShieldCheck className="size-3" /> Club verificado</Badge> : <Badge tone="warn"><ShieldQuestion className="size-3" /> Pendiente de verificación</Badge>}
             </div>
             <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-muted">
               <span className="inline-flex items-center gap-1"><MapPin className="size-3.5" /> {club.city} · {club.comarca}</span>
-              {club.founded && <span className="inline-flex items-center gap-1"><CalendarDays className="size-3.5" /> Fundat el {club.founded}</span>}
-              <span className="inline-flex items-center gap-1"><Trophy className="size-3.5" /> {teams.length} equips</span>
+              {club.founded && <span className="inline-flex items-center gap-1"><CalendarDays className="size-3.5" /> Fundado en {club.founded}</span>}
+              <span className="inline-flex items-center gap-1"><Trophy className="size-3.5" /> {teams.length} equipos</span>
             </p>
           </div>
           {actions}
@@ -42,15 +42,15 @@ export function ClubProfileView({ club, actions, offerHref }: { club: ClubRow; a
           <Card>
             <div className="space-y-5">
               <Block title="Sobre el club" text={club.description} />
-              <Block title="Història" text={club.history} />
-              <Block title="Filosofia" text={club.philosophy} />
-              <Block title="Model esportiu" text={club.sporting_model} />
-              <Block title="Objectius" text={club.objectives} />
+              <Block title="Historia" text={club.history} />
+              <Block title="Filosofía" text={club.philosophy} />
+              <Block title="Modelo deportivo" text={club.sporting_model} />
+              <Block title="Objetivos" text={club.objectives} />
               {club.values_text && <div><p className="mb-2 text-[12px] font-bold uppercase tracking-[0.1em] text-subtle">Valors</p><div className="flex flex-wrap gap-2">{club.values_text.split("·").map((v) => <Badge key={v} tone="accent">{v.trim()}</Badge>)}</div></div>}
             </div>
           </Card>
           <Card>
-            <CardHeader title="Equips" subtitle={`Temporada ${season.label} · competicions de demostració`} />
+            <CardHeader title="Equipos" subtitle={`Temporada ${season.label} · competiciones de demostración`} />
             <div className="grid gap-2 sm:grid-cols-2">
               {teams.map(({ t, comp }) => (
                 <div key={t.id} className="rounded-xl border border-line p-3">
@@ -63,12 +63,12 @@ export function ClubProfileView({ club, actions, offerHref }: { club: ClubRow; a
           </Card>
           {offers.length > 0 && (
             <Card>
-              <CardHeader title="Oportunitats obertes" />
+              <CardHeader title="Oportunidades abiertas" />
               <div className="space-y-2">
                 {offers.map((o) => (
                   <Link key={o.id} href={offerHref(o.id)} className="flex items-center justify-between gap-3 rounded-xl border border-line p-3 transition hover:border-line-strong">
                     <div><p className="text-[13.5px] font-bold">{o.title}</p><p className="text-[12px] text-muted">{o.team_name} · {POSITION_LABEL[o.position as Position]}</p></div>
-                    {o.kind === "prova" ? <Badge tone="violet">Prova</Badge> : <Badge>Incorporació</Badge>}
+                    {o.kind === "prova" ? <Badge tone="violet">Prueba</Badge> : <Badge>Incorporación</Badge>}
                   </Link>
                 ))}
               </div>
@@ -77,7 +77,7 @@ export function ClubProfileView({ club, actions, offerHref }: { club: ClubRow; a
         </div>
         <div className="space-y-5">
           <Card>
-            <CardHeader title="Contacte" />
+            <CardHeader title="Contacto" />
             <dl className="space-y-2.5 text-[13px]">
               {club.website && <div className="flex items-center gap-2"><Globe className="size-4 text-subtle" />{club.website.replace("https://", "")}</div>}
               {club.instagram && <div className="flex items-center gap-2"><AtSign className="size-4 text-subtle" />{club.instagram}</div>}
@@ -86,12 +86,12 @@ export function ClubProfileView({ club, actions, offerHref }: { club: ClubRow; a
               {club.office_hours && <div className="flex items-center gap-2"><Clock className="size-4 text-subtle" />{club.office_hours}</div>}
               {club.languages && <div className="flex items-center gap-2"><Languages className="size-4 text-subtle" />{club.languages}</div>}
             </dl>
-            <p className="mt-3 text-[11.5px] text-subtle">Dades de contacte fictícies (domini .example).</p>
+            <p className="mt-3 text-[11.5px] text-subtle">Datos de contacto ficticios (dominio .example).</p>
           </Card>
           <Card>
-            <CardHeader title="Instal·lacions" icon={<Building className="size-4" />} />
+            <CardHeader title="Instalaciones" icon={<Building className="size-4" />} />
             <div className="space-y-2">
-              {fac.length === 0 && <p className="text-[13px] text-subtle">Sense instal·lacions informades.</p>}
+              {fac.length === 0 && <p className="text-[13px] text-subtle">Sin instalaciones informadas.</p>}
               {fac.map((f) => <div key={f.name} className="rounded-xl bg-bg p-3"><p className="text-[13px] font-semibold">{f.name}</p><p className="text-[12px] text-muted">{f.type}{f.note ? ` · ${f.note}` : ""}</p></div>)}
             </div>
           </Card>

@@ -18,27 +18,27 @@ export default async function LoginPage() {
         <div className="pointer-events-none absolute -bottom-40 -left-40 size-[520px] rounded-full bg-accent/20 blur-[120px]" />
         <Logo />
         <div className="relative">
-          <p className="text-[40px] font-extrabold leading-[1.05] tracking-[-0.03em]">Connectant talent,<br />clubs i oportunitats.</p>
-          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-night-text">Entra amb un dels usuaris de demo per veure ScoutUp des de cada rol. Totes les dades són fictícies.</p>
+          <p className="text-[40px] font-extrabold leading-[1.05] tracking-[-0.03em]">Conectando talento,<br />clubes y oportunidades.</p>
+          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-night-text">Entra con uno de los usuarios de demo para ver ScoutUp Club desde cada rol. Todos los datos son ficticios.</p>
         </div>
-        <p className="relative text-[12px] text-night-muted">Demo sense connexió amb cap federació ni font externa.</p>
+        <p className="relative text-[12px] text-night-muted">Demo sin conexión con ninguna federación ni fuente externa.</p>
       </div>
       <div className="flex items-center justify-center px-5 py-10">
         <div className="w-full max-w-[420px] animate-rise">
           <div className="mb-8 lg:hidden"><Logo dark={false} /></div>
           <h1 className="text-[26px] font-extrabold tracking-tight">Entrar a ScoutUp</h1>
           <p className="mt-1 text-[14px] text-muted">
-            No tens compte? <Link href="/registre" className="font-semibold text-accent-ink hover:underline">Crea'n un</Link>
+            ¿No tienes cuenta? <Link href="/registre" className="font-semibold text-accent-ink hover:underline">Crea una</Link>
           </p>
 
           <div className="mt-7 rounded-2xl border border-line bg-surface p-4 shadow-card">
-            <p className="mb-3 text-[12px] font-bold uppercase tracking-[0.12em] text-subtle">Entrar com a demo</p>
+            <p className="mb-3 text-[12px] font-bold uppercase tracking-[0.12em] text-subtle">Entrar como demo</p>
             <div className="grid gap-2">
               <DemoLoginButton role="director" size="md" variant="dark" className="w-full justify-start" icon={<Building2 className="size-4" />}>
-                Club · Directora esportiva <span className="ml-auto text-[11.5px] font-medium text-night-muted">director@scoutup.demo</span>
+                Club · Directora deportiva <span className="ml-auto text-[11.5px] font-medium text-night-muted">director@scoutup.demo</span>
               </DemoLoginButton>
               <DemoLoginButton role="coordinator" size="md" variant="secondary" className="w-full justify-start" icon={<Network className="size-4" />}>
-                Club · Coordinació <span className="ml-auto text-[11.5px] font-medium text-subtle">coordinacio@scoutup.demo</span>
+                Club · Coordinación <span className="ml-auto text-[11.5px] font-medium text-subtle">coordinacio@scoutup.demo</span>
               </DemoLoginButton>
               <DemoLoginButton role="coach" size="md" variant="secondary" className="w-full justify-start" icon={<ClipboardList className="size-4" />}>
                 Entrenador · Juvenil A <span className="ml-auto text-[11.5px] font-medium text-subtle">coach@scoutup.demo</span>
@@ -53,12 +53,12 @@ export default async function LoginPage() {
                 Tutora legal · Anna Font <span className="ml-auto text-[11.5px] font-medium text-subtle">tutor@scoutup.demo</span>
               </DemoLoginButton>
             </div>
-            <p className="mt-3 text-[12px] text-subtle">Contrasenya de tots els usuaris de demo: <code className="rounded bg-sunken px-1.5 py-0.5 font-semibold text-ink">demo</code></p>
+            <p className="mt-3 text-[12px] text-subtle">Contraseña de todos los usuarios de demo: <code className="rounded bg-sunken px-1.5 py-0.5 font-semibold text-ink">demo</code></p>
           </div>
 
-          <div className="my-6 flex items-center gap-3 text-[12px] text-subtle"><span className="h-px flex-1 bg-line" /> o amb correu <span className="h-px flex-1 bg-line" /></div>
+          <div className="my-6 flex items-center gap-3 text-[12px] text-subtle"><span className="h-px flex-1 bg-line" /> o con correo <span className="h-px flex-1 bg-line" /></div>
           <LoginForm />
-          <p className="mt-8 text-center text-[12.5px] text-subtle"><Link href="/" className="hover:text-ink">← Tornar a l'inici</Link> · <Link href="/demo" className="hover:text-ink">Guia de la demo</Link></p>
+          <p className="mt-8 text-center text-[12.5px] text-subtle"><Link href="/" className="hover:text-ink">← Volver al inicio</Link> · <Link href="/demo" className="hover:text-ink">Guía de la demo</Link></p>
         </div>
       </div>
     </div>

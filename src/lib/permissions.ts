@@ -15,8 +15,8 @@ export const CLUB_ROLES = ["director", "coordinator", "coach"] as const;
 export type ClubRole = (typeof CLUB_ROLES)[number];
 
 export const CLUB_ROLE_LABEL: Record<ClubRole, string> = {
-  director: "Direcció esportiva",
-  coordinator: "Coordinació",
+  director: "Dirección deportiva",
+  coordinator: "Coordinación",
   coach: "Entrenador",
 };
 
@@ -50,16 +50,16 @@ export const ROLE_SCOPE: Record<ClubRole, "club" | "team"> = {
 };
 
 export const PERMISSION_LABEL: Record<Permission, string> = {
-  "players.view": "Cercar jugadors, veure perfils i ScoutUp Intelligence",
-  "pipeline.manage": "Pipeline: afegir, moure i retirar jugadors",
-  "evaluations.write": "Avaluacions, notes privades i informes d'observació",
-  "contact.send": "Contactar jugadors i conversar",
-  "calendar.manage": "Calendari: crear i eliminar esdeveniments",
-  "opportunities.manage": "Crear, pausar i tancar oportunitats",
+  "players.view": "Buscar jugadores, ver perfiles y ScoutUp Intelligence",
+  "pipeline.manage": "Pipeline: añadir, mover y retirar jugadores",
+  "evaluations.write": "Evaluaciones, notas privadas e informes de observación",
+  "contact.send": "Contactar jugadores y conversar",
+  "calendar.manage": "Calendario: crear y eliminar eventos",
+  "opportunities.manage": "Crear, pausar y cerrar oportunidades",
   "club.edit": "Editar el perfil del club",
-  "users.manage": "Gestionar usuaris, rols i equips",
-  "audit.view": "Consultar el registre d'auditoria",
-  "demo.reset": "Restaurar les dades de la demo",
+  "users.manage": "Gestionar usuarios, roles y equipos",
+  "audit.view": "Consultar el registro de auditoría",
+  "demo.reset": "Restaurar los datos de la demo",
 };
 
 export function isClubRole(role: string | null | undefined): role is ClubRole {

@@ -71,7 +71,7 @@ export function MobileNav({ items, header, footer }: { items: NavItem[]; header:
   useEffect(() => setOpen(false), [path]);
   return (
     <>
-      <button onClick={() => setOpen(true)} className="grid size-9 place-items-center rounded-lg text-ink hover:bg-sunken lg:hidden" aria-label="Obrir menú">
+      <button onClick={() => setOpen(true)} className="grid size-9 place-items-center rounded-lg text-ink hover:bg-sunken lg:hidden" aria-label="Abrir menú">
         <Menu className="size-5" />
       </button>
       {open && (
@@ -80,7 +80,7 @@ export function MobileNav({ items, header, footer }: { items: NavItem[]; header:
           <div className="absolute inset-y-0 left-0 flex w-[280px] flex-col bg-night shadow-pop animate-rise">
             <div className="flex items-center justify-between px-4 pb-2 pt-5">
               {header}
-              <button onClick={() => setOpen(false)} className="grid size-8 place-items-center rounded-lg text-night-text hover:bg-night-2" aria-label="Tancar menú">
+              <button onClick={() => setOpen(false)} className="grid size-8 place-items-center rounded-lg text-night-text hover:bg-night-2" aria-label="Cerrar menú">
                 <X className="size-4" />
               </button>
             </div>

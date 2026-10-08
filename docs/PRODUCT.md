@@ -14,18 +14,18 @@ NECESIDAD → OPORTUNIDAD → DESCUBRIMIENTO → MATCHING → ANÁLISIS → GUAR
 
 | Sección | Ruta | Para qué |
 |---|---|---|
-| Inici | `/club` | Acciones pendientes: necesidades, solicitudes nuevas, perfiles compatibles, agenda y actividad |
-| Oportunitats | `/club/oportunitats` | Necesidades concretas convertidas en oportunidades, con sus candidatos ordenados por compatibilidad |
-| Jugadors | `/club/cercar`, `/club/jugadors/[id]` | Búsqueda con filtros y perfil completo (quién es, qué ha hecho, datos, vídeo, encaje y qué hacer ahora) |
+| Inicio | `/club` | Acciones pendientes: necesidades, solicitudes nuevas, perfiles compatibles, agenda y actividad |
+| Oportunidades | `/club/oportunitats` | Necesidades concretas convertidas en oportunidades, con sus candidatos ordenados por compatibilidad |
+| Jugadores | `/club/cercar`, `/club/jugadors/[id]` | Búsqueda con filtros y perfil completo (quién es, qué ha hecho, datos, vídeo, encaje y qué hacer ahora) |
 | IA · Copilot | `/club/intelligence` | Búsqueda en lenguaje natural. **IA DEMO:** motor determinista local, sin IA externa |
 | Pipeline | `/club/pipeline` | Kanban de 9 etapas, compartido según permisos |
-| Avaluacions | `/club/avaluacions` | Evaluaciones por áreas (autor, fecha, contexto, decisión), informes de observación y jugadores guardados |
-| Missatges | `/club/missatges` | Conversaciones abiertas tras una solicitud aceptada |
-| Calendari | `/club/calendari` | Partidos, pruebas, reuniones, observación y llamadas |
+| Evaluaciones | `/club/avaluacions` | Evaluaciones por áreas (autor, fecha, contexto, decisión), informes de observación y jugadores guardados |
+| Mensajes | `/club/missatges` | Conversaciones abiertas tras una solicitud aceptada |
+| Calendario | `/club/calendari` | Partidos, pruebas, reuniones, observación y llamadas |
 | El club | `/club/equips`, `/club/plantilla`, `/club/perfil`, `/club/configuracio` | Estructura, plantilla por temporada, perfil público, usuarios, permisos y auditoría |
 | Comparar | `/club/comparar` | Se abre desde la bandeja de comparación (2–3 jugadores). No está en el menú para simplificar |
 
-**Simplificaciones respecto al brief:** «Ofertes» pasa a ser **Oportunitats** en toda la UI (consistencia de nombres); «Scouting» se fusiona en **Avaluacions**; «Comparar» sale del menú porque es una acción contextual.
+**Simplificaciones respecto al brief:** «Ofertas» pasa a ser **Oportunidades** en toda la UI (consistencia de nombres); «Scouting» se fusiona en **Evaluaciones**; «Comparar» sale del menú porque es una acción contextual.
 
 ## Entidades y estados
 
@@ -75,8 +75,9 @@ La dirección cambia roles, equipos y acceso desde **Configuració**. Cada cambi
 | Tres roles internos y su matriz de permisos | PROPOSAL (definida por el equipo, extensible) |
 | Compatibilidad calculada al vuelo en lugar de persistida | PROPOSAL / TECHNICAL VALIDATION si crece el volumen |
 | Guardar jugador por usuario (no por club) | PROPOSAL; la alternativa de una lista compartida por club está pendiente de decidir con clubes reales |
-| Recorrido estrella con el Juvenil A y un central (en lugar de «Cadet A · lateral derecho») | PROPOSAL: se reutiliza el escenario existente y coherente del seed; un cadete es menor y el contacto pasaría siempre por el tutor, lo que desvía la demo. Es fácil de cambiar en `seed/demo-data` |
+| Recorrido estrella «Cadete A necesita lateral derecho → 18 compatibles → 87 %» | DEFINED (brief): datos de demo ajustados en `seed/demo-data` (Hugo Navarro, oportunidad `o_vn_ld`). Como Hugo es menor, el contacto pasa por su tutor |
+| Idioma de la interfaz | Castellano. Rutas y valores internos (estados, etapas) conservan identificadores en catalán |
 | Requisitos de protección de menores (consentimiento, conservación, edad mínima) | LEGAL VALIDATION |
 | Uso de datos oficiales de competición | FCF VALIDATION + LEGAL VALIDATION + TECHNICAL VALIDATION |
 | Recuperación de contraseña, correo e invitaciones | PENDING |
-| Onboarding de un club nuevo (club → equipos → primera necesidad → primera oportunidad) | PARCIAL: el registro crea el club y un equipo y lleva directamente al panel; el asistente guiado está PENDING |
+| Onboarding de un club nuevo (club → equipos → primera necesidad → primera oportunidad → primeros jugadores) | DONE: asistente en `/club/bienvenida`, servicio `src/server/services/onboarding.ts` (requiere `club.edit`, auditado) |

@@ -14,7 +14,7 @@ import { Avatar, Card, EmptyState, MatchRing, PageHeader, Radar, VerificationBad
 import { OfferSelector } from "@/components/club/player-actions";
 import { CompareToggle } from "@/components/club/compare-tray";
 
-export const metadata = { title: "Comparar jugadors" };
+export const metadata = { title: "Comparar jugadores" };
 const COLORS = ["#00b85f", "#2563eb", "#f59e0b"];
 
 export default async function ComparePage({ searchParams }: { searchParams: Promise<{ ids?: string; offer?: string }> }) {
@@ -31,8 +31,8 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
     const pipe = all<{ player_id: string; first_name: string; last_name: string; avatar_hue: number }>("SELECT pe.player_id, p.first_name, p.last_name, p.avatar_hue FROM pipeline_entries pe JOIN players p ON p.id = pe.player_id WHERE pe.club_id = ? ORDER BY pe.updated_at DESC LIMIT 9", u.club_id);
     return (
       <div>
-        <PageHeader eyebrow="Decidir" title="Comparar jugadors" subtitle="Tria fins a 3 jugadors amb el botó «Comparar» (a la cerca, a les oportunitats o al perfil) i compara'ls cara a cara." />
-        <EmptyState icon={<Columns3 className="size-5" />} title="Selecciona almenys dos jugadors" text="Fes servir el botó + dels resultats o afegeix-los des del teu pipeline:" />
+        <PageHeader eyebrow="Decidir" title="Comparar jugadores" subtitle="Elige hasta 3 jugadores con el botón «Comparar» (en la búsqueda, en las oportunidades o en el perfil) y compáralos cara a cara." />
+        <EmptyState icon={<Columns3 className="size-5" />} title="Selecciona al menos dos jugadores" text="Usa el botón + de los resultados o añádelos desde tu pipeline:" />
         <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {pipe.map((p) => (
             <div key={p.player_id} className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3">
@@ -72,18 +72,18 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
   return (
     <div className="space-y-5">
-      <PageHeader eyebrow="Decidir" title="Comparar jugadors" subtitle="Radar, estadístiques i compatibilitat cara a cara." actions={offer ? <div className="w-72"><OfferSelector offers={offers.map((o) => ({ id: o.id, title: o.title, score: Math.max(...rows.map((r) => computeMatch(toMatchPlayer(r, ctx.prev.get(r.id), ctx.career.get(r.id) ?? 0), toMatchOffer(o), ctx.now).score)) }))} value={offer.id} /></div> : undefined} />
+      <PageHeader eyebrow="Decidir" title="Comparar jugadores" subtitle="Radar, estadísticas y compatibilidad cara a cara." actions={offer ? <div className="w-72"><OfferSelector offers={offers.map((o) => ({ id: o.id, title: o.title, score: Math.max(...rows.map((r) => computeMatch(toMatchPlayer(r, ctx.prev.get(r.id), ctx.career.get(r.id) ?? 0), toMatchOffer(o), ctx.now).score)) }))} value={offer.id} /></div> : undefined} />
 
       <div className={cn("grid gap-3", players.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2")}>
         {players.map((p, i) => (
           <Card key={p.id} className="relative animate-rise">
             <span className="absolute inset-x-0 top-0 h-1 rounded-t-2xl" style={{ background: COLORS[i] }} />
-            <Link href={`/club/comparar?ids=${idsParam(p.id)}${offer ? `&offer=${offer.id}` : ""}`} className="absolute right-3 top-3 grid size-7 place-items-center rounded-lg text-subtle hover:bg-sunken hover:text-ink" aria-label={`Treure ${p.name}`}><X className="size-4" /></Link>
+            <Link href={`/club/comparar?ids=${idsParam(p.id)}${offer ? `&offer=${offer.id}` : ""}`} className="absolute right-3 top-3 grid size-7 place-items-center rounded-lg text-subtle hover:bg-sunken hover:text-ink" aria-label={`Quitar a ${p.name}`}><X className="size-4" /></Link>
             <div className="flex items-center gap-3">
               <Avatar initials={p.initials} hue={p.hue} size={48} />
               <div className="min-w-0 flex-1">
                 <Link href={`/club/jugadors/${p.id}${offer ? `?offer=${offer.id}` : ""}`} className="block truncate text-[15px] font-bold hover:underline">{p.name}</Link>
-                <p className="truncate text-[12.5px] text-muted">{p.position_label} · {p.age} anys · {p.club_name}</p>
+                <p className="truncate text-[12.5px] text-muted">{p.position_label} · {p.age} años · {p.club_name}</p>
                 <div className="mt-1"><VerificationBadge status={p.verification} /></div>
               </div>
               {matches[i] && <MatchRing score={matches[i]!.score} size={54} stroke={5} />}
@@ -94,12 +94,12 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
       <div className="grid gap-5 xl:grid-cols-[380px_1fr]">
         <Card>
-          <p className="mb-2 text-[14px] font-bold">Perfil d'atributs</p>
+          <p className="mb-2 text-[14px] font-bold">Perfil de atributos</p>
           <div className="flex justify-center"><Radar series={players.map((p, i) => ({ name: p.name, color: COLORS[i], values: p.radar }))} size={320} /></div>
           <div className="mt-2 flex flex-wrap justify-center gap-3">{players.map((p, i) => <span key={p.id} className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold"><span className="size-2.5 rounded-full" style={{ background: COLORS[i] }} />{p.first_name}</span>)}</div>
           {summary.length > 0 && (
             <div className="mt-5 rounded-xl bg-bg p-4">
-              <p className="mb-2 flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-[0.1em] text-accent-ink"><Sparkles className="size-3.5" /> Lectura ràpida</p>
+              <p className="mb-2 flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-[0.1em] text-accent-ink"><Sparkles className="size-3.5" /> Lectura rápida</p>
               <ul className="space-y-1.5 text-[13px] leading-relaxed text-ink-2">{summary.map((l) => <li key={l}>· {l}</li>)}</ul>
             </div>
           )}
@@ -108,7 +108,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
           <table className="w-full min-w-[520px]">
             <thead>
               <tr className="border-b-2 border-ink text-[12px] font-bold uppercase tracking-wider text-subtle">
-                <th className="py-2 pr-3 text-left">Dada</th>
+                <th className="py-2 pr-3 text-left">Dato</th>
                 {players.map((p, i) => <th key={p.id} className="px-3 py-2 text-center" style={{ color: COLORS[i] }}>{p.first_name}</th>)}
               </tr>
             </thead>
@@ -133,21 +133,21 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
                 </>
               )}
               <tr><td colSpan={players.length + 1} className="pb-1 pt-5 text-[11.5px] font-bold uppercase tracking-wider text-subtle">Perfil</td></tr>
-              <TextRow label="Categoria i nivell" vals={players.map((p) => `${p.category} · ${p.level_label}`)} />
-              <TextRow label="Peu" vals={players.map((p) => FOOT_LABEL[p.foot])} />
-              <Row label="Alçada (cm)" vals={players.map((p) => p.height ?? 0)} fmt={(v) => (v ? String(v) : "—")} />
-              <Row label="Edat" vals={players.map((p) => p.age)} higher={false} />
-              <TextRow label="Ubicació" vals={players.map((p) => p.location)} />
-              <TextRow label="Disponibilitat" vals={players.map((p) => AVAILABILITY_LABEL[p.availability])} />
+              <TextRow label="Categoría y nivel" vals={players.map((p) => `${p.category} · ${p.level_label}`)} />
+              <TextRow label="Pie" vals={players.map((p) => FOOT_LABEL[p.foot])} />
+              <Row label="Altura (cm)" vals={players.map((p) => p.height ?? 0)} fmt={(v) => (v ? String(v) : "—")} />
+              <Row label="Edad" vals={players.map((p) => p.age)} higher={false} />
+              <TextRow label="Ubicación" vals={players.map((p) => p.location)} />
+              <TextRow label="Disponibilidad" vals={players.map((p) => AVAILABILITY_LABEL[p.availability])} />
               <tr><td colSpan={players.length + 1} className="pb-1 pt-5 text-[11.5px] font-bold uppercase tracking-wider text-subtle">Temporada {ctx.prevSeason.label}</td></tr>
-              <Row label="Convocatòries" vals={players.map((p) => p.prev?.callups ?? 0)} />
-              <Row label="Partits" vals={players.map((p) => p.prev?.matches ?? 0)} />
-              <Row label="Titularitats" vals={players.map((p) => p.prev?.starts ?? 0)} />
-              <Row label="Minuts" vals={players.map((p) => p.prev?.minutes ?? 0)} fmt={(v) => v.toLocaleString("ca-ES")} />
-              <Row label="Gols" vals={players.map((p) => p.prev?.goals ?? 0)} />
-              <Row label="Assistències" vals={players.map((p) => p.prev?.assists ?? 0)} />
-              <Row label="Targetes" vals={players.map((p) => (p.prev?.yellow ?? 0) + (p.prev?.red ?? 0))} higher={false} />
-              <tr><td colSpan={players.length + 1} className="pb-1 pt-5 text-[11.5px] font-bold uppercase tracking-wider text-subtle">Atributs (1–10)</td></tr>
+              <Row label="Convocatorias" vals={players.map((p) => p.prev?.callups ?? 0)} />
+              <Row label="Partidos" vals={players.map((p) => p.prev?.matches ?? 0)} />
+              <Row label="Titularidades" vals={players.map((p) => p.prev?.starts ?? 0)} />
+              <Row label="Minutos" vals={players.map((p) => p.prev?.minutes ?? 0)} fmt={(v) => v.toLocaleString("es-ES")} />
+              <Row label="Goles" vals={players.map((p) => p.prev?.goals ?? 0)} />
+              <Row label="Asistencias" vals={players.map((p) => p.prev?.assists ?? 0)} />
+              <Row label="Tarjetas" vals={players.map((p) => (p.prev?.yellow ?? 0) + (p.prev?.red ?? 0))} higher={false} />
+              <tr><td colSpan={players.length + 1} className="pb-1 pt-5 text-[11.5px] font-bold uppercase tracking-wider text-subtle">Atributos (1–10)</td></tr>
               {ATTRS.map((k) => <Row key={k} label={ATTR_LABEL[k]} vals={players.map((p) => p.attrs[k] ?? 0)} />)}
             </tbody>
           </table>

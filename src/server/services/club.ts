@@ -21,7 +21,7 @@ export function facilitiesOf(c: ClubRow): { name: string; type: string; note?: s
   return parseJson(c.facilities, []);
 }
 
-const CAT_ORDER = "CASE category WHEN 'Amateur' THEN 0 WHEN 'Juvenil' THEN 1 WHEN 'Cadet' THEN 2 WHEN 'Infantil' THEN 3 ELSE 4 END";
+const CAT_ORDER = "CASE category WHEN 'Amateur' THEN 0 WHEN 'Juvenil' THEN 1 WHEN 'Cadete' THEN 2 WHEN 'Infantil' THEN 3 ELSE 4 END";
 
 export function clubTeams(clubId: string): TeamRow[] {
   return all<TeamRow>(`SELECT * FROM teams WHERE club_id = ? ORDER BY ${CAT_ORDER}, gender, name`, clubId);

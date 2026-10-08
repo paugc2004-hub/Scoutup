@@ -38,7 +38,7 @@ export function OfferForm({ teams, clubCity, initial }: { teams: Team[]; clubCit
   const [saving, setSaving] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const team = teams.find((t) => t.id === f.team_id);
-  const autoTitle = useMemo(() => `Busquem ${POSITION_LABEL[f.position as Position].toLowerCase()} per al ${team?.name ?? "equip"}`, [f.position, team]);
+  const autoTitle = useMemo(() => `Buscamos ${POSITION_LABEL[f.position as Position].toLowerCase()} para el ${team?.name ?? "equipo"}`, [f.position, team]);
 
   const payload = () => ({
     ...f,
@@ -65,63 +65,63 @@ export function OfferForm({ teams, clubCity, initial }: { teams: Team[]; clubCit
     <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
       <div className="space-y-5">
         <Card>
-          <p className="mb-4 text-[15px] font-bold">1 · Equip i tipus</p>
+          <p className="mb-4 text-[15px] font-bold">1 · Equipo y tipo</p>
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Equip">
+            <Field label="Equipo">
               <Select value={f.team_id} onChange={(e) => set("team_id", e.target.value)}>
                 {teams.map((t) => <option key={t.id} value={t.id}>{t.name} · {t.category}{t.gender === "F" ? " femení" : ""}</option>)}
               </Select>
             </Field>
-            <Field label="Tipus">
+            <Field label="Tipo">
               <div className="flex gap-2">
-                <Chip active={f.kind === "incorporacio"} onClick={() => set("kind", "incorporacio")}>Incorporació</Chip>
-                <Chip active={f.kind === "prova"} onClick={() => set("kind", "prova")}>Jornada de proves</Chip>
+                <Chip active={f.kind === "incorporacio"} onClick={() => set("kind", "incorporacio")}>Incorporación</Chip>
+                <Chip active={f.kind === "prova"} onClick={() => set("kind", "prova")}>Jornada de pruebas</Chip>
               </div>
             </Field>
-            <Field label="Títol" hint={`Si el deixes buit: «${autoTitle}»`} className="md:col-span-2">
+            <Field label="Título" hint={`Si lo dejas vacío: «${autoTitle}»`} className="md:col-span-2">
               <Input value={f.title} onChange={(e) => set("title", e.target.value)} placeholder={autoTitle} maxLength={90} />
             </Field>
             {f.kind === "prova" && (
-              <Field label="Data i hora de la prova"><Input type="datetime-local" value={f.trial_date} onChange={(e) => set("trial_date", e.target.value)} /></Field>
+              <Field label="Fecha y hora de la prueba"><Input type="datetime-local" value={f.trial_date} onChange={(e) => set("trial_date", e.target.value)} /></Field>
             )}
           </div>
         </Card>
 
         <Card>
-          <p className="mb-4 text-[15px] font-bold">2 · Perfil que busques</p>
+          <p className="mb-4 text-[15px] font-bold">2 · Perfil que buscas</p>
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Posició">
+            <Field label="Posición">
               <Select value={f.position} onChange={(e) => set("position", e.target.value as Position)}>{POSITIONS.map((p) => <option key={p} value={p}>{POSITION_LABEL[p]}</option>)}</Select>
             </Field>
-            <Field label="Nivell mínim del jugador" hint="Nivell de la competició on juga actualment">
+            <Field label="Nivel mínimo del jugador" hint="Nivel de la competición en la que juega actualmente">
               <Select value={f.level_min} onChange={(e) => set("level_min", Number(e.target.value))}>{LEVELS.map((l) => <option key={l.rank} value={l.rank}>{l.label} o superior</option>)}</Select>
             </Field>
-            <Field label="Peu dominant">
-              <div className="flex gap-2">{[["indiferent", "Indiferent"], ["esquerre", "Esquerre"], ["dret", "Dret"]].map(([k, l]) => <Chip key={k} active={f.foot === k} onClick={() => set("foot", k)}>{l}</Chip>)}</div>
+            <Field label="Pie dominante">
+              <div className="flex gap-2">{[["indiferent", "Indiferente"], ["esquerre", "Zurdo"], ["dret", "Diestro"]].map(([k, l]) => <Chip key={k} active={f.foot === k} onClick={() => set("foot", k)}>{l}</Chip>)}</div>
             </Field>
-            <Field label="Alçada mínima (opcional)"><Input type="number" min={150} max={205} value={f.height_min} onChange={(e) => set("height_min", e.target.value)} placeholder="p. ex. 180" /></Field>
-            <Field label="Característiques clau (fins a 4)" className="md:col-span-2">
+            <Field label="Altura mínima (opcional)"><Input type="number" min={150} max={205} value={f.height_min} onChange={(e) => set("height_min", e.target.value)} placeholder="p. ej. 180" /></Field>
+            <Field label="Características clave (hasta 4)" className="md:col-span-2">
               <div className="flex flex-wrap gap-2">
                 {traitOptions.map((t) => (
                   <Chip key={t.key} active={f.traits.includes(t.key)} onClick={() => set("traits", f.traits.includes(t.key) ? f.traits.filter((x) => x !== t.key) : [...f.traits, t.key].slice(-4))}>{t.label}</Chip>
                 ))}
               </div>
             </Field>
-            <div className="md:col-span-2"><Toggle checked={f.accepts_secondary} onChange={(v) => set("accepts_secondary", v)} label="Accepto jugadors amb aquesta posició com a secundària" hint="Compten amb una puntuació de posició una mica més baixa" /></div>
+            <div className="md:col-span-2"><Toggle checked={f.accepts_secondary} onChange={(v) => set("accepts_secondary", v)} label="Acepto jugadores con esta posición como secundaria" hint="Cuentan con una puntuación de posición algo más baja" /></div>
           </div>
         </Card>
 
         <Card>
           <p className="mb-4 text-[15px] font-bold">3 · Zona, condicions i restriccions</p>
           <div className="grid gap-4 md:grid-cols-3">
-            <Field label="Zona de referència"><Select value={f.zone_city} onChange={(e) => set("zone_city", e.target.value)}>{PLACES.map((p) => <option key={p.city}>{p.city}</option>)}</Select></Field>
-            <Field label={`Distància màxima: ${f.max_km} km`}><input type="range" min={5} max={80} step={5} value={f.max_km} onChange={(e) => set("max_km", Number(e.target.value))} className="mt-3 w-full accent-[#00c768]" /></Field>
-            <Field label="Disponibilitat">
-              <Select value={f.availability_req} onChange={(e) => set("availability_req", e.target.value)}><option value="temporada">Per a la temporada</option><option value="immediata">Immediata</option></Select>
+            <Field label="Zona de referencia"><Select value={f.zone_city} onChange={(e) => set("zone_city", e.target.value)}>{PLACES.map((p) => <option key={p.city}>{p.city}</option>)}</Select></Field>
+            <Field label={`Distancia máxima: ${f.max_km} km`}><input type="range" min={5} max={80} step={5} value={f.max_km} onChange={(e) => set("max_km", Number(e.target.value))} className="mt-3 w-full accent-[#00c768]" /></Field>
+            <Field label="Disponibilidad">
+              <Select value={f.availability_req} onChange={(e) => set("availability_req", e.target.value)}><option value="temporada">Para la temporada</option><option value="immediata">Inmediata</option></Select>
             </Field>
-            <Field label="Descripció" className="md:col-span-3"><Textarea rows={4} value={f.description} onChange={(e) => set("description", e.target.value)} placeholder="Explica el context: què busca l'equip, rol previst, estil de joc…" /></Field>
-            <Field label="Restriccions i condicions" hint="Horaris, desplaçaments, compromís… Es mostra als jugadors." className="md:col-span-2"><Textarea rows={2} value={f.restrictions} onChange={(e) => set("restrictions", e.target.value)} placeholder="p. ex. Entrenaments dl, dc i dv a les 19:30 h" /></Field>
-            <Field label="Durada de la publicació"><Select value={f.expires_days} onChange={(e) => set("expires_days", Number(e.target.value))}>{[15, 30, 45, 60].map((d) => <option key={d} value={d}>{d} dies</option>)}</Select></Field>
+            <Field label="Descripción" className="md:col-span-3"><Textarea rows={4} value={f.description} onChange={(e) => set("description", e.target.value)} placeholder="Explica el contexto: qué busca el equipo, rol previsto, estilo de juego…" /></Field>
+            <Field label="Restricciones y condiciones" hint="Horarios, desplazamientos, compromiso… Se muestra a los jugadores." className="md:col-span-2"><Textarea rows={2} value={f.restrictions} onChange={(e) => set("restrictions", e.target.value)} placeholder="p. ej. Entrenamientos L, X y V a las 19:30 h" /></Field>
+            <Field label="Duración de la publicación"><Select value={f.expires_days} onChange={(e) => set("expires_days", Number(e.target.value))}>{[15, 30, 45, 60].map((d) => <option key={d} value={d}>{d} dies</option>)}</Select></Field>
           </div>
         </Card>
       </div>
@@ -130,7 +130,7 @@ export function OfferForm({ teams, clubCity, initial }: { teams: Team[]; clubCit
         <Card className="border-night bg-night text-white">
           <div className="flex items-center gap-2">
             <Sparkles className="size-4 text-accent" />
-            <p className="text-[14px] font-bold">Previsualització en directe</p>
+            <p className="text-[14px] font-bold">Vista previa en directo</p>
             {loadingPv && <Loader2 className="ml-auto size-4 animate-spin text-night-muted" />}
           </div>
           {pv ? (
@@ -141,13 +141,13 @@ export function OfferForm({ teams, clubCity, initial }: { teams: Team[]; clubCit
                 ))}
               </div>
               <p className="mt-3 text-[12px] text-night-text">Nascuts {pv.birth_year_min}–{pv.birth_year_max} · {team?.category}{team?.gender === "F" ? " femení" : ""}</p>
-              <p className="mb-2 mt-4 text-[11px] font-bold uppercase tracking-[0.12em] text-night-muted">Millors candidats</p>
+              <p className="mb-2 mt-4 text-[11px] font-bold uppercase tracking-[0.12em] text-night-muted">Mejores candidatos</p>
               <div className="space-y-2">
-                {pv.top.length === 0 && <p className="text-[12.5px] text-night-muted">Cap candidat amb aquests criteris.</p>}
+                {pv.top.length === 0 && <p className="text-[12.5px] text-night-muted">Ningún candidato con estos criterios.</p>}
                 {pv.top.map((t) => (
                   <div key={t.id} className="flex items-center gap-2.5 rounded-xl bg-night-2 p-2">
                     <Avatar initials={t.initials} hue={t.hue} size={32} />
-                    <div className="min-w-0 flex-1"><p className="truncate text-[12.5px] font-bold">{t.name}</p><p className="truncate text-[11.5px] text-night-muted">{t.pos} · {t.age} anys · {t.club}</p></div>
+                    <div className="min-w-0 flex-1"><p className="truncate text-[12.5px] font-bold">{t.name}</p><p className="truncate text-[11.5px] text-night-muted">{t.pos} · {t.age} años · {t.club}</p></div>
                     <div className="rounded-full bg-white p-0.5"><MatchRing score={t.score} size={34} stroke={3.5} /></div>
                   </div>
                 ))}
@@ -167,17 +167,17 @@ export function OfferForm({ teams, clubCity, initial }: { teams: Team[]; clubCit
               const r = await fetch("/api/offers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload()) });
               const d = await r.json();
               if (!r.ok) {
-                toast(d.error ?? "No s'ha pogut publicar.", "error");
+                toast(d.error ?? "No se ha podido publicar.", "error");
                 setSaving(false);
                 return;
               }
-              toast("Oportunitat publicada", "ok", `${d.preview.over80} perfils per sobre del 80%`);
+              toast("Oportunidad publicada", "ok", `${d.preview.over80} perfiles por encima del 80%`);
               router.push(`/club/oportunitats/${d.id}`);
             }}
           >
-            Publicar oportunitat
+            Publicar oportunidad
           </Button>
-          <p className="mt-3 flex items-center gap-1.5 text-[11.5px] text-night-muted"><Users className="size-3.5" /> Només es tenen en compte perfils visibles per al teu club.</p>
+          <p className="mt-3 flex items-center gap-1.5 text-[11.5px] text-night-muted"><Users className="size-3.5" /> Solo se tienen en cuenta perfiles visibles para tu club.</p>
         </Card>
       </div>
     </div>

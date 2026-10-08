@@ -144,22 +144,22 @@ type PlayerRec = {
 
 // ─── Plantilles de text ───────────────────────────────────────────────────────
 const STYLE_BY_POS: Record<Position, string[]> = {
-  POR: ["Porter de reflexos i bon joc de peus", "Porter dominador de l'àrea", "Porter àgil, fort en l'u contra u"],
-  LD: ["Lateral de recorregut, arriba a línia de fons", "Lateral defensiu i ordenat", "Carriler amb molta projecció"],
-  LE: ["Lateral esquerre ofensiu i intens", "Lateral fiable en defensa, bona centrada", "Carriler de molt recorregut"],
-  DC: ["Central contundent, dominador del joc aeri", "Central amb sortida de pilota", "Central ràpid, bo a l'espai"],
-  MCD: ["Pivot d'equilibri, recuperador", "Mig defensiu amb bona lectura", "Pivot posicional, primer passador"],
-  MC: ["Interior de recorregut box to box", "Migcampista d'associació", "Mig organitzador, ritme i pausa"],
-  MCO: ["Mitjapunta creatiu, últim passador", "Enganxe amb arribada a l'àrea", "Mitjapunta entre línies"],
-  ED: ["Extrem desequilibrant a l'u contra u", "Extrem a cama canviada, diagonal i xut", "Extrem ràpid i profund"],
-  EE: ["Extrem esquerre vertical", "Extrem associatiu a banda esquerra", "Extrem de desbordament"],
-  DAV: ["Davanter de referència, bo d'esquena", "Davanter mòbil, ataca l'espai", "Rematador d'àrea"],
+  POR: ["Portero de reflejos y buen juego de pies", "Portero dominador del área", "Portero ágil, fuerte en el uno contra uno"],
+  LD: ["Lateral de recorrido, llega a línea de fondo", "Lateral defensiu i ordenat", "Carrilero con mucha proyección"],
+  LE: ["Lateral esquerre ofensiu i intens", "Lateral fiable en defensa, bona centrada", "Carrilero de mucho recorrido"],
+  DC: ["Central contundente, dominador del juego aéreo", "Central con salida de balón", "Central rápido, bueno al espacio"],
+  MCD: ["Pivote de equilibrio, recuperador", "Medio defensivo con buena lectura", "Pivot posicional, primer passador"],
+  MC: ["Interior de recorrido box to box", "Centrocampista de asociación", "Mig organitzador, ritme i pausa"],
+  MCO: ["Mitjapunta creatiu, últim passador", "Enganche con llegada al área", "Mitjapunta entre línies"],
+  ED: ["Extremo desequilibrante en el uno contra uno", "Extrem a cama canviada, diagonal i xut", "Extremo rápido y profundo"],
+  EE: ["Extrem esquerre vertical", "Extrem associatiu a banda esquerra", "Extremo de desborde"],
+  DAV: ["Delantero de referencia, bueno de espaldas", "Delantero móvil, ataca el espacio", "Rematador de área"],
 };
 const DESC_BY_POS: Record<string, string[]> = {
-  POR: ["Porter amb bona comunicació amb la defensa i molt treball en la sortida de pilota. Busco un projecte on créixer i competir.", "Molt segur per alt i ràpid a terra. Treballo cada setmana el joc de peus i vull fer un pas endavant de categoria."],
-  DEF: ["Defensa intens i ordenat, m'agrada sortir jugant des de darrere i ajudar l'equip a pressionar amunt. Compromès i puntual.", "Jugador competitiu, fort en el duel i amb bona lectura de les jugades. Busco un club amb un projecte formatiu seriós."],
-  MIG: ["Migcampista amb criteri, m'agrada tenir la pilota i donar ritme a l'equip. Treballador en defensa i amb arribada.", "Jugador d'equip, intel·ligent tàcticament i amb molt recorregut. Vull continuar creixent en un entorn exigent."],
-  ATK: ["Jugador d'atac vertical, m'agrada encarar i generar ocasions. Bona definició i molta mobilitat.", "Atacant amb gol i desmarcatge, treballo molt la pressió alta. Busco minuts i un projecte on sumar."],
+  POR: ["Portero con buena comunicación con la defensa y mucho trabajo en la salida de balón. Busco un proyecto donde crecer y competir.", "Muy seguro por alto y rápido abajo. Trabajo cada semana el juego de pies y quiero dar un paso adelante de categoría."],
+  DEF: ["Defensa intenso y ordenado, me gusta salir jugando desde atrás y ayudar al equipo a presionar arriba. Comprometido y puntual.", "Jugador competitivo, fuerte en el duelo y con buena lectura de las jugadas. Busco un club con un proyecto formativo serio."],
+  MIG: ["Centrocampista con criterio, me gusta tener el balón y dar ritmo al equipo. Trabajador en defensa y con llegada.", "Jugador de equipo, inteligente tácticamente y con mucho recorrido. Quiero seguir creciendo en un entorno exigente."],
+  ATK: ["Jugador de ataque vertical, me gusta encarar y generar ocasiones. Buena definición y mucha movilidad.", "Atacante con gol y desmarque, trabajo mucho la presión alta. Busco minutos y un proyecto donde sumar."],
 };
 const GROUP_OF: Record<Position, "POR" | "DEF" | "MIG" | "ATK"> = { POR: "POR", LD: "DEF", DC: "DEF", LE: "DEF", MCD: "MIG", MC: "MIG", MCO: "MIG", ED: "ATK", EE: "ATK", DAV: "ATK" };
 
@@ -228,17 +228,17 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
       lat: place.lat, lng: place.lng,
       website: `https://${s}.example`, instagram: `@${s.replace(/-/g, "")}.demo`, email: `info@${s}.example`,
       phone: `93 555 ${String(10 + idx).padStart(2, "0")} ${String(20 + idx * 3).padStart(2, "0")}`,
-      office_hours: "De dilluns a divendres, de 17:30 a 20:30 h",
-      languages: "Català, castellà",
+      office_hours: "De lunes a viernes, de 17:30 a 20:30 h",
+      languages: "Catalán, castellano",
       description: cl.id === HOME_CLUB_ID
-        ? "Club del Vallès Occidental amb més de seixanta anys d'història i una de les estructures de futbol base més completes de la comarca: set equips, del Infantil al primer equip amateur, i un equip juvenil femení en plena progressió."
+        ? "Club del Vallès Occidental con más de sesenta años de historia y una de las estructuras de fútbol base más completas de la comarca: siete equipos, del Infantil al primer equipo amateur, y un equipo juvenil femenino en plena progresión."
         : t.description,
-      history: `Fundat el ${cl.founded} a ${place.city}. ${cl.tier === 1 ? "Ha format jugadors que han arribat a categories nacionals i és un club de referència per a les famílies de la zona." : cl.tier === 2 ? "Club amb una base molt arrelada al municipi, que ha viscut diversos ascensos en les categories formatives." : "Entitat jove que ha crescut ràpidament gràcies al treball de voluntaris i famílies."}`,
+      history: `Fundado en ${cl.founded} en ${place.city}. ${cl.tier === 1 ? "Ha formado jugadores que han llegado a categorías nacionales y es un club de referencia para las familias de la zona." : cl.tier === 2 ? "Club con una base muy arraigada en el municipio, que ha vivido varios ascensos en las categorías formativas." : "Entidad joven que ha crecido rápidamente gracias al trabajo de voluntarios y familias."}`,
       philosophy: t.philosophy, values_text: t.values, objectives: t.objectives, sporting_model: t.model,
       facilities: JSON.stringify([
-        { name: `Camp Municipal ${cl.short}`, type: "Gespa artificial · Futbol 11", note: "Seu dels partits oficials" },
-        { name: `Camp annex ${cl.short}`, type: "Gespa artificial · Futbol 7", note: "Entrenaments de base" },
-        ...(cl.tier === 1 ? [{ name: "Sala de vídeo i gimnàs", type: "Instal·lacions complementàries", note: "Ús de tots els equips A" }] : []),
+        { name: `Camp Municipal ${cl.short}`, type: "Gespa artificial · Futbol 11", note: "Sede de los partidos oficiales" },
+        { name: `Camp annex ${cl.short}`, type: "Gespa artificial · Futbol 7", note: "Entrenamientos de base" },
+        ...(cl.tier === 1 ? [{ name: "Sala de vídeo y gimnasio", type: "Instalaciones complementarias", note: "Uso de todos los equipos A" }] : []),
       ]),
       tier: cl.tier, verified: cl.verified ? 1 : 0, created_at: ago(c, 400 - idx * 7),
     });
@@ -251,7 +251,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
       const isClubB = cl.id === CLUB_B_ID;
       ins(c, "users", {
         id: uid, email: isClubB ? "club-b@scoutup.demo" : `direccio@${s}.example`, password_hash: isClubB ? demoHash : "!", name: COACH_NAMES[idx % COACH_NAMES.length], role: "director",
-        title: "Direcció esportiva", club_id: cl.id, avatar_hue: (idx * 37) % 360, is_demo_login: isClubB ? 1 : 0, created_at: ago(c, 300),
+        title: "Dirección deportiva", club_id: cl.id, avatar_hue: (idx * 37) % 360, is_demo_login: isClubB ? 1 : 0, created_at: ago(c, 300),
       });
     }
 
@@ -266,10 +266,10 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   staffOf[HOME_CLUB_ID] = U.director;
 
   // Usuaris de demo (club principal, jugador i tutor)
-  ins(c, "users", { id: U.director, email: "director@scoutup.demo", password_hash: demoHash, name: "Marta Casanovas", role: "director", title: "Directora esportiva", club_id: HOME_CLUB_ID, avatar_hue: 152, is_demo_login: 1, created_at: ago(c, 380) });
+  ins(c, "users", { id: U.director, email: "director@scoutup.demo", password_hash: demoHash, name: "Marta Casanovas", role: "director", title: "Directora deportiva", club_id: HOME_CLUB_ID, avatar_hue: 152, is_demo_login: 1, created_at: ago(c, 380) });
   ins(c, "users", { id: U.coach, email: "coach@scoutup.demo", password_hash: demoHash, name: "Jordi Esteve", role: "coach", title: "Entrenador · Juvenil A", club_id: HOME_CLUB_ID, team_id: "t_vn_juva", avatar_hue: 210, is_demo_login: 1, created_at: ago(c, 370) });
-  ins(c, "users", { id: U.coordinator, email: "coordinacio@scoutup.demo", password_hash: demoHash, name: "Sergi Puig", role: "coordinator", title: "Coordinador de futbol base", club_id: HOME_CLUB_ID, avatar_hue: 40, is_demo_login: 1, created_at: ago(c, 365) });
-  ins(c, "users", { id: U.coachCadet, email: "cadet@vallesnord.example", password_hash: "!", name: "Laia Ferrer", role: "coach", title: "Entrenadora · Cadet A", club_id: HOME_CLUB_ID, team_id: "t_vn_cada", avatar_hue: 330, is_demo_login: 0, created_at: ago(c, 360) });
+  ins(c, "users", { id: U.coordinator, email: "coordinacio@scoutup.demo", password_hash: demoHash, name: "Sergi Puig", role: "coordinator", title: "Coordinador de fútbol base", club_id: HOME_CLUB_ID, avatar_hue: 40, is_demo_login: 1, created_at: ago(c, 365) });
+  ins(c, "users", { id: U.coachCadet, email: "cadet@vallesnord.example", password_hash: "!", name: "Laia Ferrer", role: "coach", title: "Entrenadora · Cadete A", club_id: HOME_CLUB_ID, team_id: "t_vn_cada", avatar_hue: 330, is_demo_login: 0, created_at: ago(c, 360) });
   ins(c, "users", { id: U.player, email: "player@scoutup.demo", password_hash: demoHash, name: "Pol Serra Batlle", role: "player", title: "Jugador", player_id: "p_pol", avatar_hue: 28, is_demo_login: 1, created_at: ago(c, 210) });
   ins(c, "users", { id: U.tutor, email: "tutor@scoutup.demo", password_hash: demoHash, name: "Anna Font", role: "guardian", title: "Tutora legal de Nil Font", player_id: "p_nil", avatar_hue: 280, is_demo_login: 1, created_at: ago(c, 150) });
 
@@ -283,8 +283,8 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
       compIds.set(key, id);
       ins(c, "competitions", {
         id, season_id: seasonId(seasonStart),
-        name: `${t.category}${t.gender === "F" ? " Femení" : ""} ${levelLabel(t.rank)} · Grup ${t.group}`,
-        category: t.category, gender: t.gender, division: levelLabel(t.rank), level_rank: t.rank, group_name: `Grup ${t.group}`, source: "mock",
+        name: `${t.category}${t.gender === "F" ? " Femenino" : ""} ${levelLabel(t.rank)} · Grupo ${t.group}`,
+        category: t.category, gender: t.gender, division: levelLabel(t.rank), level_rank: t.rank, group_name: `Grupo ${t.group}`, source: "mock",
       });
     }
     return id;
@@ -292,13 +292,13 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
 
   const needsVN: Record<string, { position: string; text: string; priority: "alta" | "mitjana" | "baixa" }[]> = {
     juva: [
-      { position: "DC", text: "Central esquerrà: dos centrals acaben l'etapa juvenil i cap no és esquerrà.", priority: "alta" },
-      { position: "DAV", text: "Davanter de referència per competir amb el titular.", priority: "mitjana" },
+      { position: "DC", text: "Central zurdo: dos centrales terminan la etapa juvenil y ninguno es zurdo.", priority: "alta" },
+      { position: "DAV", text: "Delantero de referencia para competir con el titular.", priority: "mitjana" },
     ],
-    juvb: [{ position: "ED", text: "Extrem dret desequilibrant.", priority: "mitjana" }],
-    cada: [{ position: "LE", text: "Lateral esquerre: només n'hi ha un a la plantilla.", priority: "alta" }],
-    ama: [{ position: "POR", text: "Porter per competir la titularitat.", priority: "alta" }],
-    juvf: [{ position: "MC", text: "Migcampista organitzadora.", priority: "mitjana" }],
+    juvb: [{ position: "ED", text: "Extremo derecho desequilibrante.", priority: "mitjana" }],
+    cada: [{ position: "LD", text: "Lateral derecho: el titular sube al Juvenil y no hay recambio en la plantilla.", priority: "alta" }],
+    ama: [{ position: "POR", text: "Portero para competir por la titularidad.", priority: "alta" }],
+    juvf: [{ position: "MC", text: "Centrocampista organizadora.", priority: "mitjana" }],
   };
   const vnCoach: Record<string, string> = { juva: "Jordi Esteve", juvb: "Toni Bayés", cada: "Laia Ferrer", cadb: "Núria Clotet", infa: "Carles Amat", ama: "Ramon Güell", juvf: "Sílvia Roig" };
 
@@ -314,11 +314,11 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
         coordinator_name: isVN ? "Xavier Rius" : R.pick(c, COACH_NAMES),
         delegate_name: R.pick(c, COACH_NAMES),
         staff: JSON.stringify(isVN ? [
-          { role: "Segon entrenador", name: R.pick(c, COACH_NAMES) },
-          { role: "Preparador físic", name: R.pick(c, COACH_NAMES) },
-          ...(t.key === "juva" ? [{ role: "Entrenador de porters", name: "Pere Colomer" }] : []),
+          { role: "Segundo entrenador", name: R.pick(c, COACH_NAMES) },
+          { role: "Preparador físico", name: R.pick(c, COACH_NAMES) },
+          ...(t.key === "juva" ? [{ role: "Entrenador de porteros", name: "Pere Colomer" }] : []),
         ] : []),
-        objectives: isVN ? (t.key === "juva" ? "Quedar entre els quatre primers i consolidar la categoria." : t.key === "juvf" ? "Lluitar per l'ascens i fer créixer la base femenina." : "Formar jugadors per als equips A i competir amb una idea de joc clara.") : "Competir i formar jugadors.",
+        objectives: isVN ? (t.key === "juva" ? "Quedar entre los cuatro primeros y consolidar la categoría." : t.key === "juvf" ? "Luchar por el ascenso y hacer crecer la base femenina." : "Formar jugadores para los equipos A y competir con una idea de juego clara.") : "Competir y formar jugadores.",
         needs: JSON.stringify(isVN && s === start ? needsVN[t.key] ?? [] : []),
       });
     }
@@ -371,8 +371,8 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     }
     let fillerIdx = 0;
     for (const [compId, { s, teams: tt }] of byComp) {
-      const size = tt[0].category === "Cadet" || tt[0].category === "Infantil" ? 14 : 16;
-      const entries: { name: string; clubId: string | null; teamId: string | null; strength: number }[] = tt.map((t) => ({ name: `${t.club.name}${t.name.includes("Femení") ? "" : ""} ${t.name.replace("Juvenil Femení", "Femení")}`.replace(/ (Juvenil|Cadet|Infantil|Amateur) A$/, " A").replace(/ (Juvenil|Cadet) B$/, " B"), clubId: t.clubId, teamId: t.id, strength: 4 - t.club.tier + c.rnd() }));
+      const size = tt[0].category === "Cadete" || tt[0].category === "Infantil" ? 14 : 16;
+      const entries: { name: string; clubId: string | null; teamId: string | null; strength: number }[] = tt.map((t) => ({ name: `${t.club.name}${t.name.includes("Femenino") ? "" : ""} ${t.name.replace("Juvenil Femenino", "Femenino")}`.replace(/ (Juvenil|Cadete|Infantil|Amateur) A$/, " A").replace(/ (Juvenil|Cadete) B$/, " B"), clubId: t.clubId, teamId: t.id, strength: 4 - t.club.tier + c.rnd() }));
       while (entries.length < size) {
         entries.push({ name: FILLER_TEAMS[fillerIdx++ % FILLER_TEAMS.length] + (R.chance(c, 0.25) ? " B" : ""), clubId: null, teamId: null, strength: c.rnd() * 2.2 });
       }
@@ -404,13 +404,13 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     throw new Error("No s'ha pogut generar un nom únic");
   };
   const yearsFor = (category: string): [number, number] =>
-    category === "Cadet" ? [start - 15, start - 14] : category === "Juvenil" ? [start - 18, start - 16] : [start - 24, start - 19];
+    category === "Cadete" ? [start - 15, start - 14] : category === "Juvenil" ? [start - 18, start - 16] : [start - 24, start - 19];
 
   const genStats = (rank: number, category: string, pos: Position, attrs: Attrs, role: number, ver: string) => {
-    const maxM = category === "Cadet" ? 26 : 30;
+    const maxM = category === "Cadete" ? 26 : 30;
     const matches = clamp(Math.round(maxM * (0.45 + 0.5 * role) + (c.rnd() * 4 - 2)), 4, maxM);
     const starts = clamp(Math.round(matches * (0.2 + 0.8 * role)), 0, matches);
-    const dur = category === "Cadet" ? 80 : 90;
+    const dur = category === "Cadete" ? 80 : 90;
     const minutes = starts * (dur - R.int(c, 3, 12)) + (matches - starts) * R.int(c, 15, 30);
     const g = { POR: 0, LD: 0.04, LE: 0.04, DC: 0.07, MCD: 0.05, MC: 0.1, MCO: 0.22, ED: 0.28, EE: 0.28, DAV: 0.5 }[pos];
     const a = { POR: 0.01, LD: 0.1, LE: 0.1, DC: 0.03, MCD: 0.06, MC: 0.14, MCO: 0.25, ED: 0.22, EE: 0.22, DAV: 0.15 }[pos];
@@ -461,7 +461,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
       preferences: o.preferences ?? { categories: [o.category], maxKm: R.pick(c, [15, 25, 30, 40, 60]), interests: R.shuffle(c, ["incorporacio", "prova", "seguent_temporada", "estudis"]).slice(0, R.int(c, 1, 3)), levelMin: null, notes: "" },
       style: o.style ?? R.pick(c, STYLE_BY_POS[pos]),
       description: o.description ?? R.pick(c, DESC_BY_POS[GROUP_OF[pos]]),
-      languages: o.languages ?? R.weighted(c, [["Català, castellà", 70], ["Català, castellà, anglès", 22], ["Castellà, català, àrab", 8]]),
+      languages: o.languages ?? R.weighted(c, [["Catalán, castellano", 70], ["Catalán, castellano, inglés", 22], ["Castellano, catalán, árabe", 8]]),
       updatedDaysAgo: o.updatedDaysAgo ?? R.int(c, 1, 110),
       prev: prevStats,
       hasCurrentStats: o.hasCurrentStats ?? R.chance(c, 0.7),
@@ -483,10 +483,10 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     attrs: { velocitat: 6, resistencia: 7, forca: 8, tecnica: 6, passada: 6, xut: 4, regat: 4, joc_aeri: 8, defensa: 8, visio: 6, posicionament: 7, lideratge: 7 },
     hue: 28, verification: "verified",
     privacy: { ...DEFAULT_PRIVACY, profile: "verificats", contact: "verificats" },
-    preferences: { categories: ["Juvenil"], maxKm: 30, interests: ["incorporacio", "prova", "estudis"], levelMin: 2, notes: "Prefereixo entrenar a la tarda (estudio batxillerat)." },
-    style: "Central esquerrà, dominador del joc aeri",
-    description: "Central esquerrà, fort per alt i en el duel. Capità del Juvenil A. M'agrada comunicar i ordenar la defensa, i estic treballant la sortida de pilota. Busco fer el salt a Nacional.",
-    languages: "Català, castellà, anglès", updatedDaysAgo: 62,
+    preferences: { categories: ["Juvenil"], maxKm: 30, interests: ["incorporacio", "prova", "estudis"], levelMin: 2, notes: "Prefiero entrenar por la tarde (estudio bachillerato)." },
+    style: "Central zurdo, dominador del juego aéreo",
+    description: "Central zurdo, fuerte por alto y en el duelo. Capitán del Juvenil A. Me gusta comunicar y ordenar la defensa, y estoy trabajando la salida de balón. Busco dar el salto a Nacional.",
+    languages: "Catalán, castellano, inglés", updatedDaysAgo: 62,
     prev: { matches: 25, starts: 13, minutes: 1520, goals: 3, assists: 1, yellow: 5, red: 0, callups: 27, cs: 5, ver: "updated" },
     hasCurrentStats: false, careerSeasons: 3, videos: 0, achievements: 0,
   });
@@ -497,8 +497,8 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     attrs: { velocitat: 7, resistencia: 7, forca: 7, tecnica: 7, passada: 7, xut: 4, regat: 5, joc_aeri: 8, defensa: 6, visio: 7, posicionament: 6, lideratge: 6 },
     hue: 205, verification: "verified", guardianConsent: true,
     privacy: { ...DEFAULT_PRIVACY, profile: "verificats", contact: "verificats" },
-    style: "Central amb sortida de pilota",
-    description: "Central esquerrà amb bona sortida de pilota i joc aeri. Aquesta temporada he jugat pocs minuts i busco un equip on tenir continuïtat.",
+    style: "Central con salida de balón",
+    description: "Central zurdo con buena salida de balón y juego aéreo. Esta temporada he jugado pocos minutos y busco un equipo donde tener continuidad.",
     updatedDaysAgo: 3,
     prev: { matches: 12, starts: 3, minutes: 400, goals: 1, assists: 0, yellow: 2, red: 0, callups: 22, cs: 1, ver: "self" },
     hasCurrentStats: true, careerSeasons: 2, videos: 2, achievements: 1,
@@ -519,15 +519,46 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     attrs: { velocitat: 8, resistencia: 7, forca: 5, tecnica: 7, passada: 6, xut: 6, regat: 8, joc_aeri: 4, defensa: 4, visio: 6, posicionament: 5, lideratge: 5 },
     hue: 265, verification: "verified", guardianUserId: U.tutor, guardianEmail: "tutor@scoutup.demo", guardianConsent: true,
     privacy: { ...DEFAULT_PRIVACY, profile: "verificats", contact: "verificats", location: "comarca" },
-    style: "Extrem desequilibrant a l'u contra u",
-    description: "Extrem dret ràpid, m'agrada encarar i centrar. Primer any de juvenil.", updatedDaysAgo: 14,
+    style: "Extremo desequilibrante en el uno contra uno",
+    description: "Extremo derecho rápido, me gusta encarar y centrar. Primer año de juvenil.", updatedDaysAgo: 14,
     hasCurrentStats: true, careerSeasons: 3, videos: 1, achievements: 1,
   });
+
+  // Recorregut estrella: el Cadete A necessita un lateral dret. L'Hugo encaixa al 87%:
+  // posició 25 · nivell 13 (Preferent, un per sota de Nacional) · edat 15 · ubicació 10 · disponibilitat 10 · característiques 10 · experiència 4.
+  makePlayer({
+    id: "p_hugo", first: "Hugo", last: "Navarro Vila", gender: "M", birth: `${start - 15}-04-11`, birthYear: start - 15,
+    basePlace: place("Sabadell"), place: place("Sabadell"), pos: "LD", sec: ["ED"], foot: "dret", height: 171,
+    clubId: "club_serralada", teamId: "t_serralada_cada", category: "Cadete", rank: 3, availability: "obert", contract: "final_temporada",
+    attrs: { velocitat: 8, resistencia: 8, forca: 6, tecnica: 7, passada: 7, xut: 5, regat: 7, joc_aeri: 5, defensa: 7, visio: 6, posicionament: 6, lideratge: 6 },
+    hue: 12, verification: "verified", guardianConsent: true,
+    privacy: { ...DEFAULT_PRIVACY, profile: "verificats", contact: "verificats", location: "comarca" },
+    preferences: { categories: ["Cadete"], maxKm: 25, interests: ["incorporacio", "estudis"], levelMin: 2, notes: "" },
+    style: "Lateral profundo con mucho recorrido",
+    description: "Lateral derecho rápido y con mucho recorrido. Me gusta subir la banda y centrar. Esta temporada he jugado poco y busco un equipo de Nacional donde tener minutos.",
+    languages: "Catalán, castellano", updatedDaysAgo: 2,
+    prev: { matches: 20, starts: 6, minutes: 900, goals: 1, assists: 4, yellow: 2, red: 0, callups: 24, cs: 0, ver: "self" },
+    hasCurrentStats: true, careerSeasons: 3, videos: 2, achievements: 1,
+  });
+  const extraLD: [string, string, Position, string][] = [
+    ["t_turo_cada", "Sant Cugat del Vallès", "LD", "dret"], ["t_horitzo_cada", "Cerdanyola del Vallès", "LD", "dret"], ["t_serraverda_cada", "Granollers", "LD", "dret"],
+    ["t_planou_cada", "Rubí", "LD", "dret"], ["t_ribera_cada", "Cornellà de Llobregat", "LD", "dret"], ["t_mediterrani_cada", "Badalona", "LD", "ambdues"],
+    ["t_torrent_cada", "Mataró", "LD", "dret"], ["t_serralada_cada", "Terrassa", "LD", "dret"], ["t_llevant_cada", "L'Hospitalet de Llobregat", "LD", "dret"],
+    ["t_turo_cada", "Sabadell", "ED", "dret"], ["t_horitzo_cada", "Barberà del Vallès", "LE", "dret"], ["t_serraverda_cada", "Mollet del Vallès", "DC", "dret"],
+    ["t_pins_cada", "Castelldefels", "LD", "dret"], ["t_delta_cada", "Sant Boi de Llobregat", "LD", "dret"], ["t_planou_cada", "Terrassa", "ED", "dret"],
+    ["t_mediterrani_cada", "Badalona", "LD", "dret"], ["t_ribera_cada", "Sant Cugat del Vallès", "LD", "esquerre"], ["t_torrent_cada", "Mataró", "LD", "dret"],
+  ];
+  for (const [tid, city, pos, foot] of extraLD) {
+    const t = teamById.get(tid);
+    if (!t) continue;
+    // competeixen a Primera Divisió (dos nivells per sota del demanat): compatibles, però per sota de l'Hugo
+    makePlayer({ gender: "M", category: "Cadete", rank: 4, basePlace: place(city), place: place(city), clubId: t.clubId, teamId: t.id, pos, sec: pos === "LD" ? [] : ["LD"], foot, guardianConsent: true, availability: R.pick(c, ["obert", "escoltant"]) });
+  }
 
   // Jugadors del club principal (surten a la plantilla)
   makePlayer({ gender: "M", category: "Juvenil", rank: 2, basePlace: place("Sabadell"), clubId: HOME_CLUB_ID, teamId: "t_vn_juva", pos: "MC", availability: "no_disponible" });
   makePlayer({ gender: "M", category: "Juvenil", rank: 2, basePlace: place("Sabadell"), clubId: HOME_CLUB_ID, teamId: "t_vn_juva", pos: "DAV", availability: "no_disponible" });
-  makePlayer({ gender: "M", category: "Cadet", rank: 2, basePlace: place("Sabadell"), clubId: HOME_CLUB_ID, teamId: "t_vn_cada", pos: "DC", availability: "no_disponible" });
+  makePlayer({ gender: "M", category: "Cadete", rank: 2, basePlace: place("Sabadell"), clubId: HOME_CLUB_ID, teamId: "t_vn_cada", pos: "DC", availability: "no_disponible" });
   makePlayer({ gender: "F", category: "Juvenil", rank: 2, basePlace: place("Sabadell"), clubId: HOME_CLUB_ID, teamId: "t_vn_juvf", pos: "DAV", availability: "no_disponible" });
 
   // Centrals juvenils addicionals a prop del Vallès (fan ric el cas "central sub-19")
@@ -550,7 +581,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   }
   // Jugadors sense equip
   for (const [cat, city, g] of [["Juvenil", "Sabadell", "M"], ["Amateur", "Terrassa", "M"], ["Juvenil", "Badalona", "M"], ["Amateur", "Manresa", "M"], ["Juvenil", "Granollers", "F"]] as const) {
-    makePlayer({ gender: g, category: cat, rank: 4, basePlace: place(city), clubFree: "Sense equip", availability: "obert", contract: "lliure" });
+    makePlayer({ gender: g, category: cat, rank: 4, basePlace: place(city), clubFree: "Sin equipo", availability: "obert", contract: "lliure" });
   }
 
   // Inserció de jugadors + estadístiques + trajectòria + vídeos + assoliments
@@ -564,13 +595,13 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     const career: { season: number; club: string; clubId: string | null; team: string; category: string; division: string; role: string; ver: string }[] = [];
     for (let k = 0; k < p.careerSeasons; k++) {
       const s = start - k;
-      const cat = s - p.birthYear <= 15 ? "Cadet" : s - p.birthYear <= 18 ? "Juvenil" : "Amateur";
+      const cat = s - p.birthYear <= 15 ? "Cadete" : s - p.birthYear <= 18 ? "Juvenil" : "Amateur";
       const infantil = s - p.birthYear <= 13;
       const sameClub = k === 0 || (k === 1 && R.chance(c, 0.6)) || R.chance(c, 0.3);
       const cl = k === 0 ? club : sameClub ? club : R.pick(c, CLUBS.filter((x) => x.id !== HOME_CLUB_ID));
-      const clName = k === 0 && !club ? (p.clubFree ?? "Sense equip") : cl ? cl.name : R.pick(c, FILLER_TEAMS);
+      const clName = k === 0 && !club ? (p.clubFree ?? "Sin equipo") : cl ? cl.name : R.pick(c, FILLER_TEAMS);
       if (k === 0 && !club) {
-        career.push({ season: s, club: "Sense equip", clubId: null, team: "—", category: cat, division: "—", role: "Buscant equip", ver: "self" });
+        career.push({ season: s, club: "Sin equipo", clubId: null, team: "—", category: cat, division: "—", role: "Buscando equipo", ver: "self" });
         continue;
       }
       career.push({
@@ -596,7 +627,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     const st = p.prev;
     ins(c, "player_stats", { id: `ps_${p.id}_${prev}`, player_id: p.id, season_id: prev, team_name: career[1] ? `${career[1].club} · ${career[1].team}` : null, matches: st.matches, starts: st.starts, minutes: st.minutes, goals: st.goals, assists: st.assists, yellow: st.yellow, red: st.red, callups: st.callups, clean_sheets: st.cs, verification: st.ver, updated_at: updatedAt });
     if (p.careerSeasons >= 3) {
-      const s2 = genStats(p.rank, p.category === "Juvenil" && p.birthYear >= start - 17 ? "Cadet" : p.category, p.pos, p.attrs, c.rnd(), R.pick(c, ["verified", "self"]));
+      const s2 = genStats(p.rank, p.category === "Juvenil" && p.birthYear >= start - 17 ? "Cadete" : p.category, p.pos, p.attrs, c.rnd(), R.pick(c, ["verified", "self"]));
       ins(c, "player_stats", { id: `ps_${p.id}_${seasonId(start - 2)}`, player_id: p.id, season_id: seasonId(start - 2), team_name: career[2] ? `${career[2].club} · ${career[2].team}` : null, matches: s2.matches, starts: s2.starts, minutes: s2.minutes, goals: s2.goals, assists: s2.assists, yellow: s2.yellow, red: s2.red, callups: s2.callups, clean_sheets: s2.cs, verification: s2.ver, updated_at: updatedAt });
     }
     if (p.hasCurrentStats && p.clubId) {
@@ -607,15 +638,15 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     }
 
     // vídeos (només metadades: a la demo no es pugen fitxers)
-    const vTitles = ["Highlights temporada " + seasonLabel(start - 1), "Partit complet · jornada 12", "Accions defensives i duels", "Accions ofensives i gols", "Entrenament específic de posició"];
+    const vTitles = ["Highlights temporada " + seasonLabel(start - 1), "Partido completo · jornada 12", "Accions defensives i duels", "Acciones ofensivas y goles", "Entrenamiento específico de posición"];
     for (let v = 0; v < p.videos; v++) {
       ins(c, "videos", { id: `v_${p.id}_${v}`, player_id: p.id, title: vTitles[v % vTitles.length], kind: v === 1 ? "partit" : "highlights", duration_s: v === 1 ? 5400 : R.int(c, 70, 240), recorded_at: ago(c, R.int(c, 20, 300)), views: R.int(c, 4, 180) });
     }
-    const achList = ["Campió de lliga " + seasonLabel(start - 1), "Capità de l'equip", "Màxim golejador de l'equip " + seasonLabel(start - 1), "Millor jugador del torneig de Nadal", "Ascens de categoria " + seasonLabel(start - 2)];
+    const achList = ["Campeón de liga " + seasonLabel(start - 1), "Capitán del equipo", "Máximo goleador del equipo " + seasonLabel(start - 1), "Mejor jugador del torneo de Navidad", "Ascenso de categoría " + seasonLabel(start - 2)];
     for (let a = 0; a < p.achievements; a++) {
       ins(c, "achievements", { id: `a_${p.id}_${a}`, player_id: p.id, season_label: seasonLabel(start - 1 - a), title: achList[(a + p.hue) % achList.length], kind: "esportiu" });
     }
-    if (R.chance(c, 0.35)) ins(c, "player_experiences", { id: `pe_${p.id}`, player_id: p.id, kind: "torneig", title: R.pick(c, ["Torneig d'estiu de futbol base", "Campus de tecnificació", "Torneig internacional de Setmana Santa"]), year: start - R.int(c, 1, 3) });
+    if (R.chance(c, 0.35)) ins(c, "player_experiences", { id: `pe_${p.id}`, player_id: p.id, kind: "torneig", title: R.pick(c, ["Torneo de verano de fútbol base", "Campus de tecnificación", "Torneo internacional de Semana Santa"]), year: start - R.int(c, 1, 3) });
 
     const completeness = completenessScore({
       first_name: p.first, last_name: p.last, birth_date: p.birth, city: p.place.city, primary_position: p.pos, foot: p.foot,
@@ -654,42 +685,42 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   // ── Oportunitats ─────────────────────────────────────────────────────────────────
   type OfferDef = { id: string; club: string; team: string; kind?: "incorporacio" | "prova"; title: string; position: Position; level: number; km: number; foot?: string; height?: number; traits: string[]; daysAgo: number; trialIn?: number; description: string; restrictions?: string; availability?: string; status?: string };
   const OFFERS: OfferDef[] = [
-    { id: "o_vn_central", club: HOME_CLUB_ID, team: "juva", title: "Busquem central sub-19", position: "DC", level: 2, km: 30, foot: "esquerre", height: 180, traits: ["joc_aeri", "sortida_pilota", "defensa"], daysAgo: 12, availability: "temporada",
-      description: "Busquem un defensa central, preferiblement esquerrà, per al Juvenil A (Nacional). Volem un central dominador del joc aeri, amb capacitat per sortir jugant i lideratge a la línia defensiva.",
-      restrictions: "Entrenaments dilluns, dimecres i divendres de 19:30 a 21:00 h a Sabadell. Imprescindible poder-hi assistir." },
-    { id: "o_vn_le", club: HOME_CLUB_ID, team: "cada", title: "Lateral esquerre per al Cadet A", position: "LE", level: 3, km: 25, foot: "esquerre", traits: ["velocitat", "resistencia"], daysAgo: 20,
-      description: "El Cadet A necessita un lateral esquerre amb recorregut i capacitat d'arribar a línia de fons.", restrictions: "Entrenaments dimarts i dijous a les 18:00 h." },
-    { id: "o_vn_ed", club: HOME_CLUB_ID, team: "juvb", title: "Extrem dret desequilibrant", position: "ED", level: 4, km: 25, traits: ["regat", "velocitat"], daysAgo: 6,
-      description: "Busquem un extrem dret amb u contra u per al Juvenil B, amb possibilitat de pujar al Juvenil A." },
-    { id: "o_vn_por", club: HOME_CLUB_ID, team: "ama", title: "Porter per a l'Amateur A", position: "POR", level: 4, km: 35, height: 182, traits: ["reflexos"], daysAgo: 25,
-      description: "Porter per competir la titularitat al primer equip amateur. Valorem experiència en categoria sènior." },
-    { id: "o_vn_mcf", club: HOME_CLUB_ID, team: "juvf", title: "Migcampista organitzadora", position: "MC", level: 3, km: 30, traits: ["visio", "sortida_pilota"], daysAgo: 9,
-      description: "El Juvenil Femení busca una migcampista amb criteri per organitzar el joc." },
-    { id: "o_vn_prova", club: HOME_CLUB_ID, team: "juva", kind: "prova", title: "Jornada de proves · davanters sub-19", position: "DAV", level: 4, km: 40, traits: ["gol"], daysAgo: 4, trialIn: 9,
-      description: "Sessió de proves oberta per a davanters juvenils. Places limitades: el club confirma cada inscripció." },
+    { id: "o_vn_central", club: HOME_CLUB_ID, team: "juva", title: "Buscamos central sub-19", position: "DC", level: 2, km: 30, foot: "esquerre", height: 180, traits: ["joc_aeri", "sortida_pilota", "defensa"], daysAgo: 12, availability: "temporada",
+      description: "Buscamos un defensa central, preferiblemente zurdo, para el Juvenil A (Nacional). Queremos un central dominador del juego aéreo, con capacidad para salir jugando y liderazgo en la línea defensiva.",
+      restrictions: "Entrenamientos lunes, miércoles y viernes de 19:30 a 21:00 h en Sabadell. Imprescindible poder asistir." },
+    { id: "o_vn_ld", club: HOME_CLUB_ID, team: "cada", title: "Lateral derecho para el Cadete A", position: "LD", level: 2, km: 30, foot: "dret", traits: ["velocitat", "resistencia"], daysAgo: 5,
+      description: "El Cadete A (Nacional) necesita un lateral derecho con recorrido, velocidad y capacidad de llegar a línea de fondo. El titular actual sube al Juvenil la próxima temporada.", restrictions: "Entrenamientos martes y jueves a las 18:00 h en Sabadell." },
+    { id: "o_vn_ed", club: HOME_CLUB_ID, team: "juvb", title: "Extremo derecho desequilibrante", position: "ED", level: 4, km: 25, traits: ["regat", "velocitat"], daysAgo: 6,
+      description: "Buscamos un extremo derecho con uno contra uno para el Juvenil B, con posibilidad de subir al Juvenil A." },
+    { id: "o_vn_por", club: HOME_CLUB_ID, team: "ama", title: "Portero para el Amateur A", position: "POR", level: 4, km: 35, height: 182, traits: ["reflexos"], daysAgo: 25,
+      description: "Portero para competir por la titularidad en el primer equipo amateur. Valoramos experiencia en categoría sénior." },
+    { id: "o_vn_mcf", club: HOME_CLUB_ID, team: "juvf", title: "Centrocampista organizadora", position: "MC", level: 3, km: 30, traits: ["visio", "sortida_pilota"], daysAgo: 9,
+      description: "El Juvenil Femenino busca una centrocampista con criterio para organizar el juego." },
+    { id: "o_vn_prova", club: HOME_CLUB_ID, team: "juva", kind: "prova", title: "Jornada de pruebas · delanteros sub-19", position: "DAV", level: 4, km: 40, traits: ["gol"], daysAgo: 4, trialIn: 9,
+      description: "Sesión de pruebas abierta para delanteros juveniles. Plazas limitadas: el club confirma cada inscripción." },
 
-    { id: "o_pins_dc", club: "club_pins", team: "juva", title: "Central per al Juvenil A", position: "DC", level: 3, km: 45, traits: ["joc_aeri", "defensa"], daysAgo: 18, description: "Busquem central per reforçar el Juvenil A de cara a la segona volta." },
-    { id: "o_med_prova", club: "club_mediterrani", team: "juva", kind: "prova", title: "Proves Juvenil A · defenses", position: "DC", level: 3, km: 40, traits: ["defensa"], daysAgo: 10, trialIn: 1, description: "Jornada de proves per a defenses juvenils. Entrenament amb el Juvenil A." },
-    { id: "o_turo_mcd", club: "club_turo", team: "juva", title: "Pivot defensiu Juvenil A", position: "MCD", level: 3, km: 30, traits: ["posicionament", "sortida_pilota"], daysAgo: 8, description: "Busquem un pivot d'equilibri per al Juvenil A." },
-    { id: "o_masia_dc", club: "club_masia", team: "juva", title: "Central esquerrà Juvenil", position: "DC", level: 4, km: 35, foot: "esquerre", traits: ["joc_aeri"], daysAgo: 14, description: "Central esquerrà per al Juvenil A. Possibilitat d'entrenar amb l'amateur." },
-    { id: "o_ribera_dav", club: "club_ribera", team: "juva", title: "Davanter centre Juvenil A", position: "DAV", level: 3, km: 30, traits: ["gol", "fisic"], daysAgo: 5, description: "Davanter de referència per a un equip que vol lluitar per l'ascens." },
-    { id: "o_ribera_por", club: "club_ribera", team: "cada", title: "Porter Cadet A", position: "POR", level: 3, km: 25, traits: ["reflexos"], daysAgo: 22, description: "Porter per al Cadet A." },
-    { id: "o_llev_mco", club: "club_llevant", team: "juva", title: "Mitjapunta creatiu", position: "MCO", level: 2, km: 30, traits: ["visio", "tecnica"], daysAgo: 11, description: "Mitjapunta amb últim passi per al Juvenil A de Divisió d'Honor." },
-    { id: "o_llev_f_dav", club: "club_llevant", team: "juvf", title: "Davantera Juvenil Femení", position: "DAV", level: 3, km: 35, traits: ["gol", "velocitat"], daysAgo: 7, description: "Davantera amb gol per al Juvenil Femení." },
-    { id: "o_serraverda_ld", club: "club_serraverda", team: "juva", title: "Lateral dret Juvenil A", position: "LD", level: 3, km: 30, traits: ["resistencia", "velocitat"], daysAgo: 16, description: "Lateral dret amb projecció ofensiva." },
-    { id: "o_torrent_ee", club: "club_torrent", team: "juva", title: "Extrem esquerre", position: "EE", level: 3, km: 30, traits: ["regat"], daysAgo: 13, description: "Extrem esquerre desequilibrant per al Juvenil A." },
-    { id: "o_torrent_prova", club: "club_torrent", team: "cada", kind: "prova", title: "Proves obertes Cadet A", position: "MC", level: 4, km: 30, traits: [], daysAgo: 3, trialIn: 6, description: "Jornada de proves per a migcampistes cadets." },
-    { id: "o_portal_dc", club: "club_portal", team: "juva", title: "Central Divisió d'Honor", position: "DC", level: 2, km: 40, height: 182, traits: ["joc_aeri", "defensa", "lideratge"], daysAgo: 19, description: "Central amb experiència per a Divisió d'Honor juvenil." },
-    { id: "o_delta_mc", club: "club_delta", team: "ama", title: "Migcampista per a l'Amateur", position: "MC", level: 4, km: 25, traits: ["visio"], daysAgo: 12, description: "Migcampista per al primer equip amateur." },
-    { id: "o_serralada_ed", club: "club_serralada", team: "juva", title: "Extrem per al Juvenil A", position: "ED", level: 4, km: 25, traits: ["velocitat", "regat"], daysAgo: 10, description: "Extrem ràpid per completar la plantilla." },
-    { id: "o_horitzo_f_mc", club: "club_horitzo", team: "juvf", title: "Migcampista Juvenil Femení", position: "MC", level: 4, km: 25, traits: ["resistencia"], daysAgo: 15, description: "Migcampista per al Juvenil Femení." },
-    { id: "o_rambla_dav", club: "club_rambla", team: "ama", title: "Davanter Amateur A", position: "DAV", level: 4, km: 40, traits: ["gol"], daysAgo: 21, description: "Davanter per al primer equip amateur." },
-    { id: "o_fontclara_por", club: "club_fontclara", team: "juva", title: "Porter Juvenil A", position: "POR", level: 5, km: 25, traits: [], daysAgo: 24, description: "Porter per al Juvenil A." },
-    { id: "o_ribes_prova", club: "club_ribes", team: "juva", kind: "prova", title: "Proves de pretemporada Juvenil", position: "EE", level: 5, km: 40, traits: [], daysAgo: 2, trialIn: 12, description: "Proves per a extrems juvenils." },
-    { id: "o_olivera_ld", club: "club_olivera", team: "ama", title: "Lateral per a l'Amateur", position: "LD", level: 5, km: 30, traits: [], daysAgo: 30, description: "Lateral dret per al primer equip.", status: "tancada" },
-    { id: "o_planou_mcd", club: "club_planou", team: "cada", title: "Pivot Cadet A", position: "MCD", level: 5, km: 20, traits: ["posicionament"], daysAgo: 9, description: "Pivot per al Cadet A." },
-    { id: "o_mirador_dc", club: "club_mirador", team: "juva", title: "Central Juvenil A", position: "DC", level: 5, km: 30, traits: [], daysAgo: 6, description: "Central per al Juvenil A." },
-    { id: "o_vilamar_prova", club: "club_vilamar", team: "juva", kind: "prova", title: "Proves Juvenil", position: "MC", level: 5, km: 25, traits: [], daysAgo: 4, trialIn: 8, description: "Proves obertes per a migcampistes juvenils." },
+    { id: "o_pins_dc", club: "club_pins", team: "juva", title: "Central para el Juvenil A", position: "DC", level: 3, km: 45, traits: ["joc_aeri", "defensa"], daysAgo: 18, description: "Buscamos central para reforzar el Juvenil A de cara a la segunda vuelta." },
+    { id: "o_med_prova", club: "club_mediterrani", team: "juva", kind: "prova", title: "Pruebas Juvenil A · defensas", position: "DC", level: 3, km: 40, traits: ["defensa"], daysAgo: 10, trialIn: 1, description: "Jornada de pruebas para defensas juveniles. Entrenamiento con el Juvenil A." },
+    { id: "o_turo_mcd", club: "club_turo", team: "juva", title: "Pivote defensivo Juvenil A", position: "MCD", level: 3, km: 30, traits: ["posicionament", "sortida_pilota"], daysAgo: 8, description: "Buscamos un pivote de equilibrio para el Juvenil A." },
+    { id: "o_masia_dc", club: "club_masia", team: "juva", title: "Central zurdo Juvenil", position: "DC", level: 4, km: 35, foot: "esquerre", traits: ["joc_aeri"], daysAgo: 14, description: "Central zurdo para el Juvenil A. Posibilidad de entrenar con el amateur." },
+    { id: "o_ribera_dav", club: "club_ribera", team: "juva", title: "Delantero centro Juvenil A", position: "DAV", level: 3, km: 30, traits: ["gol", "fisic"], daysAgo: 5, description: "Delantero de referencia para un equipo que quiere luchar por el ascenso." },
+    { id: "o_ribera_por", club: "club_ribera", team: "cada", title: "Portero Cadete A", position: "POR", level: 3, km: 25, traits: ["reflexos"], daysAgo: 22, description: "Portero para el Cadete A." },
+    { id: "o_llev_mco", club: "club_llevant", team: "juva", title: "Mediapunta creativo", position: "MCO", level: 2, km: 30, traits: ["visio", "tecnica"], daysAgo: 11, description: "Mediapunta con último pase para el Juvenil A de División de Honor." },
+    { id: "o_llev_f_dav", club: "club_llevant", team: "juvf", title: "Delantera Juvenil Femenino", position: "DAV", level: 3, km: 35, traits: ["gol", "velocitat"], daysAgo: 7, description: "Delantera con gol para el Juvenil Femenino." },
+    { id: "o_serraverda_ld", club: "club_serraverda", team: "juva", title: "Lateral derecho Juvenil A", position: "LD", level: 3, km: 30, traits: ["resistencia", "velocitat"], daysAgo: 16, description: "Lateral derecho con proyección ofensiva." },
+    { id: "o_torrent_ee", club: "club_torrent", team: "juva", title: "Extremo izquierdo", position: "EE", level: 3, km: 30, traits: ["regat"], daysAgo: 13, description: "Extremo izquierdo desequilibrante para el Juvenil A." },
+    { id: "o_torrent_prova", club: "club_torrent", team: "cada", kind: "prova", title: "Pruebas abiertas Cadete A", position: "MC", level: 4, km: 30, traits: [], daysAgo: 3, trialIn: 6, description: "Jornada de pruebas para centrocampistas cadetes." },
+    { id: "o_portal_dc", club: "club_portal", team: "juva", title: "Central División de Honor", position: "DC", level: 2, km: 40, height: 182, traits: ["joc_aeri", "defensa", "lideratge"], daysAgo: 19, description: "Central con experiencia para División de Honor juvenil." },
+    { id: "o_delta_mc", club: "club_delta", team: "ama", title: "Centrocampista para el Amateur", position: "MC", level: 4, km: 25, traits: ["visio"], daysAgo: 12, description: "Centrocampista para el primer equipo amateur." },
+    { id: "o_serralada_ed", club: "club_serralada", team: "juva", title: "Extremo para el Juvenil A", position: "ED", level: 4, km: 25, traits: ["velocitat", "regat"], daysAgo: 10, description: "Extremo rápido para completar la plantilla." },
+    { id: "o_horitzo_f_mc", club: "club_horitzo", team: "juvf", title: "Centrocampista Juvenil Femenino", position: "MC", level: 4, km: 25, traits: ["resistencia"], daysAgo: 15, description: "Centrocampista para el Juvenil Femenino." },
+    { id: "o_rambla_dav", club: "club_rambla", team: "ama", title: "Delantero Amateur A", position: "DAV", level: 4, km: 40, traits: ["gol"], daysAgo: 21, description: "Delantero para el primer equipo amateur." },
+    { id: "o_fontclara_por", club: "club_fontclara", team: "juva", title: "Portero Juvenil A", position: "POR", level: 5, km: 25, traits: [], daysAgo: 24, description: "Portero para el Juvenil A." },
+    { id: "o_ribes_prova", club: "club_ribes", team: "juva", kind: "prova", title: "Pruebas de pretemporada Juvenil", position: "EE", level: 5, km: 40, traits: [], daysAgo: 2, trialIn: 12, description: "Pruebas para extremos juveniles." },
+    { id: "o_olivera_ld", club: "club_olivera", team: "ama", title: "Lateral para el Amateur", position: "LD", level: 5, km: 30, traits: [], daysAgo: 30, description: "Lateral derecho para el primer equipo.", status: "tancada" },
+    { id: "o_planou_mcd", club: "club_planou", team: "cada", title: "Pivote Cadete A", position: "MCD", level: 5, km: 20, traits: ["posicionament"], daysAgo: 9, description: "Pivote para el Cadete A." },
+    { id: "o_mirador_dc", club: "club_mirador", team: "juva", title: "Central Juvenil A", position: "DC", level: 5, km: 30, traits: [], daysAgo: 6, description: "Central para el Juvenil A." },
+    { id: "o_vilamar_prova", club: "club_vilamar", team: "juva", kind: "prova", title: "Pruebas Juvenil", position: "MC", level: 5, km: 25, traits: [], daysAgo: 4, trialIn: 8, description: "Pruebas abiertas para centrocampistas juveniles." },
   ];
 
   const offerMatch = new Map<string, MatchOffer>();
@@ -697,7 +728,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     const t = teamById.get(`t_${clubSuffix(o.club)}_${o.team}`)!;
     const cl = clubById.get(o.club)!;
     const pl = placeByCity(cl.city)!;
-    const [y0, y1] = t.category === "Cadet" ? [start - 15, start - 14] : t.category === "Juvenil" ? [start - 18, start - 16] : [start - 26, start - 19];
+    const [y0, y1] = t.category === "Cadete" ? [start - 15, start - 14] : t.category === "Juvenil" ? [start - 18, start - 16] : [start - 26, start - 19];
     const row = {
       id: o.id, club_id: o.club, team_id: t.id, kind: o.kind ?? "incorporacio", title: o.title, position: o.position, accepts_secondary: 1,
       category: t.category, gender: t.gender, birth_year_min: y0, birth_year_max: y1, level_min: o.level, zone_city: pl.city, zone_lat: pl.lat, zone_lng: pl.lng,
@@ -720,10 +751,10 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     apps.push({ offer, player, status, daysAgo, msg });
   };
   // Pol
-  addApp("o_pins_dc", "p_pol", "vista", 11, "Hola! Soc central esquerrà del Juvenil A de la UE Serralada. M'agradaria molt poder-vos conèixer.");
-  addApp("o_med_prova", "p_pol", "prova", 8, "M'interessa la jornada de proves. Hi puc anar sense problema.");
+  addApp("o_pins_dc", "p_pol", "vista", 11, "¡Hola! Soy central zurdo del Juvenil A de la UE Serralada. Me gustaría mucho poder conoceros.");
+  addApp("o_med_prova", "p_pol", "prova", 8, "Me interesa la jornada de pruebas. Puedo ir sin problema.");
 
-  const visibleForApps = players.filter((p) => p.availability !== "no_disponible" && p.clubId !== HOME_CLUB_ID && p.id !== "p_pol" && p.id !== "p_biel" && (!isMinorP(p) || p.guardianConsent));
+  const visibleForApps = players.filter((p) => p.availability !== "no_disponible" && p.clubId !== HOME_CLUB_ID && p.id !== "p_pol" && p.id !== "p_biel" && p.id !== "p_hugo" && (!isMinorP(p) || p.guardianConsent));
   for (const o of OFFERS) {
     if (o.status === "tancada") continue;
     const ranked = visibleForApps
@@ -753,7 +784,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   for (const oid of vnOfferIds) {
     const om = offerMatch.get(oid)!;
     players
-      .filter((p) => p.gender === om.gender && p.clubId !== HOME_CLUB_ID && p.id !== "p_pol" && p.id !== "p_biel" && p.id !== "p_arnau" && p.id !== "p_nil" && (!isMinorP(p) || p.guardianConsent) && p.privacy.profile !== "ocult")
+      .filter((p) => p.gender === om.gender && p.clubId !== HOME_CLUB_ID && p.id !== "p_pol" && p.id !== "p_biel" && p.id !== "p_hugo" && p.id !== "p_arnau" && p.id !== "p_nil" && (!isMinorP(p) || p.guardianConsent) && p.privacy.profile !== "ocult")
       .map((p) => ({ p, s: score(p.id, oid), offer: oid }))
       .filter((x) => x.s >= 55)
       .sort((a, b) => b.s - a.s)
@@ -776,7 +807,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     const id = `pl_${e.player}`;
     const created = ago(c, e.daysAgo, R.int(c, 1, 8));
     ins(c, "pipeline_entries", { id, club_id: HOME_CLUB_ID, team_id: e.team, player_id: e.player, offer_id: e.offer ?? null, stage: e.stage, added_by: e.team === "t_vn_juva" && R.chance(c, 0.5) ? U.coach : U.director, sort: i, created_at: created, updated_at: ago(c, Math.max(0, e.daysAgo - R.int(c, 1, 3))) });
-    ins(c, "pipeline_activity", { id: `pa_${e.player}_0`, club_id: HOME_CLUB_ID, player_id: e.player, entry_id: id, user_id: U.director, kind: "afegit", text: e.offer ? `Afegit al pipeline des de l'oportunitat «${OFFERS.find((q) => q.id === e.offer)!.title}»` : "Afegit al pipeline", from_stage: null, to_stage: "nou", created_at: created });
+    ins(c, "pipeline_activity", { id: `pa_${e.player}_0`, club_id: HOME_CLUB_ID, player_id: e.player, entry_id: id, user_id: U.director, kind: "afegit", text: e.offer ? `Añadido al pipeline desde la oportunidad «${OFFERS.find((q) => q.id === e.offer)!.title}»` : "Añadido al pipeline", from_stage: null, to_stage: "nou", created_at: created });
     const target = stageOrder.indexOf(e.stage);
     const path = e.stage === "rebutjat" ? ["revisar", "rebutjat"] : e.stage === "en_espera" ? ["revisar", "interessant", "en_espera"] : e.stage === "incorporat" ? ["revisar", "interessant", "contactat", "en_conversa", "prova", "incorporat"] : stageOrder.slice(1, target + 1);
     let prevStage = "nou";
@@ -793,7 +824,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   // Inserta candidatures
   apps.forEach((a, i) => {
     const t = ago(c, a.daysAgo, R.int(c, 1, 9));
-    ins(c, "applications", { id: `ap_${i}`, offer_id: a.offer, player_id: a.player, origin: "jugador", status: a.status, message: a.msg ?? (R.chance(c, 0.5) ? "Hola, m'interessa molt l'oportunitat. Quedo a la vostra disposició per a qualsevol informació." : null), match_score: score(a.player, a.offer), created_at: t, updated_at: t });
+    ins(c, "applications", { id: `ap_${i}`, offer_id: a.offer, player_id: a.player, origin: "jugador", status: a.status, message: a.msg ?? (R.chance(c, 0.5) ? "Hola, me interesa mucho la oportunidad. Quedo a vuestra disposición para cualquier información." : null), match_score: score(a.player, a.offer), created_at: t, updated_at: t });
   });
 
   // Pipelines d'altres clubs que inclouen en Pol (clubs interessats)
@@ -830,25 +861,25 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   const convPlayers = pipe.filter((e) => ["en_conversa", "prova", "incorporat", "en_espera"].includes(e.stage));
   const scripts = [
     (n: string, team: string) => [
-      { side: "club" as const, body: `Hola ${n}, soc la Marta Casanovas, directora esportiva del CF Vallès Nord. Hem vist el teu perfil i ens agradaria conèixer-te. Tindries uns minuts per parlar aquesta setmana?`, minsAgo: 6 * D },
-      { side: "player" as const, body: "Hola Marta! Moltes gràcies pel missatge, és una alegria. Sí, aquesta setmana puc qualsevol tarda a partir de les 17 h.", minsAgo: 6 * D - 180 },
-      { side: "club" as const, body: `Perfecte. Et proposo una videotrucada dijous a les 18:00 h per explicar-te el projecte del ${team}. Et va bé?`, minsAgo: 5 * D },
-      { side: "player" as const, body: "Em va perfecte. Pot participar-hi també el meu pare?", minsAgo: 5 * D - 90 },
-      { side: "club" as const, body: "I tant, de fet ho preferim. T'envio la invitació per aquí mateix.", minsAgo: 5 * D - 60 },
-      { side: "player" as const, body: "Genial, moltes gràcies. Fins dijous!", minsAgo: 3 * 60, readClub: false },
+      { side: "club" as const, body: `Hola ${n}, soy Marta Casanovas, directora deportiva del CF Vallès Nord. Hemos visto tu perfil y nos gustaría conocerte. ¿Tendrías unos minutos para hablar esta semana?`, minsAgo: 6 * D },
+      { side: "player" as const, body: "¡Hola Marta! Muchas gracias por el mensaje, es una alegría. Sí, esta semana puedo cualquier tarde a partir de las 17 h.", minsAgo: 6 * D - 180 },
+      { side: "club" as const, body: `Perfecto. Te propongo una videollamada el jueves a las 18:00 h para explicarte el proyecto del ${team}. ¿Te va bien?`, minsAgo: 5 * D },
+      { side: "player" as const, body: "Me va perfecto. ¿Puede participar también mi padre?", minsAgo: 5 * D - 90 },
+      { side: "club" as const, body: "Claro, de hecho lo preferimos. Te envío la invitación por aquí mismo.", minsAgo: 5 * D - 60 },
+      { side: "player" as const, body: "Genial, muchas gracias. ¡Hasta el jueves!", minsAgo: 3 * 60, readClub: false },
     ],
     (n: string, team: string) => [
-      { side: "club" as const, body: `Bon dia ${n}. Des del CF Vallès Nord estem seguint la teva temporada. T'agradaria venir a fer un entrenament amb el ${team}?`, minsAgo: 9 * D },
-      { side: "player" as const, body: "Bon dia! Sí, m'encantaria. Quins dies entreneu?", minsAgo: 8 * D },
-      { side: "club" as const, body: "Dilluns, dimecres i divendres a les 19:30 h a Sabadell. Et proposem venir el proper dimecres.", minsAgo: 8 * D - 200 },
-      { side: "player" as const, body: "Hi seré. Haig de portar alguna cosa especial?", minsAgo: 7 * D },
-      { side: "club" as const, body: `Només la teva roba d'entrenament i botes de gespa artificial. Et rebrà el cos tècnic del ${team}.`, minsAgo: 7 * D - 30 },
+      { side: "club" as const, body: `Buenos días ${n}. Desde el CF Vallès Nord estamos siguiendo tu temporada. ¿Te gustaría venir a hacer un entrenamiento con el ${team}?`, minsAgo: 9 * D },
+      { side: "player" as const, body: "¡Buenos días! Sí, me encantaría. ¿Qué días entrenáis?", minsAgo: 8 * D },
+      { side: "club" as const, body: "Lunes, miércoles y viernes a las 19:30 h en Sabadell. Te proponemos venir el próximo miércoles.", minsAgo: 8 * D - 200 },
+      { side: "player" as const, body: "Allí estaré. ¿Tengo que llevar algo especial?", minsAgo: 7 * D },
+      { side: "club" as const, body: `Solo tu ropa de entrenamiento y botas de césped artificial. Te recibirá el cuerpo técnico del ${team}.`, minsAgo: 7 * D - 30 },
     ],
     (n: string, _team: string) => [
-      { side: "club" as const, body: `Hola ${n}, gràcies per acceptar la sol·licitud. Ens agradaria saber quins són els teus plans per a la propera temporada.`, minsAgo: 3 * D },
-      { side: "player" as const, body: "Hola! Ara mateix estic bé al meu club, però estic obert a escoltar propostes per l'any vinent.", minsAgo: 2 * D },
-      { side: "club" as const, body: "Entesos. Et seguirem durant la temporada i et tornarem a escriure més endavant. Molta sort!", minsAgo: 2 * D - 45 },
-      { side: "player" as const, body: "Moltes gràcies a vosaltres!", minsAgo: 20 * 60, readClub: false },
+      { side: "club" as const, body: `Hola ${n}, gracias por aceptar la solicitud. Nos gustaría saber cuáles son tus planes para la próxima temporada.`, minsAgo: 3 * D },
+      { side: "player" as const, body: "¡Hola! Ahora mismo estoy bien en mi club, pero estoy abierto a escuchar propuestas para el año que viene.", minsAgo: 2 * D },
+      { side: "club" as const, body: "Entendido. Te seguiremos durante la temporada y te volveremos a escribir más adelante. ¡Mucha suerte!", minsAgo: 2 * D - 45 },
+      { side: "player" as const, body: "¡Muchas gracias a vosotros!", minsAgo: 20 * 60, readClub: false },
     ],
   ];
   convPlayers.forEach((e, i) => {
@@ -859,22 +890,22 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   });
   // Contactes pendents (etapa contactat)
   pipe.filter((e) => e.stage === "contactat" && e.player !== "p_nil").forEach((e) => {
-    cr(HOME_CLUB_ID, e.player, e.team, "oferta", `Hola ${pById.get(e.player)!.first}, t'escrivim des del CF Vallès Nord per l'oportunitat «${OFFERS.find((o) => o.id === e.offer)?.title ?? "del club"}». T'agradaria parlar-ne?`, "pendent", 2);
+    cr(HOME_CLUB_ID, e.player, e.team, "oferta", `Hola ${pById.get(e.player)!.first}, te escribimos desde el CF Vallès Nord por la oportunidad «${OFFERS.find((o) => o.id === e.offer)?.title ?? "del club"}». ¿Te gustaría hablarlo?`, "pendent", 2);
   });
   // Nil (menor): cal autorització del tutor
-  cr(HOME_CLUB_ID, "p_nil", "t_vn_juvb", "oferta", "Hola Nil, des del CF Vallès Nord ens agradaria convidar-te a conèixer el nostre Juvenil B, amb possibilitat de pujar al Juvenil A.", "pendent_tutor", 1);
+  cr(HOME_CLUB_ID, "p_nil", "t_vn_juvb", "oferta", "Hola Nil, desde el CF Vallès Nord nos gustaría invitarte a conocer nuestro Juvenil B, con posibilidad de subir al Juvenil A.", "pendent_tutor", 1);
   // Una sol·licitud rebutjada
   const rej = pipe.find((e) => e.stage === "rebutjat");
-  if (rej) cr(HOME_CLUB_ID, rej.player, rej.team, "seguiment", "Hola, ens agradaria conèixer-te de cara a la propera temporada.", "rebutjada", 12);
+  if (rej) cr(HOME_CLUB_ID, rej.player, rej.team, "seguiment", "Hola, nos gustaría conocerte de cara a la próxima temporada.", "rebutjada", 12);
 
   // En Pol: conversa amb FC Mediterrani (prova demà) i sol·licitud pendent de CE Masia Nova
-  const polConv = conv("club_mediterrani", "p_pol", "t_mediterrani_juva", "Proves Juvenil A · defenses", [
-    { side: "club", body: "Hola Pol, soc el director esportiu del FC Mediterrani. Hem rebut la teva inscripció a la jornada de proves. T'esperem demà a les 18:30 h al Camp Municipal Mediterrani (Badalona).", minsAgo: 2 * D },
-    { side: "player", body: "Moltes gràcies! Allà seré. A quina hora cal ser-hi per canviar-se?", minsAgo: 2 * D - 120 },
-    { side: "club", body: "Amb mitja hora d'antelació n'hi ha prou. Porta botes per a gespa artificial. Ens veiem demà!", minsAgo: 5 * 60, readPlayer: false },
+  const polConv = conv("club_mediterrani", "p_pol", "t_mediterrani_juva", "Pruebas Juvenil A · defensas", [
+    { side: "club", body: "Hola Pol, soy el director deportivo del FC Mediterrani. Hemos recibido tu inscripción a la jornada de pruebas. Te esperamos mañana a las 18:30 h en el Campo Municipal Mediterrani (Badalona).", minsAgo: 2 * D },
+    { side: "player", body: "¡Muchas gracias! Allí estaré. ¿A qué hora hay que estar para cambiarse?", minsAgo: 2 * D - 120 },
+    { side: "club", body: "Con media hora de antelación es suficiente. Trae botas para césped artificial. ¡Nos vemos mañana!", minsAgo: 5 * 60, readPlayer: false },
   ]);
-  cr("club_mediterrani", "p_pol", "t_mediterrani_juva", "prova", "Hola Pol, hem vist la teva inscripció. Volem confirmar-te la prova.", "acceptada", 3, polConv);
-  cr("club_masia", "p_pol", "t_masia_juva", "oferta", "Hola Pol! Som el CE Masia Nova (Manresa). Busquem un central esquerrà per al Juvenil A i el teu perfil encaixa molt amb el que necessitem. T'agradaria que en parléssim?", "pendent", 0);
+  cr("club_mediterrani", "p_pol", "t_mediterrani_juva", "prova", "Hola Pol, hemos visto tu inscripción. Queremos confirmarte la prueba.", "acceptada", 3, polConv);
+  cr("club_masia", "p_pol", "t_masia_juva", "oferta", "¡Hola Pol! Somos el CE Masia Nova (Manresa). Buscamos un central zurdo para el Juvenil A y tu perfil encaja mucho con lo que necesitamos. ¿Te gustaría que habláramos?", "pendent", 0);
 
   // ── Esdeveniments (calendari) ───────────────────────────────────────────────
   let evN = 0;
@@ -888,34 +919,34 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   const opponents = FILLER_TEAMS.slice(0, 12);
   for (let wk = -3; wk <= 5; wk++) {
     // partits
-    ev({ club: HOME_CLUB_ID, team: "t_vn_juva", kind: "partit", title: `${wk % 2 ? "CF Vallès Nord – " + opponents[(wk + 6) % 12] : opponents[(wk + 6) % 12] + " – CF Vallès Nord"} (Juvenil A)`, day: nextW(5, 0) + wk * 7, h: 17, dur: 105, location: wk % 2 ? "Camp Municipal Vallès Nord" : "Camp visitant", opponent: opponents[(wk + 6) % 12] });
-    ev({ club: HOME_CLUB_ID, team: "t_vn_cada", kind: "partit", title: `Cadet A · ${opponents[(wk + 9) % 12]}`, day: nextW(5, 0) + wk * 7, h: 11, dur: 95, location: wk % 2 ? "Camp Municipal Vallès Nord" : "Camp visitant", opponent: opponents[(wk + 9) % 12] });
-    ev({ club: HOME_CLUB_ID, team: "t_vn_ama", kind: "partit", title: `Amateur A · ${opponents[(wk + 3) % 12]}`, day: nextW(6, 0) + wk * 7, h: 12, dur: 105, location: wk % 2 ? "Camp visitant" : "Camp Municipal Vallès Nord", opponent: opponents[(wk + 3) % 12] });
+    ev({ club: HOME_CLUB_ID, team: "t_vn_juva", kind: "partit", title: `${wk % 2 ? "CF Vallès Nord – " + opponents[(wk + 6) % 12] : opponents[(wk + 6) % 12] + " – CF Vallès Nord"} (Juvenil A)`, day: nextW(5, 0) + wk * 7, h: 17, dur: 105, location: wk % 2 ? "Campo Municipal Vallès Nord" : "Campo visitante", opponent: opponents[(wk + 6) % 12] });
+    ev({ club: HOME_CLUB_ID, team: "t_vn_cada", kind: "partit", title: `Cadete A · ${opponents[(wk + 9) % 12]}`, day: nextW(5, 0) + wk * 7, h: 11, dur: 95, location: wk % 2 ? "Campo Municipal Vallès Nord" : "Campo visitante", opponent: opponents[(wk + 9) % 12] });
+    ev({ club: HOME_CLUB_ID, team: "t_vn_ama", kind: "partit", title: `Amateur A · ${opponents[(wk + 3) % 12]}`, day: nextW(6, 0) + wk * 7, h: 12, dur: 105, location: wk % 2 ? "Campo visitante" : "Campo Municipal Vallès Nord", opponent: opponents[(wk + 3) % 12] });
     // entrenaments Juvenil A
-    for (const d of [0, 2, 4]) ev({ club: HOME_CLUB_ID, team: "t_vn_juva", kind: "entrenament", title: "Entrenament Juvenil A", day: nextW(d, 0) + wk * 7, h: 19, m: 30, dur: 90, location: "Camp Municipal Vallès Nord" });
-    ev({ club: HOME_CLUB_ID, team: "t_vn_cada", kind: "entrenament", title: "Entrenament Cadet A", day: nextW(1, 0) + wk * 7, h: 18, dur: 90, location: "Camp annex Vallès Nord" });
+    for (const d of [0, 2, 4]) ev({ club: HOME_CLUB_ID, team: "t_vn_juva", kind: "entrenament", title: "Entrenamiento Juvenil A", day: nextW(d, 0) + wk * 7, h: 19, m: 30, dur: 90, location: "Campo Municipal Vallès Nord" });
+    ev({ club: HOME_CLUB_ID, team: "t_vn_cada", kind: "entrenament", title: "Entrenamiento Cadete A", day: nextW(1, 0) + wk * 7, h: 18, dur: 90, location: "Campo anexo Vallès Nord" });
     // reunió de coordinació
-    ev({ club: HOME_CLUB_ID, team: null, owner: U.director, kind: "reunio", title: "Reunió de coordinació tècnica", day: nextW(1, 0) + wk * 7, h: 21, dur: 60, location: "Oficines del club" });
+    ev({ club: HOME_CLUB_ID, team: null, owner: U.director, kind: "reunio", title: "Reunión de coordinación técnica", day: nextW(1, 0) + wk * 7, h: 21, dur: 60, location: "Oficinas del club" });
   }
   // proves i scouting
   const arnauEntry = pipe.find((e) => e.player === "p_arnau")!;
-  ev({ club: HOME_CLUB_ID, team: "t_vn_juva", owner: U.coach, kind: "prova", title: `Prova: ${pname("p_arnau")}`, day: 1, h: 19, m: 30, dur: 90, location: "Camp Municipal Vallès Nord", related: "p_arnau", notes: "Entrena amb el Juvenil A. Observar sortida de pilota i comunicació." });
+  ev({ club: HOME_CLUB_ID, team: "t_vn_juva", owner: U.coach, kind: "prova", title: `Prueba: ${pname("p_arnau")}`, day: 1, h: 19, m: 30, dur: 90, location: "Campo Municipal Vallès Nord", related: "p_arnau", notes: "Entrena con el Juvenil A. Observar salida de balón y comunicación." });
   void arnauEntry;
   const otherProva = pipe.find((e) => e.stage === "prova" && e.player !== "p_arnau");
-  if (otherProva) ev({ club: HOME_CLUB_ID, team: otherProva.team, owner: U.director, kind: "prova", title: `Prova: ${pname(otherProva.player)}`, day: 3, h: 18, dur: 90, location: "Camp annex Vallès Nord", related: otherProva.player });
-  ev({ club: HOME_CLUB_ID, team: "t_vn_juva", owner: U.director, kind: "scouting", title: "Scouting: UE Serralada – CF Turó Alt (Juvenil)", day: nextW(6, 0), h: 11, m: 30, dur: 105, location: "Terrassa", notes: "Seguir els centrals dels dos equips (oportunitat central sub-19)." });
-  ev({ club: HOME_CLUB_ID, team: "t_vn_juvb", owner: U.director, kind: "scouting", title: "Scouting: CF Horitzó – FC Delta Sud (Juvenil)", day: nextW(5, 1), h: 16, dur: 105, location: "Cerdanyola del Vallès" });
+  if (otherProva) ev({ club: HOME_CLUB_ID, team: otherProva.team, owner: U.director, kind: "prova", title: `Prueba: ${pname(otherProva.player)}`, day: 3, h: 18, dur: 90, location: "Campo anexo Vallès Nord", related: otherProva.player });
+  ev({ club: HOME_CLUB_ID, team: "t_vn_juva", owner: U.director, kind: "scouting", title: "Observación: UE Serralada – CF Turó Alt (Juvenil)", day: nextW(6, 0), h: 11, m: 30, dur: 105, location: "Terrassa", notes: "Seguir a los centrales de los dos equipos (oportunidad central sub-19)." });
+  ev({ club: HOME_CLUB_ID, team: "t_vn_juvb", owner: U.director, kind: "scouting", title: "Observación: CF Horitzó – FC Delta Sud (Juvenil)", day: nextW(5, 1), h: 16, dur: 105, location: "Cerdanyola del Vallès" });
   const talk = pipe.find((e) => e.stage === "en_conversa");
-  if (talk) ev({ club: HOME_CLUB_ID, team: talk.team, owner: U.director, kind: "trucada", title: `Videotrucada amb ${pname(talk.player)}`, day: nextW(3, 0) === 0 ? 7 : nextW(3, 0), h: 18, dur: 30, location: "Videotrucada (enllaç per ScoutUp)", related: talk.player });
-  ev({ club: HOME_CLUB_ID, team: null, owner: U.director, kind: "reunio", title: "Reunió amb famílies · Juvenil A", day: 8, h: 20, dur: 60, location: "Sala d'actes del club" });
+  if (talk) ev({ club: HOME_CLUB_ID, team: talk.team, owner: U.director, kind: "trucada", title: `Videollamada con ${pname(talk.player)}`, day: nextW(3, 0) === 0 ? 7 : nextW(3, 0), h: 18, dur: 30, location: "Videollamada (enlace por ScoutUp)", related: talk.player });
+  ev({ club: HOME_CLUB_ID, team: null, owner: U.director, kind: "reunio", title: "Reunión con familias · Juvenil A", day: 8, h: 20, dur: 60, location: "Salón de actos del club" });
 
   // Esdeveniments d'en Pol
-  ev({ player: "p_pol", owner: U.player, kind: "prova", title: "Prova amb el FC Mediterrani (Juvenil A)", day: 1, h: 18, m: 30, dur: 90, location: "Camp Municipal Mediterrani · Badalona", notes: "Arribar 30 min abans. Botes de gespa artificial." });
+  ev({ player: "p_pol", owner: U.player, kind: "prova", title: "Prueba con el FC Mediterrani (Juvenil A)", day: 1, h: 18, m: 30, dur: 90, location: "Camp Municipal Mediterrani · Badalona", notes: "Llegar 30 min antes. Botas de césped artificial." });
   for (let wk = -2; wk <= 4; wk++) {
-    ev({ player: "p_pol", owner: U.player, kind: "partit", title: `UE Serralada – ${opponents[(wk + 4) % 12]}`, day: nextW(6, 0) + wk * 7, h: 11, m: 30, dur: 105, location: wk % 2 ? "Camp visitant" : "Camp Municipal Serralada" });
-    for (const d of [1, 3]) ev({ player: "p_pol", owner: U.player, kind: "entrenament", title: "Entrenament Juvenil A · UE Serralada", day: nextW(d, 0) + wk * 7, h: 19, dur: 90, location: "Camp Municipal Serralada" });
+    ev({ player: "p_pol", owner: U.player, kind: "partit", title: `UE Serralada – ${opponents[(wk + 4) % 12]}`, day: nextW(6, 0) + wk * 7, h: 11, m: 30, dur: 105, location: wk % 2 ? "Campo visitante" : "Camp Municipal Serralada" });
+    for (const d of [1, 3]) ev({ player: "p_pol", owner: U.player, kind: "entrenament", title: "Entrenamiento Juvenil A · UE Serralada", day: nextW(d, 0) + wk * 7, h: 19, dur: 90, location: "Camp Municipal Serralada" });
   }
-  ev({ player: "p_pol", owner: U.player, kind: "recordatori", title: "Actualitzar estadístiques de la temporada", day: 2, h: 20, dur: 15 });
+  ev({ player: "p_pol", owner: U.player, kind: "recordatori", title: "Actualizar estadísticas de la temporada", day: 2, h: 20, dur: 15 });
 
   // ── Avaluacions, notes i informes de scouting ────────────────────────────────
   const evalFor = (pid: string, author: string, bias: number, decision: string, comment: string, daysAgo: number) => {
@@ -929,34 +960,34 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
       mental: { concentracio: v(6.5), competitivitat: v(7), resiliencia: v(6.5) },
       social: { companyonia: v(7), comunicacio: v(a.lideratge ?? 6), compromis: v(7) },
     };
-    ins(c, "evaluations", { id: `e_${pid}_${author}`, club_id: HOME_CLUB_ID, player_id: pid, author_user_id: author, team_id: pipe.find((x) => x.player === pid)?.team ?? null, scores: JSON.stringify(scores), decision, comment, context: ["Partit de lliga", "Sessió d'entrenament", "Vídeo del partit", "Torneig"][(pid.length + daysAgo) % 4], created_at: ago(c, daysAgo), updated_at: ago(c, daysAgo) });
+    ins(c, "evaluations", { id: `e_${pid}_${author}`, club_id: HOME_CLUB_ID, player_id: pid, author_user_id: author, team_id: pipe.find((x) => x.player === pid)?.team ?? null, scores: JSON.stringify(scores), decision, comment, context: ["Partido de liga", "Sesión de entrenamiento", "Vídeo del partido", "Torneo"][(pid.length + daysAgo) % 4], created_at: ago(c, daysAgo), updated_at: ago(c, daysAgo) });
   };
-  evalFor("p_arnau", U.director, 0.3, "prova", "Central molt complet. Dominant per alt i amb lideratge. Cal veure'l en la sortida de pilota sota pressió.", 9);
-  evalFor("p_arnau", U.coach, 0.1, "fitxar", "Encaixa perfectament amb el que necessitem. Molta personalitat.", 3);
+  evalFor("p_arnau", U.director, 0.3, "prova", "Central muy completo. Dominante por alto y con liderazgo. Hay que verlo en la salida de balón bajo presión.", 9);
+  evalFor("p_arnau", U.coach, 0.1, "fitxar", "Encaja perfectamente con lo que necesitamos. Mucha personalidad.", 3);
   pipe.filter((e) => ["interessant", "en_conversa", "prova", "en_espera", "incorporat"].includes(e.stage) && e.player !== "p_arnau").slice(0, 9).forEach((e, i) => {
     evalFor(e.player, i % 3 === 0 ? U.coach : U.director, c.rnd() - 0.4, e.stage === "en_espera" ? "seguir" : e.stage === "prova" ? "prova" : e.stage === "incorporat" ? "fitxar" : R.pick(c, ["seguir", "prova"]), R.pick(c, [
-      "Bon perfil tècnic. Li falta una mica de físic per a la categoria, però té marge de millora.",
-      "Jugador intel·ligent, sempre ben perfilat. Caldria veure'l contra rivals de més nivell.",
-      "Molt intens i competitiu. Gestiona bé l'error i contagia l'equip.",
-      "Interessant per a la propera temporada. De moment, seguir-lo.",
+      "Buen perfil técnico. Le falta algo de físico para la categoría, pero tiene margen de mejora.",
+      "Jugador inteligente, siempre bien perfilado. Habría que verlo contra rivales de más nivel.",
+      "Muy intenso y competitivo. Gestiona bien el error y contagia al equipo.",
+      "Interesante para la próxima temporada. De momento, seguirlo.",
     ]), R.int(c, 2, 20));
   });
 
   const noteTexts = [
-    "Parlat amb el seu entrenador actual: molt bona actitud als entrenaments.",
-    "La família prioritza que pugui compaginar-ho amb els estudis. Horaris d'entrenament clau.",
-    "Vist en directe dissabte: bon partit, dos talls decisius i bona comunicació.",
-    "Interessat també un altre club de la zona. No allargar gaire la decisió.",
-    "Demanar vídeo del partit complet abans de convidar-lo a una prova.",
-    "Contracte fins a final de temporada: bona oportunitat per a l'estiu.",
-    "Pot jugar també de lateral en cas de necessitat.",
-    "Recomanat pel coordinador de l'Amateur.",
+    "Hablado con su entrenador actual: muy buena actitud en los entrenamientos.",
+    "La familia prioriza que pueda compaginarlo con los estudios. Horarios de entrenamiento clave.",
+    "Visto en directo el sábado: buen partido, dos cortes decisivos y buena comunicación.",
+    "También está interesado otro club de la zona. No alargar mucho la decisión.",
+    "Pedir vídeo del partido completo antes de invitarlo a una prueba.",
+    "Contrato hasta final de temporada: buena oportunidad para el verano.",
+    "Puede jugar también de lateral en caso de necesidad.",
+    "Recomendado por el coordinador del Amateur.",
   ];
   let noteN = 0;
   pipe.slice(0, 14).forEach((e, i) => {
     ins(c, "notes", { id: `n_${++noteN}`, club_id: HOME_CLUB_ID, player_id: e.player, author_user_id: i % 3 === 1 ? U.coach : U.director, team_id: e.team, body: noteTexts[i % noteTexts.length], created_at: ago(c, R.int(c, 1, 20), R.int(c, 0, 10)) });
   });
-  ins(c, "notes", { id: `n_${++noteN}`, club_id: HOME_CLUB_ID, player_id: "p_arnau", author_user_id: U.coach, team_id: "t_vn_juva", body: "Li hem demanat que vingui a la prova amb el material del seu club. Parlar amb el seu entrenador després.", created_at: ago(c, 1, 3) });
+  ins(c, "notes", { id: `n_${++noteN}`, club_id: HOME_CLUB_ID, player_id: "p_arnau", author_user_id: U.coach, team_id: "t_vn_juva", body: "Le hemos pedido que venga a la prueba con el material de su club. Hablar con su entrenador después.", created_at: ago(c, 1, 3) });
 
   const scoutPool = players.filter((p) => p.clubId !== HOME_CLUB_ID && p.gender === "M" && p.category === "Juvenil" && p.privacy.profile !== "ocult" && (!isMinorP(p) || p.guardianConsent)).slice(0, 40);
   const reportPlayers = ["p_biel", "p_arnau", ...R.shuffle(c, scoutPool.map((p) => p.id)).filter((id) => id !== "p_biel" && id !== "p_arnau" && id !== "p_pol").slice(0, 8)];
@@ -965,12 +996,12 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     const t = p.teamId ? teamById.get(p.teamId) : null;
     ins(c, "scout_reports", {
       id: `sr_${i + 1}`, club_id: HOME_CLUB_ID, author_user_id: i % 2 ? U.coach : U.director, team_id: "t_vn_juva", player_id: pid,
-      match_title: t ? `${t.club.name} – ${R.pick(c, FILLER_TEAMS)}` : "Partit amistós",
+      match_title: t ? `${t.club.name} – ${R.pick(c, FILLER_TEAMS)}` : "Partido amistoso",
       match_date: ago(c, R.int(c, 2, 35)), competition: t ? `${t.category} ${levelLabel(t.rank)}` : null, position_observed: p.pos,
       rating: pid === "p_biel" ? 8 : pid === "p_arnau" ? 8 : R.int(c, 5, 8),
       observations: pid === "p_biel"
-        ? "Central esquerrà amb molt bona sortida de pilota i temps en el passi. Guanya molts duels aeris. Juga pocs minuts al seu equip: oportunitat."
-        : R.pick(c, ["Bon partit. Destaca en la lectura defensiva i en l'anticipació.", "Jugador amb molta energia, però precipitat amb pilota.", "Molt bona actitud. Tècnicament correcte, li falta velocitat.", "Presència física important. Cal millorar la presa de decisions."]),
+        ? "Central zurdo con muy buena salida de balón y tiempo en el pase. Gana muchos duelos aéreos. Juega pocos minutos en su equipo: oportunidad."
+        : R.pick(c, ["Buen partido. Destaca en la lectura defensiva y en la anticipación.", "Jugador con mucha energía, pero precipitado con balón.", "Muy buena actitud. Técnicamente correcto, le falta velocidad.", "Presencia física importante. Debe mejorar la toma de decisiones."]),
       recommendation: pid === "p_biel" ? "contactar" : pid === "p_arnau" ? "prova" : R.pick(c, ["seguir", "seguir", "contactar", "descartar"]),
       reminder_at: pid === "p_biel" ? at(c, 4, 10) : R.chance(c, 0.3) ? at(c, R.int(c, 3, 20), 10) : null,
       created_at: ago(c, R.int(c, 1, 30)),
@@ -980,13 +1011,13 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   // ── Plantilles (roster) del club principal, 3 temporades ────────────────────
   const rosterPos: Record<string, Position[]> = {
     Juvenil: ["POR", "POR", "LD", "LD", "DC", "DC", "DC", "LE", "MCD", "MCD", "MC", "MC", "MCO", "MCO", "ED", "ED", "EE", "EE", "DAV", "DAV"],
-    Cadet: ["POR", "POR", "LD", "DC", "DC", "DC", "LE", "MCD", "MC", "MC", "MCO", "ED", "ED", "EE", "DAV", "DAV", "MC"],
+    Cadete: ["POR", "POR", "LD", "DC", "DC", "DC", "LE", "MCD", "MC", "MC", "MCO", "ED", "ED", "EE", "DAV", "DAV", "MC"],
     Infantil: ["POR", "LD", "DC", "DC", "LE", "MCD", "MC", "MC", "MCO", "ED", "EE", "DAV", "DAV", "DC"],
     Amateur: ["POR", "POR", "LD", "LD", "DC", "DC", "DC", "LE", "LE", "MCD", "MC", "MC", "MCO", "ED", "EE", "DAV", "DAV", "ED"],
   };
   for (const t of teams.filter((x) => x.clubId === HOME_CLUB_ID)) {
     // grup de jugadors (externs) amb anys de naixement, perquè hi hagi continuïtat entre temporades
-    const [ya, yb] = t.category === "Cadet" ? [start - 16, start - 13] : t.category === "Juvenil" ? [start - 20, start - 15] : t.category === "Infantil" ? [start - 14, start - 11] : [start - 30, start - 18];
+    const [ya, yb] = t.category === "Cadete" ? [start - 16, start - 13] : t.category === "Juvenil" ? [start - 20, start - 15] : t.category === "Infantil" ? [start - 14, start - 11] : [start - 30, start - 18];
     const pool: { name: string; pos: Position; by: number; foot: string; rating: number }[] = [];
     for (let i = 0; i < 44; i++) {
       const nm = genName(t.gender as "M" | "F");
@@ -994,7 +1025,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
       pool.push({ name: `${nm.first} ${nm.last.split(" ")[0]}`, pos, by: R.int(c, ya, yb), foot: pos === "LE" || pos === "EE" ? "esquerre" : R.chance(c, 0.15) ? "esquerre" : "dret", rating: 5.5 + c.rnd() * 2.8 });
     }
     for (const s of seasons) {
-      const range = t.category === "Cadet" ? [s - 15, s - 14] : t.category === "Juvenil" ? [s - 18, s - 16] : t.category === "Infantil" ? [s - 13, s - 12] : [s - 30, s - 19];
+      const range = t.category === "Cadete" ? [s - 15, s - 14] : t.category === "Juvenil" ? [s - 18, s - 16] : t.category === "Infantil" ? [s - 13, s - 12] : [s - 30, s - 19];
       let squad = pool.filter((x) => x.by >= range[0] && x.by <= range[1]);
       // assegura una plantilla completa per posicions
       const need = rosterPos[t.category];
@@ -1059,28 +1090,28 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   const nt = (user: string, kind: string, title: string, body: string | null, link: string | null, minsAgo: number, read = false) =>
     ins(c, "notifications", { id: `nt_${++ntN}`, user_id: user, kind, title, body, link, created_at: ago(c, 0, 0, minsAgo), read_at: read ? ago(c, 0, 0, Math.max(0, minsAgo - 30)) : null });
   const talkConv = convPlayers.length ? "cv_1" : null;
-  nt(U.director, "match", "3 nous perfils coincideixen amb la teva necessitat.", "Oportunitat «Busquem central sub-19» · compatibilitat superior al 80%.", "/club/oportunitats/o_vn_central", 95);
-  nt(U.director, "contact", "Un jugador ha acceptat la teva sol·licitud.", convPlayers[0] ? `${pname(convPlayers[0].player)} ha acceptat parlar amb el club.` : null, talkConv ? `/club/missatges/${talkConv}` : "/club/missatges", 5 * 60);
-  nt(U.director, "application", "Noves sol·licituds a «Busquem central sub-19»", "Tens candidatures pendents de revisar.", "/club/oportunitats/o_vn_central?tab=sollicituds", 7 * 60);
-  nt(U.director, "event", "Demà tens una prova programada.", `${pname("p_arnau")} · 19:30 h · Camp Municipal Vallès Nord`, "/club/calendari", 9 * 60);
-  nt(U.director, "message", "Nou missatge", "Tens missatges sense llegir a la safata.", "/club/missatges", 3 * 60);
-  nt(U.director, "system", "Oportunitat «Porter per a l'Amateur A» caduca aviat", "Queden 15 dies. Pots ampliar-la o tancar-la.", "/club/oportunitats/o_vn_por", 2 * D, true);
-  nt(U.director, "match", "Nou perfil compatible amb «Lateral esquerre per al Cadet A»", null, "/club/oportunitats/o_vn_le", 3 * D, true);
-  nt(U.coach, "match", "3 nous perfils coincideixen amb la teva necessitat.", "Central esquerrà per al Juvenil A.", "/club/oportunitats/o_vn_central", 95);
-  nt(U.coach, "event", "Demà tens una prova programada.", `${pname("p_arnau")} · 19:30 h`, "/club/calendari", 9 * 60);
-  nt(U.coach, "system", "La direcció t'ha assignat un nou jugador al pipeline", null, "/club/pipeline", 2 * D, true);
+  nt(U.director, "match", "3 nuevos perfiles coinciden con tu necesidad.", "Oportunidad «Buscamos central sub-19» · compatibilidad superior al 80%.", "/club/oportunitats/o_vn_central", 95);
+  nt(U.director, "contact", "Un jugador ha aceptado tu solicitud.", convPlayers[0] ? `${pname(convPlayers[0].player)} ha aceptado hablar con el club.` : null, talkConv ? `/club/missatges/${talkConv}` : "/club/missatges", 5 * 60);
+  nt(U.director, "application", "Nuevas solicitudes en «Buscamos central sub-19»", "Tienes candidaturas pendientes de revisar.", "/club/oportunitats/o_vn_central?tab=sollicituds", 7 * 60);
+  nt(U.director, "event", "Mañana tienes una prueba programada.", `${pname("p_arnau")} · 19:30 h · Campo Municipal Vallès Nord`, "/club/calendari", 9 * 60);
+  nt(U.director, "message", "Nuevo mensaje", "Tienes mensajes sin leer en la bandeja.", "/club/missatges", 3 * 60);
+  nt(U.director, "system", "Oportunidad «Portero para el Amateur A» caduca pronto", "Quedan 15 días. Puedes ampliarla o cerrarla.", "/club/oportunitats/o_vn_por", 2 * D, true);
+  nt(U.director, "match", "Nuevo perfil compatible con «Lateral derecho para el Cadete A»", null, "/club/oportunitats/o_vn_ld", 3 * D, true);
+  nt(U.coach, "match", "3 nuevos perfiles coinciden con tu necesidad.", "Central zurdo para el Juvenil A.", "/club/oportunitats/o_vn_central", 95);
+  nt(U.coach, "event", "Mañana tienes una prueba programada.", `${pname("p_arnau")} · 19:30 h`, "/club/calendari", 9 * 60);
+  nt(U.coach, "system", "La dirección te ha asignado un nuevo jugador en el pipeline", null, "/club/pipeline", 2 * D, true);
 
-  nt(U.player, "match", "Nova oportunitat 89% compatible.", "CF Vallès Nord · «Busquem central sub-19».", "/jugador/oportunitats/o_vn_central", 50);
-  nt(U.player, "interest", "Nou club interessat en el teu perfil.", "Un club ha afegit el teu perfil a la seva llista de seguiment.", "/jugador/seguiment", 4 * 60);
-  nt(U.player, "contact", "Nova sol·licitud de contacte", "CE Masia Nova vol parlar amb tu.", "/jugador/missatges", 2 * 60);
-  nt(U.player, "event", "Demà tens una prova programada.", "FC Mediterrani · 18:30 h · Badalona", "/jugador/calendari", 6 * 60);
-  nt(U.player, "profile", "El teu perfil porta 2 mesos sense actualitzar-se.", "Els perfils actualitzats reben més visites dels clubs.", "/jugador/perfil/editar", 22 * 60);
-  nt(U.player, "application", "UE Els Pins ha vist el teu perfil", "Sol·licitud «Central per al Juvenil A».", "/jugador/seguiment", 3 * D, true);
-  nt(U.player, "match", "Nova oportunitat 74% compatible.", "CF Turó Alt · «Pivot defensiu Juvenil A».", "/jugador/oportunitats/o_turo_mcd", 5 * D, true);
+  nt(U.player, "match", "Nueva oportunidad 89% compatible.", "CF Vallès Nord · «Buscamos central sub-19».", "/jugador/oportunitats/o_vn_central", 50);
+  nt(U.player, "interest", "Nuevo club interesado en tu perfil.", "Un club ha añadido tu perfil a su lista de seguimiento.", "/jugador/seguiment", 4 * 60);
+  nt(U.player, "contact", "Nueva solicitud de contacto", "CE Masia Nova quiere hablar contigo.", "/jugador/missatges", 2 * 60);
+  nt(U.player, "event", "Mañana tienes una prueba programada.", "FC Mediterrani · 18:30 h · Badalona", "/jugador/calendari", 6 * 60);
+  nt(U.player, "profile", "Tu perfil lleva 2 meses sin actualizarse.", "Los perfiles actualizados reciben más visitas de los clubes.", "/jugador/perfil/editar", 22 * 60);
+  nt(U.player, "application", "UE Els Pins ha visto tu perfil", "Solicitud «Central para el Juvenil A».", "/jugador/seguiment", 3 * D, true);
+  nt(U.player, "match", "Nueva oportunidad 74% compatible.", "CF Turó Alt · «Pivot defensiu Juvenil A».", "/jugador/oportunitats/o_turo_mcd", 5 * D, true);
 
-  nt(U.tutor, "contact", "CF Vallès Nord vol contactar amb en Nil.", "Cal la teva autorització abans que el club pugui escriure-li.", "/tutor", 20 * 60);
-  nt(U.tutor, "profile", "El perfil d'en Nil ha rebut 4 visites aquesta setmana.", null, "/tutor", 2 * D, true);
+  nt(U.tutor, "contact", "CF Vallès Nord quiere contactar con Nil.", "Hace falta tu autorización antes de que el club pueda escribirle.", "/tutor", 20 * 60);
+  nt(U.tutor, "profile", "El perfil de Nil ha recibido 4 visitas esta semana.", null, "/tutor", 2 * D, true);
 
   // Informe de moderació d'exemple
-  ins(c, "reports", { id: "rp_1", reporter_user_id: U.player, target_type: "club", target_id: "club_vilamar", reason: "Club no verificat demana dades personals", details: "Em van demanar el telèfon per un canal extern.", status: "revisada", created_at: ago(c, 40) });
+  ins(c, "reports", { id: "rp_1", reporter_user_id: U.player, target_type: "club", target_id: "club_vilamar", reason: "Club no verificado pide datos personales", details: "Me pidieron el teléfono por un canal externo.", status: "revisada", created_at: ago(c, 40) });
 }

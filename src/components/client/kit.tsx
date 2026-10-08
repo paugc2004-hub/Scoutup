@@ -19,14 +19,14 @@ export function useApi() {
         const res = await fetch(url, { method: init.method ?? "POST", headers: { "Content-Type": "application/json" }, body: init.body === undefined ? undefined : JSON.stringify(init.body) });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-          toast(data.error ?? "No s'ha pogut completar l'acció.", "error");
+          toast(data.error ?? "No se ha podido completar la acción.", "error");
           return null;
         }
         if (init.ok) toast(init.ok, "ok", init.okSub);
         if (init.refresh !== false) startTransition(() => router.refresh());
         return data as T;
       } catch {
-        toast("Error de connexió amb el servidor de la demo.", "error");
+        toast("Error de conexión con el servidor de la demo.", "error");
         return null;
       } finally {
         setPending(false);
@@ -60,10 +60,10 @@ export function ActionButton({ url, method, body, ok, okSub, children, variant, 
         <Button variant={variant} size={size} icon={icon} className={className} loading={pending} onClick={() => setAsking(true)}>
           {children}
         </Button>
-        <Modal open={asking} onClose={() => setAsking(false)} title="Confirmar acció" size="sm">
+        <Modal open={asking} onClose={() => setAsking(false)} title="Confirmar acción" size="sm">
           <p className="text-[14px] text-muted">{confirm}</p>
           <div className="mt-5 flex justify-end gap-2">
-            <Button onClick={() => setAsking(false)}>Cancel·lar</Button>
+            <Button onClick={() => setAsking(false)}>Cancelar</Button>
             <Button variant={variant === "danger" ? "danger" : "dark"} loading={pending} onClick={async () => { await run(); setAsking(false); }}>
               Confirmar
             </Button>
@@ -105,7 +105,7 @@ export function Modal({ open, onClose, title, subtitle, children, size = "md", f
             <h2 id={titleId} className="text-[17px] font-extrabold tracking-tight">{title}</h2>
             {subtitle && <p className="mt-0.5 text-[13px] text-muted">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="grid size-8 place-items-center rounded-lg text-subtle hover:bg-sunken hover:text-ink" aria-label="Tancar">
+          <button onClick={onClose} className="grid size-8 place-items-center rounded-lg text-subtle hover:bg-sunken hover:text-ink" aria-label="Cerrar">
             <X className="size-4" />
           </button>
         </div>

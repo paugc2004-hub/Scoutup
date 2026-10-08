@@ -38,10 +38,10 @@ export function Kanban({ cards: initial, teams, offers }: { cards: KanbanCard[];
     if (!r.ok) {
       const d = await r.json().catch(() => ({}));
       setCards((cs) => cs.map((x) => (x.id === id ? { ...x, stage: prev } : x)));
-      toast(d.error ?? "No s'ha pogut moure.", "error");
+      toast(d.error ?? "No se ha podido mover.", "error");
       return;
     }
-    toast(`${c.name} → ${STAGE_LABEL[stage]}`, "ok", stage === "contactat" ? "Recorda enviar la sol·licitud de contacte des del perfil." : undefined);
+    toast(`${c.name} → ${STAGE_LABEL[stage]}`, "ok", stage === "contactat" ? "Recuerda enviar la solicitud de contacto desde el perfil." : undefined);
     router.refresh();
   };
 
@@ -50,19 +50,19 @@ export function Kanban({ cards: initial, teams, offers }: { cards: KanbanCard[];
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-subtle" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filtrar per nom" className="h-9 w-52 rounded-xl border border-line bg-surface pl-9 pr-3 text-[13px] focus:border-accent-600 focus:outline-none" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filtrar por nombre" className="h-9 w-52 rounded-xl border border-line bg-surface pl-9 pr-3 text-[13px] focus:border-accent-600 focus:outline-none" />
         </div>
         {teams.length > 1 && (
           <Select value={team} onChange={(e) => setTeam(e.target.value)} className="!h-9 !w-auto !text-[13px]">
-            <option value="">Tots els equips</option>
+            <option value="">Todos los equipos</option>
             {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </Select>
         )}
         <Select value={offer} onChange={(e) => setOffer(e.target.value)} className="!h-9 !w-auto !text-[13px]">
-          <option value="">Totes les oportunitats</option>
+          <option value="">Todas las oportunidades</option>
           {offers.map((o) => <option key={o.id} value={o.id}>{o.title}</option>)}
         </Select>
-        <p className="ml-auto text-[12.5px] text-muted">Arrossega les targetes entre columnes o fes servir el menú <MoreHorizontal className="inline size-3.5" /></p>
+        <p className="ml-auto text-[12.5px] text-muted">Arrastra las tarjetas entre columnas o usa el menú <MoreHorizontal className="inline size-3.5" /></p>
       </div>
       <div className="scroll-thin -mx-4 overflow-x-auto px-4 pb-4 md:-mx-8 md:px-8">
         <div className="flex min-w-max gap-3">
@@ -101,17 +101,17 @@ export function Kanban({ cards: initial, teams, offers }: { cards: KanbanCard[];
                         <Avatar initials={c.initials} hue={c.hue} size={34} />
                         <div className="min-w-0 flex-1">
                           <Link href={`/club/jugadors/${c.playerId}${c.offerId ? `?offer=${c.offerId}` : ""}`} className="block truncate text-[13.5px] font-bold hover:underline">{c.name}</Link>
-                          <p className="truncate text-[11.5px] text-muted">{c.position} · {c.age} anys{c.minor ? " · menor" : ""}</p>
+                          <p className="truncate text-[11.5px] text-muted">{c.position} · {c.age} años{c.minor ? " · menor" : ""}</p>
                           <p className="truncate text-[11.5px] text-muted">{c.club}</p>
                         </div>
                         {c.score !== null && <MatchRing score={c.score} size={32} stroke={3.5} />}
                       </div>
                       <div className="mt-2.5 flex items-center justify-between gap-2">
-                        <span className="truncate rounded-md bg-sunken px-1.5 py-0.5 text-[10.5px] font-semibold text-ink-2">{c.team ?? "Sense equip"}</span>
+                        <span className="truncate rounded-md bg-sunken px-1.5 py-0.5 text-[10.5px] font-semibold text-ink-2">{c.team ?? "Sin equipo"}</span>
                         <div className="flex items-center gap-1">
                           {c.unread && <MessageSquare className="size-3.5 text-accent-ink" />}
                           <span className="text-[10.5px] text-subtle">{fmtRelative(c.updated_at)}</span>
-                          <button onClick={() => setMenu(menu === c.id ? null : c.id)} className="grid size-6 place-items-center rounded-md text-subtle hover:bg-sunken hover:text-ink" aria-label="Moure a una altra etapa">
+                          <button onClick={() => setMenu(menu === c.id ? null : c.id)} className="grid size-6 place-items-center rounded-md text-subtle hover:bg-sunken hover:text-ink" aria-label="Mover a otra etapa">
                             <MoreHorizontal className="size-4" />
                           </button>
                         </div>
@@ -129,7 +129,7 @@ export function Kanban({ cards: initial, teams, offers }: { cards: KanbanCard[];
                       )}
                     </div>
                   ))}
-                  {col.length === 0 && <div className="grid h-20 place-items-center rounded-xl border border-dashed border-line-strong text-[11.5px] text-subtle">Deixa-hi una targeta</div>}
+                  {col.length === 0 && <div className="grid h-20 place-items-center rounded-xl border border-dashed border-line-strong text-[11.5px] text-subtle">Suelta aquí una tarjeta</div>}
                 </div>
               </div>
             );

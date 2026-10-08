@@ -37,9 +37,9 @@ export default async function PipelinePage() {
   const offers = clubOffers(u.club_id).filter((o) => cards.some((c) => c.offerId === o.id)).map((o) => ({ id: o.id, title: o.title }));
   return (
     <div>
-      <PageHeader eyebrow={club.name} title="Pipeline de captació" subtitle={can.allTeams(u) ? "Tots els jugadors que el club segueix, per etapes. Els canvis d'etapa actualitzen l'estat que veu el jugador." : "Jugadors que segueix el teu equip. Els d'altres equips del club no es mostren."} actions={<LinkButton href="/club/cercar">Afegir jugadors</LinkButton>} />
+      <PageHeader eyebrow={club.name} title="Pipeline de captación" subtitle={can.allTeams(u) ? "Todos los jugadores que sigue el club, por etapas. Los cambios de etapa actualizan el estado que ve el jugador." : "Jugadores que sigue tu equipo. Los de otros equipos del club no se muestran."} actions={<LinkButton href="/club/cercar">Añadir jugadores</LinkButton>} />
       {cards.length === 0 ? (
-        <EmptyState icon={<KanbanSquare className="size-5" />} title="El pipeline és buit" text="Afegeix jugadors des de la cerca, les oportunitats o ScoutUp Intelligence." action={<LinkButton href="/club/cercar" variant="primary">Cercar jugadors</LinkButton>} />
+        <EmptyState icon={<KanbanSquare className="size-5" />} title="No hay candidatos en el pipeline" text="Añade jugadores desde la búsqueda, las oportunidades o ScoutUp Intelligence." action={<LinkButton href="/club/cercar" variant="primary">Explorar jugadores</LinkButton>} />
       ) : (
         <Kanban cards={cards} teams={scopedTeams(u).map((t) => ({ id: t.id, name: t.name }))} offers={offers} />
       )}

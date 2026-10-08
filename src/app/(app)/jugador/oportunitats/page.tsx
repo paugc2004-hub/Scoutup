@@ -7,7 +7,7 @@ import type { OppLite } from "@/components/player/opportunities";
 import { POSITION_LABEL, levelLabel } from "@/lib/domain";
 import type { Position } from "@/lib/domain";
 
-export const metadata = { title: "Oportunitats" };
+export const metadata = { title: "Oportunidades" };
 
 export default async function OpportunitiesPage() {
   const u = await requirePlayer();
@@ -21,7 +21,7 @@ export default async function OpportunitiesPage() {
   }));
   return (
     <div>
-      <PageHeader eyebrow="Per a tu" title="Oportunitats" subtitle={`${items.length} oportunitats obertes per a equips ${row.gender === "F" ? "femenins" : "masculins"}. El percentatge indica com encaixa el teu perfil amb el que busca cada club.`} />
+      <PageHeader eyebrow="Para ti" title="Oportunidades" subtitle={`${items.length} oportunidades abiertas para equipos ${row.gender === "F" ? "femeninos" : "masculinos"}. El porcentaje indica cómo encaja tu perfil con lo que busca cada club.`} />
       <OpportunityList items={items} />
     </div>
   );

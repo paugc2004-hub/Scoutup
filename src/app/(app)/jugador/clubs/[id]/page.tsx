@@ -18,7 +18,7 @@ export default async function PlayerClubPage({ params }: { params: Promise<{ id:
   const blocked = !!get("SELECT id FROM blocks WHERE player_id = ? AND club_id = ?", u.player_id, id);
   return (
     <div className="space-y-4">
-      <Link href="/jugador/clubs" className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted hover:text-ink"><ArrowLeft className="size-4" /> Clubs</Link>
+      <Link href="/jugador/clubs" className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted hover:text-ink"><ArrowLeft className="size-4" /> Clubes</Link>
       <ClubProfileView club={c} offerHref={(oid) => `/jugador/oportunitats/${oid}`} actions={<div className="flex flex-wrap items-center gap-2"><FavoriteButton type="club" id={id} initial={fav} /><BlockButton clubId={id} blocked={blocked} icon={<Ban className="size-3.5" />} /><ReportButton targetType="club" targetId={id} icon={<Flag className="size-3.5" />} /></div>} />
     </div>
   );

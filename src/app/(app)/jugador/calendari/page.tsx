@@ -5,7 +5,7 @@ import { CalendarView } from "@/components/calendar";
 import { dayKey } from "@/lib/time";
 import type { EventKind } from "@/lib/domain";
 
-export const metadata = { title: "Calendari" };
+export const metadata = { title: "Calendario" };
 
 export default async function PlayerCalendar({ searchParams }: { searchParams: Promise<{ m?: string }> }) {
   const u = await requirePlayer();
@@ -19,7 +19,7 @@ export default async function PlayerCalendar({ searchParams }: { searchParams: P
   const kinds: EventKind[] = ["partit", "entrenament", "prova", "reunio", "trucada", "recordatori"];
   return (
     <div>
-      <PageHeader eyebrow="Agenda" title="El meu calendari" subtitle="Proves, trucades i reunions amb clubs apareixen automàticament. Afegeix-hi els teus partits, entrenaments i recordatoris." />
+      <PageHeader eyebrow="Agenda" title="Mi calendario" subtitle="Las pruebas, llamadas y reuniones con clubes aparecen automáticamente. Añade tus partidos, entrenamientos y recordatorios." />
       <CalendarView events={events} month={month} basePath="/jugador/calendari" canCreate kinds={kinds} todayKey={today} />
     </div>
   );
