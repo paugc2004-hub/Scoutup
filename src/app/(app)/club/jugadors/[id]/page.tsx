@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Footprints, Ruler, CalendarDays, Languages, Sparkles, Lock, Trophy, Binoculars, History, ShieldAlert, Info } from "lucide-react";
 import { requireClubStaff } from "@/server/auth/session";
 import { all, get } from "@/server/db/client";
-import { clubCanContact, clubCanSee, clubRelations, teamScope } from "@/server/services/access";
+import { can, clubCanContact, clubCanSee, clubRelations, teamScope } from "@/server/services/access";
 import { club as getClub, recentActivity, scopedTeams } from "@/server/services/club";
 import { clubOffers, toMatchOffer } from "@/server/services/offers";
 import { currentSeason, playerCtx, playerRow, presentPlayer, privacyOf, toMatchPlayer } from "@/server/services/players";
@@ -44,7 +44,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
   const p = presentPlayer(row, ctx, { ownClub: row.club_id === u.club_id });
   const priv = privacyOf(row);
   const mp = toMatchPlayer(row, ctx.prev.get(row.id), ctx.career.get(row.id) ?? 0);
-  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && o.gender === row.gender && (u.role === "director" || o.team_id === u.team_id));
+  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && o.gender === row.gender && (can.allTeams(u) || o.team_id === u.team_id));
   const scored = offers.map((o) => ({ o, m: computeMatch(mp, toMatchOffer(o), ctx.now) })).sort((a, b) => b.m.score - a.m.score);
   const sel = scored.find((s) => s.o.id === sp.offer) ?? scored[0] ?? null;
   const detail = playerDetail(id);
@@ -54,7 +54,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
     "SELECT pe.id, pe.stage, pe.team_id, t.name AS team_name, o.title AS offer_title, pe.created_at FROM pipeline_entries pe LEFT JOIN teams t ON t.id = pe.team_id LEFT JOIN offers o ON o.id = pe.offer_id WHERE pe.club_id = ? AND pe.player_id = ?",
     u.club_id, id,
   );
-  const entryOutOfScope = entry && u.role === "coach" && entry.team_id !== u.team_id;
+  const entryOutOfScope = entry && !can.seeTeam(u, entry.team_id);
   const apps = all<{ id: string; status: AppStatus; created_at: string; message: string | null; title: string; offer_id: string }>("SELECT a.id, a.status, a.created_at, a.message, o.title, o.id AS offer_id FROM applications a JOIN offers o ON o.id = a.offer_id WHERE o.club_id = ? AND a.player_id = ? ORDER BY a.created_at DESC", u.club_id, id);
   const conv = get<{ id: string }>("SELECT id FROM conversations WHERE club_id = ? AND player_id = ?", u.club_id, id);
   const pendingReq = get<{ id: string; status: string; created_at: string }>("SELECT id, status, created_at FROM contact_requests WHERE club_id = ? AND player_id = ? AND status IN ('pendent','pendent_tutor') ORDER BY created_at DESC", u.club_id, id);
@@ -70,7 +70,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
   const scope = teamScope(u);
   const scopeSql = scope === null ? "1=1" : `(x.team_id IN (${scope.map(() => "?").join(",") || "''"}) OR x.author_user_id = ?)`;
   const scopeParams = scope === null ? [] : [...scope, u.id];
-  const evals = all<{ id: string; author_user_id: string; author_name: string; author_title: string | null; scores: string; decision: string; comment: string | null; updated_at: string }>(
+  const evals = all<{ id: string; author_user_id: string; author_name: string; author_title: string | null; scores: string; decision: string; comment: string | null; context: string | null; updated_at: string }>(
     `SELECT x.*, us.name AS author_name, us.title AS author_title FROM evaluations x JOIN users us ON us.id = x.author_user_id WHERE x.club_id = ? AND x.player_id = ? AND ${scopeSql} ORDER BY x.updated_at DESC`, u.club_id, id, ...scopeParams,
   );
   const myEval = evals.find((e) => e.author_user_id === u.id);
@@ -78,7 +78,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
     `SELECT x.id, x.body, x.created_at, x.author_user_id, us.name AS author_name FROM notes x JOIN users us ON us.id = x.author_user_id WHERE x.club_id = ? AND x.player_id = ? AND ${scopeSql} ORDER BY x.created_at DESC`, u.club_id, id, ...scopeParams,
   );
   const reports = all<{ id: string; match_title: string; match_date: string; rating: number; observations: string; recommendation: string; author_name: string }>(
-    "SELECT sr.*, us.name AS author_name FROM scout_reports sr JOIN users us ON us.id = sr.author_user_id WHERE sr.club_id = ? AND sr.player_id = ? ORDER BY sr.match_date DESC", u.club_id, id,
+    `SELECT x.*, us.name AS author_name FROM scout_reports x JOIN users us ON us.id = x.author_user_id WHERE x.club_id = ? AND x.player_id = ? AND ${scopeSql} ORDER BY x.match_date DESC`, u.club_id, id, ...scopeParams,
   );
   const activity = recentActivity(u, 30, id);
 
@@ -98,7 +98,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
 
   return (
     <div className="space-y-5">
-      <Link href={sel ? `/club/ofertes/${sel.o.id}` : "/club/cercar"} className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted hover:text-ink">
+      <Link href={sel ? `/club/oportunitats/${sel.o.id}` : "/club/cercar"} className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted hover:text-ink">
         <ArrowLeft className="size-4" /> {sel ? `Tornar a «${sel.o.title}»` : "Tornar a la cerca"}
       </Link>
 
@@ -135,7 +135,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
             {entryOutOfScope ? (
               <Badge tone="neutral" title="L'està seguint un altre equip del club">Seguit per {entry!.team_name}</Badge>
             ) : (
-              <PipelineControl playerId={id} entry={entry ? { id: entry.id, stage: entry.stage, team_name: entry.team_name } : null} teams={teams} offerId={sel?.o.id} canTeamSelect={u.role === "director"} defaultTeam={sel?.o.team_id ?? teams.find((t) => t.name === "Juvenil A")?.id} />
+              <PipelineControl playerId={id} entry={entry ? { id: entry.id, stage: entry.stage, team_name: entry.team_name } : null} teams={teams} offerId={sel?.o.id} canTeamSelect={can.allTeams(u)} defaultTeam={sel?.o.team_id ?? teams.find((t) => t.name === "Juvenil A")?.id} />
             )}
             <ContactControl playerId={id} firstName={p.first_name} state={contact} clubName={club.name} offerTitle={sel?.o.title} teams={teams} defaultTeam={sel?.o.team_id ?? entry?.team_id ?? null} />
           </div>
@@ -144,9 +144,9 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
 
       {apps.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-accent-soft-2 bg-accent-soft px-4 py-3 text-[13px]">
-          <span className="font-bold text-accent-ink">S'ha inscrit a les teves ofertes:</span>
+          <span className="font-bold text-accent-ink">S'ha inscrit a les teves oportunitats:</span>
           {apps.map((a) => (
-            <Link key={a.id} href={`/club/ofertes/${a.offer_id}?tab=sollicituds`} className="inline-flex items-center gap-1.5 rounded-full bg-surface px-2.5 py-1 font-semibold hover:underline">
+            <Link key={a.id} href={`/club/oportunitats/${a.offer_id}?tab=sollicituds`} className="inline-flex items-center gap-1.5 rounded-full bg-surface px-2.5 py-1 font-semibold hover:underline">
               {a.title} <span className="text-muted">· {APP_STATUS_LABEL[a.status]} · {fmtRelative(a.created_at)}</span>
             </Link>
           ))}
@@ -208,7 +208,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
                           return (
                             <div key={e.id} className="rounded-2xl border border-line p-4">
                               <div className="flex items-center justify-between">
-                                <div><p className="text-[13.5px] font-bold">{e.author_name}</p><p className="text-[12px] text-muted">{e.author_title} · {fmtRelative(e.updated_at)}</p></div>
+                                <div><p className="text-[13.5px] font-bold">{e.author_name}</p><p className="text-[12px] text-muted">{e.author_title} · {fmtRelative(e.updated_at)}{e.context ? ` · ${e.context}` : ""}</p></div>
                                 <div className="text-right"><p className="text-[22px] font-extrabold tabular leading-none">{avgEval(e.scores)}</p><p className="text-[11px] text-subtle">mitjana</p></div>
                               </div>
                               <div className="mt-3 grid grid-cols-5 gap-1.5">
@@ -227,11 +227,11 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
                     )}
                     <div>
                       <p className="mb-3 text-[13px] font-bold">{myEval ? "La teva avaluació" : "Nova avaluació"}</p>
-                      <EvaluationForm playerId={id} initial={myEval ? { scores: JSON.parse(myEval.scores), decision: myEval.decision, comment: myEval.comment ?? "" } : null} />
+                      <EvaluationForm playerId={id} initial={myEval ? { scores: JSON.parse(myEval.scores), decision: myEval.decision, comment: myEval.comment ?? "", context: myEval.context } : null} />
                     </div>
                   </div>
                 ) },
-                { key: "notes", label: "Notes privades", count: notes.length, content: <NotesPanel playerId={id} notes={notes} meId={u.id} isDirector={u.role === "director"} /> },
+                { key: "notes", label: "Notes privades", count: notes.length, content: <NotesPanel playerId={id} notes={notes} meId={u.id} isDirector={can.manageUsers(u)} /> },
                 { key: "activitat", label: "Activitat", count: activity.length, content: (
                   <div>
                     <div className="mb-4 flex items-center justify-between"><p className="text-[13px] text-muted">Historial d'aquest jugador al teu club.</p><InteractionForm playerId={id} /></div>
@@ -277,13 +277,13 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
             {sel ? (
               <>
                 <div className="mb-4 space-y-1.5">
-                  <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-subtle">Compatibilitat amb l'oferta</p>
+                  <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-subtle">Compatibilitat amb l'oportunitat</p>
                   <OfferSelector offers={scored.map((s) => ({ id: s.o.id, title: s.o.title, score: s.m.score }))} value={sel.o.id} />
                 </div>
                 <MatchBreakdown match={sel.m} />
               </>
             ) : (
-              <EmptyState title="Sense ofertes obertes" text="Crea una oferta per veure la compatibilitat d'aquest jugador." />
+              <EmptyState title="Sense oportunitats obertes" text="Crea una oportunitat per veure la compatibilitat d'aquest jugador." />
             )}
           </Card>
 

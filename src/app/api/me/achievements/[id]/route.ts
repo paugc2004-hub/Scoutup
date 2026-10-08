@@ -1,8 +1,9 @@
 import { api, apiPlayer } from "@/server/api";
+import { zId } from "@/server/validation";
 import { deleteAchievement } from "@/server/services/player-actions";
 
 type Ctx = { params: Promise<{ id: string }> };
 export const DELETE = api<Ctx>(async (_r, { params }) => {
   const u = await apiPlayer();
-  return { ok: true, completeness: deleteAchievement(u, (await params).id) };
+  return { ok: true, completeness: deleteAchievement(u, zId.parse((await params).id)) };
 });

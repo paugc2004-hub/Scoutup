@@ -136,7 +136,7 @@ export function computeMatch(p: MatchPlayer, o: MatchOffer, now: Date = new Date
 
   // 5 · Disponibilitat (10)
   let disp = p.availability === "obert" ? 10 : p.availability === "escoltant" ? 7 : 0;
-  let dispTxt = p.availability === "obert" ? "Obert a ofertes." : p.availability === "escoltant" ? "Escoltant propostes." : "Ara mateix no està disponible.";
+  let dispTxt = p.availability === "obert" ? "Obert a oportunitats." : p.availability === "escoltant" ? "Escoltant propostes." : "Ara mateix no està disponible.";
   if (disp > 0 && o.availability_req === "immediata" && p.available_from && new Date(p.available_from) > now) {
     disp -= 3;
     dispTxt += " Disponible més endavant, no immediatament.";

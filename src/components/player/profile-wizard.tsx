@@ -172,7 +172,7 @@ export function ProfileWizard({ initial, startStep }: { initial: WizardData; sta
           {step === 5 && <VideoStep d={d} set={set} setScore={setScore} />}
           {step === 6 && (
             <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Disponibilitat" className="md:col-span-2"><div className="flex flex-wrap gap-2">{[["obert", "Obert a ofertes"], ["escoltant", "Escoltant propostes"], ["no_disponible", "No disponible"]].map(([k, l]) => <Chip key={k} active={d.availability === k} onClick={() => set("availability", k)}>{l}</Chip>)}</div></Field>
+              <Field label="Disponibilitat" className="md:col-span-2"><div className="flex flex-wrap gap-2">{[["obert", "Obert a noves oportunitats"], ["escoltant", "Escoltant propostes"], ["no_disponible", "No disponible"]].map(([k, l]) => <Chip key={k} active={d.availability === k} onClick={() => set("availability", k)}>{l}</Chip>)}</div></Field>
               <Field label="Situació actual"><Select value={d.contract_status} onChange={(e) => set("contract_status", e.target.value)}><option value="amb_fitxa">Amb fitxa</option><option value="final_temporada">Fitxa fins a final de temporada</option><option value="lliure">Sense equip</option></Select></Field>
               <Field label="Disponible a partir de (opcional)"><Input type="date" value={d.available_from} onChange={(e) => set("available_from", e.target.value)} /></Field>
             </div>

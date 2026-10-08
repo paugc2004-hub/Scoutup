@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import {
   LayoutDashboard, Sparkles, Search, Megaphone, KanbanSquare, MessagesSquare, CalendarDays, Binoculars, Shirt, Trophy,
-  Building2, Settings, Columns3, Compass, Landmark, Route, UserRound, ShieldCheck, Bell, Menu, X, Users,
+  Building2, Settings, Columns3, ClipboardCheck, Compass, Landmark, Route, UserRound, ShieldCheck, Bell, Menu, X, Users,
 } from "lucide-react";
 import { cn } from "@/components/ui";
 
 const ICONS = {
   dashboard: LayoutDashboard, sparkles: Sparkles, search: Search, megaphone: Megaphone, kanban: KanbanSquare, messages: MessagesSquare,
   calendar: CalendarDays, binoculars: Binoculars, shirt: Shirt, trophy: Trophy, building: Building2, settings: Settings, compare: Columns3,
-  compass: Compass, landmark: Landmark, route: Route, user: UserRound, shield: ShieldCheck, bell: Bell, users: Users,
+  compass: Compass, landmark: Landmark, route: Route, user: UserRound, shield: ShieldCheck, bell: Bell, users: Users, clipboard: ClipboardCheck,
 };
 export type NavIcon = keyof typeof ICONS;
 export type NavItem = { href: string; label: string; icon: NavIcon; badge?: number; exact?: boolean; section?: string; mobile?: boolean };

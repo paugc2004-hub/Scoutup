@@ -4,6 +4,7 @@ import { Sidebar, MobileNav, BottomNav } from "@/components/shell/sidebar";
 import type { NavItem } from "@/components/shell/sidebar";
 import { NotificationBell, UserMenu, TopSearch } from "@/components/shell/topbar";
 import { DemoGuide } from "@/components/shell/demo-guide";
+import { demoAccountOf } from "@/lib/demo-flows";
 import { ClubCrest } from "@/components/ui";
 import type { SessionUser } from "@/server/auth/session";
 import { get } from "@/server/db/client";
@@ -36,7 +37,7 @@ export function AppShell({ user, items, children, search, bottomNav, clubId }: {
           <ClubCrest initials={club.initials} color={club.color_primary} size={34} />
           <div className="min-w-0">
             <p className="truncate text-[13px] font-bold text-white">{club.name}</p>
-            <p className="truncate text-[11.5px] text-night-muted">{user.role === "director" ? "Direcció esportiva · accés complet" : `${user.title ?? "Entrenador"} · accés d'equip`}</p>
+            <p className="truncate text-[11.5px] text-night-muted">{user.role === "director" ? "Direcció esportiva · accés complet" : user.role === "coordinator" ? "Coordinació · tots els equips" : `${user.title ?? "Entrenador"} · accés d'equip`}</p>
           </div>
         </div>
       )}
@@ -68,7 +69,7 @@ export function AppShell({ user, items, children, search, bottomNav, clubId }: {
         <main className={`mx-auto w-full max-w-[1320px] px-4 py-6 md:px-8 md:py-8 ${bottomNav ? "pb-24 lg:pb-8" : ""}`}>{children}</main>
       </div>
       {bottomNav && <BottomNav items={items} />}
-      <DemoGuide role={user.role} />
+      <DemoGuide role={demoAccountOf(user.email)} />
     </div>
   );
 }

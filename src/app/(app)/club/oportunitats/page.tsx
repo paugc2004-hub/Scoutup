@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Plus, Megaphone, Users, Inbox, CalendarDays, MapPin, FlaskConical } from "lucide-react";
+import { can } from "@/server/services/access";
 import { requireClubStaff } from "@/server/auth/session";
 import { club as getClub } from "@/server/services/club";
 import { clubOffers, offerStats, rankCandidates, toMatchOffer } from "@/server/services/offers";
@@ -9,12 +10,12 @@ import { POSITION_LABEL, levelLabel, traitLabel } from "@/lib/domain";
 import type { Position } from "@/lib/domain";
 import { fmtDate, fmtRelative } from "@/lib/time";
 
-export const metadata = { title: "Ofertes" };
+export const metadata = { title: "Oportunitats" };
 
 export default async function OffersPage() {
   const u = await requireClubStaff();
   const club = getClub(u.club_id);
-  const offers = clubOffers(u.club_id).filter((o) => u.role === "director" || o.team_id === u.team_id);
+  const offers = clubOffers(u.club_id).filter((o) => can.allTeams(u) || o.team_id === u.team_id);
   const stats = offerStats(offers.map((o) => o.id));
   const ctx = playerCtx();
   const rows = offers.map((o) => {
@@ -27,7 +28,7 @@ export default async function OffersPage() {
   const OfferCard = ({ r }: { r: (typeof rows)[number] }) => {
     const o = r.o;
     return (
-      <Link href={`/club/ofertes/${o.id}`} className={cn("group flex flex-col rounded-2xl border border-line bg-surface p-5 shadow-card transition hover:-translate-y-0.5 hover:border-line-strong hover:shadow-pop", o.status !== "oberta" && "opacity-70")}>
+      <Link href={`/club/oportunitats/${o.id}`} className={cn("group flex flex-col rounded-2xl border border-line bg-surface p-5 shadow-card transition hover:-translate-y-0.5 hover:border-line-strong hover:shadow-pop", o.status !== "oberta" && "opacity-70")}>
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-1.5">
             <Badge tone="dark">{o.team_name}</Badge>
@@ -62,9 +63,9 @@ export default async function OffersPage() {
     <div>
       <PageHeader
         eyebrow="Captació"
-        title="Ofertes"
-        subtitle={u.role === "director" ? "Publica necessitats concretes i ScoutUp t'ordena els candidats per compatibilitat." : "Ofertes del teu equip. Només la direcció esportiva en pot publicar de noves."}
-        actions={u.role === "director" ? <LinkButton href="/club/ofertes/nova" variant="primary" icon={<Plus className="size-4" />}>Nova oferta</LinkButton> : undefined}
+        title="Oportunitats"
+        subtitle={can.manageOffers(u) ? "Publica necessitats concretes i ScoutUp t'ordena els candidats per compatibilitat." : "Oportunitats del teu equip. Només direcció i coordinació en poden publicar de noves."}
+        actions={can.manageOffers(u) ? <LinkButton href="/club/oportunitats/nova" variant="primary" icon={<Plus className="size-4" />}>Nova oportunitat</LinkButton> : undefined}
       />
       <div className="mb-6 grid grid-cols-3 gap-3 md:max-w-xl">
         <div className="rounded-2xl border border-line bg-surface p-3.5"><Megaphone className="size-4 text-subtle" /><p className="mt-2 text-[22px] font-extrabold tabular">{open.length}</p><p className="text-[12px] text-muted">Obertes</p></div>
@@ -72,7 +73,7 @@ export default async function OffersPage() {
         <div className="rounded-2xl border border-line bg-surface p-3.5"><Users className="size-4 text-subtle" /><p className="mt-2 text-[22px] font-extrabold tabular">{new Set(open.flatMap((r) => r.cands.map((c) => c.player.id))).size}</p><p className="text-[12px] text-muted">Perfils ≥70%</p></div>
       </div>
       {open.length === 0 ? (
-        <EmptyState icon={<Megaphone className="size-5" />} title="No hi ha ofertes obertes" text="Crea'n una per començar a rebre candidats compatibles." action={u.role === "director" ? <LinkButton href="/club/ofertes/nova" variant="primary">Nova oferta</LinkButton> : undefined} />
+        <EmptyState icon={<Megaphone className="size-5" />} title="No hi ha oportunitats obertes" text="Crea'n una per començar a rebre candidats compatibles." action={can.manageOffers(u) ? <LinkButton href="/club/oportunitats/nova" variant="primary">Nova oportunitat</LinkButton> : undefined} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{open.map((r) => <OfferCard key={r.o.id} r={r} />)}</div>
       )}

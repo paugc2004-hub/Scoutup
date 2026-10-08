@@ -9,11 +9,11 @@
  * de la càrrega, perquè la demo sempre sembli "d'avui".
  */
 import type { DatabaseSync } from "node:sqlite";
-import { CLUBS, CLUB_TEXTS, HOME_CLUB_ID } from "./clubs.ts";
+import { CLUBS, CLUB_TEXTS, HOME_CLUB_ID, CLUB_B_ID } from "./clubs.ts";
 import type { ClubDef } from "./clubs.ts";
 import { MALE_NAMES, FEMALE_NAMES, SURNAMES, BLOCKED_COMBOS, FILLER_TEAMS, COACH_NAMES } from "./names.ts";
 import {
-  POSITIONS, POSITION_LABEL, levelLabel, currentSeasonStartYear, seasonLabel, seasonId, DEFAULT_PRIVACY,
+  levelLabel, currentSeasonStartYear, seasonLabel, seasonId, DEFAULT_PRIVACY,
   stageToAppStatus, STAGE_LABEL,
 } from "../../src/lib/domain.ts";
 import type { Position, Attrs, Privacy, Preferences, Stage } from "../../src/lib/domain.ts";
@@ -201,7 +201,6 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   const seasons = [start - 2, start - 1, start];
   const cur = seasonId(start);
   const prev = seasonId(start - 1);
-  const nowIso = iso(now);
 
   for (const y of seasons) ins(c, "seasons", { id: seasonId(y), label: seasonLabel(y), start_year: y, is_current: y === start ? 1 : 0 });
 
@@ -211,6 +210,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     director: "u_director",
     coach: "u_coach",
     coachCadet: "u_coach_cadet",
+    coordinator: "u_coordinator",
     player: "u_player",
     tutor: "u_tutor",
   };
@@ -247,9 +247,11 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     if (cl.id !== HOME_CLUB_ID) {
       const uid = `u_staff_${clubSuffix(cl.id)}`;
       staffOf[cl.id] = uid;
+      // El director del FC Mediterrani és un usuari de demo: serveix per demostrar l'aïllament entre clubs.
+      const isClubB = cl.id === CLUB_B_ID;
       ins(c, "users", {
-        id: uid, email: `direccio@${s}.example`, password_hash: "!", name: COACH_NAMES[idx % COACH_NAMES.length], role: "director",
-        title: "Direcció esportiva", club_id: cl.id, avatar_hue: (idx * 37) % 360, is_demo_login: 0, created_at: ago(c, 300),
+        id: uid, email: isClubB ? "club-b@scoutup.demo" : `direccio@${s}.example`, password_hash: isClubB ? demoHash : "!", name: COACH_NAMES[idx % COACH_NAMES.length], role: "director",
+        title: "Direcció esportiva", club_id: cl.id, avatar_hue: (idx * 37) % 360, is_demo_login: isClubB ? 1 : 0, created_at: ago(c, 300),
       });
     }
 
@@ -266,6 +268,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   // Usuaris de demo (club principal, jugador i tutor)
   ins(c, "users", { id: U.director, email: "director@scoutup.demo", password_hash: demoHash, name: "Marta Casanovas", role: "director", title: "Directora esportiva", club_id: HOME_CLUB_ID, avatar_hue: 152, is_demo_login: 1, created_at: ago(c, 380) });
   ins(c, "users", { id: U.coach, email: "coach@scoutup.demo", password_hash: demoHash, name: "Jordi Esteve", role: "coach", title: "Entrenador · Juvenil A", club_id: HOME_CLUB_ID, team_id: "t_vn_juva", avatar_hue: 210, is_demo_login: 1, created_at: ago(c, 370) });
+  ins(c, "users", { id: U.coordinator, email: "coordinacio@scoutup.demo", password_hash: demoHash, name: "Sergi Puig", role: "coordinator", title: "Coordinador de futbol base", club_id: HOME_CLUB_ID, avatar_hue: 40, is_demo_login: 1, created_at: ago(c, 365) });
   ins(c, "users", { id: U.coachCadet, email: "cadet@vallesnord.example", password_hash: "!", name: "Laia Ferrer", role: "coach", title: "Entrenadora · Cadet A", club_id: HOME_CLUB_ID, team_id: "t_vn_cada", avatar_hue: 330, is_demo_login: 0, created_at: ago(c, 360) });
   ins(c, "users", { id: U.player, email: "player@scoutup.demo", password_hash: demoHash, name: "Pol Serra Batlle", role: "player", title: "Jugador", player_id: "p_pol", avatar_hue: 28, is_demo_login: 1, created_at: ago(c, 210) });
   ins(c, "users", { id: U.tutor, email: "tutor@scoutup.demo", password_hash: demoHash, name: "Anna Font", role: "guardian", title: "Tutora legal de Nil Font", player_id: "p_nil", avatar_hue: 280, is_demo_login: 1, created_at: ago(c, 150) });
@@ -473,7 +476,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   const place = (city: string) => placeByCity(city)!;
 
   // Jugadors protagonistes de la demo
-  const pol = makePlayer({
+  makePlayer({
     id: "p_pol", userId: U.player, first: "Pol", last: "Serra Batlle", gender: "M", birth: `${start - 18}-03-14`, birthYear: start - 18,
     basePlace: place("Terrassa"), place: place("Terrassa"), pos: "DC", sec: ["MCD"], foot: "esquerre", height: 186,
     clubId: "club_serralada", teamId: "t_serralada_juva", category: "Juvenil", rank: 3, availability: "obert", contract: "final_temporada",
@@ -487,7 +490,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     prev: { matches: 25, starts: 13, minutes: 1520, goals: 3, assists: 1, yellow: 5, red: 0, callups: 27, cs: 5, ver: "updated" },
     hasCurrentStats: false, careerSeasons: 3, videos: 0, achievements: 0,
   });
-  const biel = makePlayer({
+  makePlayer({
     id: "p_biel", first: "Biel", last: "Riera Coll", gender: "M", birth: `${start - 18}-02-02`, birthYear: start - 18,
     basePlace: place("Sant Cugat del Vallès"), place: place("Sant Cugat del Vallès"), pos: "DC", sec: ["LE"], foot: "esquerre", height: 183,
     clubId: "club_turo", teamId: "t_turo_juva", category: "Juvenil", rank: 2, availability: "escoltant", contract: "amb_fitxa",
@@ -500,7 +503,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     prev: { matches: 12, starts: 3, minutes: 400, goals: 1, assists: 0, yellow: 2, red: 0, callups: 22, cs: 1, ver: "self" },
     hasCurrentStats: true, careerSeasons: 2, videos: 2, achievements: 1,
   });
-  const arnau = makePlayer({
+  makePlayer({
     id: "p_arnau", first: "Arnau", last: "Soler Vives", gender: "M", birth: `${start - 18}-01-19`, birthYear: start - 18,
     basePlace: place("Granollers"), place: place("Granollers"), pos: "DC", sec: [], foot: "dret", height: 188,
     clubId: "club_serraverda", teamId: "t_serraverda_juva", category: "Juvenil", rank: 2, availability: "escoltant",
@@ -509,7 +512,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     prev: { matches: 28, starts: 24, minutes: 2130, goals: 4, assists: 1, yellow: 6, red: 0, callups: 29, cs: 9, ver: "verified" },
     hasCurrentStats: true, careerSeasons: 4, videos: 3, achievements: 2,
   });
-  const nil = makePlayer({
+  makePlayer({
     id: "p_nil", first: "Nil", last: "Font Casals", gender: "M", birth: `${start - 16}-05-22`, birthYear: start - 16,
     basePlace: place("Cerdanyola del Vallès"), place: place("Cerdanyola del Vallès"), pos: "ED", sec: ["EE", "MCO"], foot: "dret", height: 172,
     clubId: "club_horitzo", teamId: "t_horitzo_juva", category: "Juvenil", rank: 3, availability: "obert",
@@ -648,7 +651,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     return a < 18;
   };
 
-  // ── Ofertes ─────────────────────────────────────────────────────────────────
+  // ── Oportunitats ─────────────────────────────────────────────────────────────────
   type OfferDef = { id: string; club: string; team: string; kind?: "incorporacio" | "prova"; title: string; position: Position; level: number; km: number; foot?: string; height?: number; traits: string[]; daysAgo: number; trialIn?: number; description: string; restrictions?: string; availability?: string; status?: string };
   const OFFERS: OfferDef[] = [
     { id: "o_vn_central", club: HOME_CLUB_ID, team: "juva", title: "Busquem central sub-19", position: "DC", level: 2, km: 30, foot: "esquerre", height: 180, traits: ["joc_aeri", "sortida_pilota", "defensa"], daysAgo: 12, availability: "temporada",
@@ -773,7 +776,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     const id = `pl_${e.player}`;
     const created = ago(c, e.daysAgo, R.int(c, 1, 8));
     ins(c, "pipeline_entries", { id, club_id: HOME_CLUB_ID, team_id: e.team, player_id: e.player, offer_id: e.offer ?? null, stage: e.stage, added_by: e.team === "t_vn_juva" && R.chance(c, 0.5) ? U.coach : U.director, sort: i, created_at: created, updated_at: ago(c, Math.max(0, e.daysAgo - R.int(c, 1, 3))) });
-    ins(c, "pipeline_activity", { id: `pa_${e.player}_0`, club_id: HOME_CLUB_ID, player_id: e.player, entry_id: id, user_id: U.director, kind: "afegit", text: e.offer ? `Afegit al pipeline des de l'oferta «${OFFERS.find((q) => q.id === e.offer)!.title}»` : "Afegit al pipeline", from_stage: null, to_stage: "nou", created_at: created });
+    ins(c, "pipeline_activity", { id: `pa_${e.player}_0`, club_id: HOME_CLUB_ID, player_id: e.player, entry_id: id, user_id: U.director, kind: "afegit", text: e.offer ? `Afegit al pipeline des de l'oportunitat «${OFFERS.find((q) => q.id === e.offer)!.title}»` : "Afegit al pipeline", from_stage: null, to_stage: "nou", created_at: created });
     const target = stageOrder.indexOf(e.stage);
     const path = e.stage === "rebutjat" ? ["revisar", "rebutjat"] : e.stage === "en_espera" ? ["revisar", "interessant", "en_espera"] : e.stage === "incorporat" ? ["revisar", "interessant", "contactat", "en_conversa", "prova", "incorporat"] : stageOrder.slice(1, target + 1);
     let prevStage = "nou";
@@ -790,7 +793,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   // Inserta candidatures
   apps.forEach((a, i) => {
     const t = ago(c, a.daysAgo, R.int(c, 1, 9));
-    ins(c, "applications", { id: `ap_${i}`, offer_id: a.offer, player_id: a.player, origin: "jugador", status: a.status, message: a.msg ?? (R.chance(c, 0.5) ? "Hola, m'interessa molt l'oferta. Quedo a la vostra disposició per a qualsevol informació." : null), match_score: score(a.player, a.offer), created_at: t, updated_at: t });
+    ins(c, "applications", { id: `ap_${i}`, offer_id: a.offer, player_id: a.player, origin: "jugador", status: a.status, message: a.msg ?? (R.chance(c, 0.5) ? "Hola, m'interessa molt l'oportunitat. Quedo a la vostra disposició per a qualsevol informació." : null), match_score: score(a.player, a.offer), created_at: t, updated_at: t });
   });
 
   // Pipelines d'altres clubs que inclouen en Pol (clubs interessats)
@@ -841,7 +844,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
       { side: "player" as const, body: "Hi seré. Haig de portar alguna cosa especial?", minsAgo: 7 * D },
       { side: "club" as const, body: `Només la teva roba d'entrenament i botes de gespa artificial. Et rebrà el cos tècnic del ${team}.`, minsAgo: 7 * D - 30 },
     ],
-    (n: string, team: string) => [
+    (n: string, _team: string) => [
       { side: "club" as const, body: `Hola ${n}, gràcies per acceptar la sol·licitud. Ens agradaria saber quins són els teus plans per a la propera temporada.`, minsAgo: 3 * D },
       { side: "player" as const, body: "Hola! Ara mateix estic bé al meu club, però estic obert a escoltar propostes per l'any vinent.", minsAgo: 2 * D },
       { side: "club" as const, body: "Entesos. Et seguirem durant la temporada i et tornarem a escriure més endavant. Molta sort!", minsAgo: 2 * D - 45 },
@@ -856,7 +859,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   });
   // Contactes pendents (etapa contactat)
   pipe.filter((e) => e.stage === "contactat" && e.player !== "p_nil").forEach((e) => {
-    cr(HOME_CLUB_ID, e.player, e.team, "oferta", `Hola ${pById.get(e.player)!.first}, t'escrivim des del CF Vallès Nord per l'oferta «${OFFERS.find((o) => o.id === e.offer)?.title ?? "del club"}». T'agradaria parlar-ne?`, "pendent", 2);
+    cr(HOME_CLUB_ID, e.player, e.team, "oferta", `Hola ${pById.get(e.player)!.first}, t'escrivim des del CF Vallès Nord per l'oportunitat «${OFFERS.find((o) => o.id === e.offer)?.title ?? "del club"}». T'agradaria parlar-ne?`, "pendent", 2);
   });
   // Nil (menor): cal autorització del tutor
   cr(HOME_CLUB_ID, "p_nil", "t_vn_juvb", "oferta", "Hola Nil, des del CF Vallès Nord ens agradaria convidar-te a conèixer el nostre Juvenil B, amb possibilitat de pujar al Juvenil A.", "pendent_tutor", 1);
@@ -900,7 +903,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   void arnauEntry;
   const otherProva = pipe.find((e) => e.stage === "prova" && e.player !== "p_arnau");
   if (otherProva) ev({ club: HOME_CLUB_ID, team: otherProva.team, owner: U.director, kind: "prova", title: `Prova: ${pname(otherProva.player)}`, day: 3, h: 18, dur: 90, location: "Camp annex Vallès Nord", related: otherProva.player });
-  ev({ club: HOME_CLUB_ID, team: "t_vn_juva", owner: U.director, kind: "scouting", title: "Scouting: UE Serralada – CF Turó Alt (Juvenil)", day: nextW(6, 0), h: 11, m: 30, dur: 105, location: "Terrassa", notes: "Seguir els centrals dels dos equips (oferta central sub-19)." });
+  ev({ club: HOME_CLUB_ID, team: "t_vn_juva", owner: U.director, kind: "scouting", title: "Scouting: UE Serralada – CF Turó Alt (Juvenil)", day: nextW(6, 0), h: 11, m: 30, dur: 105, location: "Terrassa", notes: "Seguir els centrals dels dos equips (oportunitat central sub-19)." });
   ev({ club: HOME_CLUB_ID, team: "t_vn_juvb", owner: U.director, kind: "scouting", title: "Scouting: CF Horitzó – FC Delta Sud (Juvenil)", day: nextW(5, 1), h: 16, dur: 105, location: "Cerdanyola del Vallès" });
   const talk = pipe.find((e) => e.stage === "en_conversa");
   if (talk) ev({ club: HOME_CLUB_ID, team: talk.team, owner: U.director, kind: "trucada", title: `Videotrucada amb ${pname(talk.player)}`, day: nextW(3, 0) === 0 ? 7 : nextW(3, 0), h: 18, dur: 30, location: "Videotrucada (enllaç per ScoutUp)", related: talk.player });
@@ -926,7 +929,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
       mental: { concentracio: v(6.5), competitivitat: v(7), resiliencia: v(6.5) },
       social: { companyonia: v(7), comunicacio: v(a.lideratge ?? 6), compromis: v(7) },
     };
-    ins(c, "evaluations", { id: `e_${pid}_${author}`, club_id: HOME_CLUB_ID, player_id: pid, author_user_id: author, team_id: pipe.find((x) => x.player === pid)?.team ?? null, scores: JSON.stringify(scores), decision, comment, created_at: ago(c, daysAgo), updated_at: ago(c, daysAgo) });
+    ins(c, "evaluations", { id: `e_${pid}_${author}`, club_id: HOME_CLUB_ID, player_id: pid, author_user_id: author, team_id: pipe.find((x) => x.player === pid)?.team ?? null, scores: JSON.stringify(scores), decision, comment, context: ["Partit de lliga", "Sessió d'entrenament", "Vídeo del partit", "Torneig"][(pid.length + daysAgo) % 4], created_at: ago(c, daysAgo), updated_at: ago(c, daysAgo) });
   };
   evalFor("p_arnau", U.director, 0.3, "prova", "Central molt complet. Dominant per alt i amb lideratge. Cal veure'l en la sortida de pilota sota pressió.", 9);
   evalFor("p_arnau", U.coach, 0.1, "fitxar", "Encaixa perfectament amb el que necessitem. Molta personalitat.", 3);
@@ -1056,14 +1059,14 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   const nt = (user: string, kind: string, title: string, body: string | null, link: string | null, minsAgo: number, read = false) =>
     ins(c, "notifications", { id: `nt_${++ntN}`, user_id: user, kind, title, body, link, created_at: ago(c, 0, 0, minsAgo), read_at: read ? ago(c, 0, 0, Math.max(0, minsAgo - 30)) : null });
   const talkConv = convPlayers.length ? "cv_1" : null;
-  nt(U.director, "match", "3 nous perfils coincideixen amb la teva necessitat.", "Oferta «Busquem central sub-19» · compatibilitat superior al 80%.", "/club/ofertes/o_vn_central", 95);
+  nt(U.director, "match", "3 nous perfils coincideixen amb la teva necessitat.", "Oportunitat «Busquem central sub-19» · compatibilitat superior al 80%.", "/club/oportunitats/o_vn_central", 95);
   nt(U.director, "contact", "Un jugador ha acceptat la teva sol·licitud.", convPlayers[0] ? `${pname(convPlayers[0].player)} ha acceptat parlar amb el club.` : null, talkConv ? `/club/missatges/${talkConv}` : "/club/missatges", 5 * 60);
-  nt(U.director, "application", "Noves sol·licituds a «Busquem central sub-19»", "Tens candidatures pendents de revisar.", "/club/ofertes/o_vn_central?tab=sollicituds", 7 * 60);
+  nt(U.director, "application", "Noves sol·licituds a «Busquem central sub-19»", "Tens candidatures pendents de revisar.", "/club/oportunitats/o_vn_central?tab=sollicituds", 7 * 60);
   nt(U.director, "event", "Demà tens una prova programada.", `${pname("p_arnau")} · 19:30 h · Camp Municipal Vallès Nord`, "/club/calendari", 9 * 60);
   nt(U.director, "message", "Nou missatge", "Tens missatges sense llegir a la safata.", "/club/missatges", 3 * 60);
-  nt(U.director, "system", "Oferta «Porter per a l'Amateur A» caduca aviat", "Queden 15 dies. Pots ampliar-la o tancar-la.", "/club/ofertes/o_vn_por", 2 * D, true);
-  nt(U.director, "match", "Nou perfil compatible amb «Lateral esquerre per al Cadet A»", null, "/club/ofertes/o_vn_le", 3 * D, true);
-  nt(U.coach, "match", "3 nous perfils coincideixen amb la teva necessitat.", "Central esquerrà per al Juvenil A.", "/club/ofertes/o_vn_central", 95);
+  nt(U.director, "system", "Oportunitat «Porter per a l'Amateur A» caduca aviat", "Queden 15 dies. Pots ampliar-la o tancar-la.", "/club/oportunitats/o_vn_por", 2 * D, true);
+  nt(U.director, "match", "Nou perfil compatible amb «Lateral esquerre per al Cadet A»", null, "/club/oportunitats/o_vn_le", 3 * D, true);
+  nt(U.coach, "match", "3 nous perfils coincideixen amb la teva necessitat.", "Central esquerrà per al Juvenil A.", "/club/oportunitats/o_vn_central", 95);
   nt(U.coach, "event", "Demà tens una prova programada.", `${pname("p_arnau")} · 19:30 h`, "/club/calendari", 9 * 60);
   nt(U.coach, "system", "La direcció t'ha assignat un nou jugador al pipeline", null, "/club/pipeline", 2 * D, true);
 

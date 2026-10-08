@@ -168,3 +168,45 @@ export function presentPlayer(p: PlayerRow, ctx: PlayerCtx, opts: { full?: boole
     languages: p.languages,
   };
 }
+
+/** Filtres de cerca que es resolen a SQL (consulta parametritzada, sense concatenar entrada de l'usuari). */
+export type PlayerSqlFilter = {
+  excludeClubId?: string; pos?: string; withSecondary?: boolean; category?: string; gender?: string; foot?: string;
+  levelMax?: number; heightMin?: number; comarca?: string; availability?: string; activeOnly?: boolean; verifiedOnly?: boolean; freeOnly?: boolean;
+};
+
+/**
+ * Cerca de jugadors al servidor. Els filtres simples es fan a SQL perquè la cerca escali;
+ * la visibilitat (privacitat, menors, bloquejos) es continua aplicant després amb clubCanSee.
+ */
+export function searchPlayerRows(f: PlayerSqlFilter): PlayerRow[] {
+  const where: string[] = ["(p.onboarding_done = 1 OR p.completeness >= 30)"];
+  const params: unknown[] = [];
+  const add = (sql: string, ...v: unknown[]) => {
+    where.push(sql);
+    params.push(...v);
+  };
+  if (f.excludeClubId) add("(p.club_id IS NULL OR p.club_id != ?)", f.excludeClubId);
+  if (f.pos) {
+    if (f.withSecondary) add("(p.primary_position = ? OR EXISTS (SELECT 1 FROM json_each(p.secondary_positions) WHERE value = ?))", f.pos, f.pos);
+    else add("p.primary_position = ?", f.pos);
+  }
+  if (f.category) add("p.category = ?", f.category);
+  if (f.gender) add("p.gender = ?", f.gender);
+  if (f.foot) add("p.foot = ?", f.foot);
+  if (f.levelMax) add("p.division_rank <= ?", f.levelMax);
+  if (f.heightMin) add("p.height_cm >= ?", f.heightMin);
+  if (f.comarca) add("p.comarca = ?", f.comarca);
+  if (f.activeOnly) add("p.availability != 'no_disponible'");
+  else if (f.availability) add("p.availability = ?", f.availability);
+  if (f.verifiedOnly) add("p.verification = 'verified'");
+  if (f.freeOnly) add("p.club_id IS NULL");
+  return all<PlayerRow>(`${PLAYER_SELECT} WHERE ${where.join(" AND ")}`, ...params);
+}
+
+/** Diversos jugadors en una sola consulta (evita N+1 en llistes com el pipeline o el comparador). */
+export function playerRowsByIds(ids: string[]): Map<string, PlayerRow> {
+  const uniq = [...new Set(ids)].slice(0, 500);
+  if (!uniq.length) return new Map();
+  return new Map(all<PlayerRow>(`${PLAYER_SELECT} WHERE p.id IN (${uniq.map(() => "?").join(",")})`, ...uniq).map((p) => [p.id, p]));
+}

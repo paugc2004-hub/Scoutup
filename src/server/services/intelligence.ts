@@ -201,7 +201,7 @@ export function compareSummary(players: PlayerView[], scores?: Record<string, nu
   if (young[0].birth_year !== young[1].birth_year) lines.push(`${young[0].first_name} és el més jove (nascut el ${young[0].birth_year}): més marge de creixement.`);
   if (scores) {
     const best = [...players].sort((a, b) => (scores[b.id] ?? 0) - (scores[a.id] ?? 0))[0];
-    lines.push(`Per a l'oferta seleccionada, el millor encaix és ${best.first_name} (${scores[best.id]}%).`);
+    lines.push(`Per a l'oportunitat seleccionada, el millor encaix és ${best.first_name} (${scores[best.id]}%).`);
   }
   return lines.slice(0, 5);
 }

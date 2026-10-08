@@ -1,12 +1,14 @@
 import { z } from "zod";
-import { api, apiStaff, body } from "@/server/api";
+import { api, apiStaff, body, rateLimit } from "@/server/api";
 import { logInteraction } from "@/server/services/actions";
+import { zId, zText } from "@/server/validation";
 
-const S = z.object({ playerId: z.string(), kind: z.string().default("altre"), text: z.string().trim().min(2) });
-const KIND: Record<string, string> = { trucada: "Trucada", reunio: "Reunió", partit: "Vist en un partit", familia: "Parlat amb la família", entrenador: "Parlat amb l'entrenador", altre: "Interacció" };
+const KIND = { trucada: "Trucada", reunio: "Reunió", partit: "Vist en un partit", familia: "Parlat amb la família", entrenador: "Parlat amb l'entrenador", altre: "Interacció" } as const;
+const S = z.object({ playerId: zId, kind: z.enum(Object.keys(KIND) as [keyof typeof KIND, ...(keyof typeof KIND)[]]).default("altre"), text: zText(600, 2) });
 export const POST = api(async (req) => {
-  const u = await apiStaff();
+  const u = await apiStaff("pipeline.manage");
+  rateLimit("write", u.id);
   const d = S.parse(await body(req));
-  logInteraction(u, d.playerId, `${KIND[d.kind] ?? "Interacció"}: ${d.text}`);
+  logInteraction(u, d.playerId, `${KIND[d.kind]}: ${d.text}`);
   return { ok: true };
 });

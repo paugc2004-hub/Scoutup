@@ -171,11 +171,11 @@ export function OfferForm({ teams, clubCity, initial }: { teams: Team[]; clubCit
                 setSaving(false);
                 return;
               }
-              toast("Oferta publicada", "ok", `${d.preview.over80} perfils per sobre del 80%`);
-              router.push(`/club/ofertes/${d.id}`);
+              toast("Oportunitat publicada", "ok", `${d.preview.over80} perfils per sobre del 80%`);
+              router.push(`/club/oportunitats/${d.id}`);
             }}
           >
-            Publicar oferta
+            Publicar oportunitat
           </Button>
           <p className="mt-3 flex items-center gap-1.5 text-[11.5px] text-night-muted"><Users className="size-3.5" /> Només es tenen en compte perfils visibles per al teu club.</p>
         </Card>

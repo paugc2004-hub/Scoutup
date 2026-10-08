@@ -2,10 +2,10 @@ import Link from "next/link";
 import { Search, MapPin, Video, ChevronLeft, ChevronRight } from "lucide-react";
 import { requireClubStaff } from "@/server/auth/session";
 import { all } from "@/server/db/client";
-import { clubCanSee, clubRelations } from "@/server/services/access";
+import { can, clubCanSee, clubRelations } from "@/server/services/access";
 import { club as getClub } from "@/server/services/club";
 import { clubOffers, offerRow, toMatchOffer } from "@/server/services/offers";
-import { allPlayerRows, playerCtx, presentPlayer, secondaryOf, toMatchPlayer } from "@/server/services/players";
+import { playerCtx, presentPlayer, searchPlayerRows, toMatchPlayer } from "@/server/services/players";
 import { computeMatch } from "@/lib/matching";
 import { distanceKm, placeByCity } from "@/lib/geo";
 import { FOOT_LABEL, ageAt } from "@/lib/domain";
@@ -28,44 +28,41 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const club = getClub(u.club_id);
   const rel = clubRelations(u.club_id);
   const ctx = playerCtx();
-  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && (u.role === "director" || o.team_id === u.team_id));
-  const offer = sp.offer ? offerRow(sp.offer) : null;
-  const om = offer && offer.club_id === u.club_id ? toMatchOffer(offer) : null;
+  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && (can.allTeams(u) || o.team_id === u.team_id));
+  // una oportunitat d'un altre club (ID manipulat a l'URL) s'ignora
+  const found = sp.offer ? offerRow(sp.offer) : null;
+  const offer = found && found.club_id === u.club_id && can.seeTeam(u, found.team_id) ? found : null;
+  const om = offer ? toMatchOffer(offer) : null;
   const stages = new Map(all<{ player_id: string; stage: Stage }>("SELECT player_id, stage FROM pipeline_entries WHERE club_id = ?", u.club_id).map((r) => [r.player_id, r.stage]));
   const center = sp.city ? placeByCity(sp.city) : null;
   const km = Number(sp.km ?? 30);
 
   let hiddenMinors = 0;
-  const rows = allPlayerRows().filter((p) => {
-    if (p.club_id === u.club_id) return false;
+  // Filtres simples resolts a SQL; la visibilitat i els filtres calculats s'apliquen després.
+  const num = (v?: string) => (v && /^\d{1,4}$/.test(v) ? Number(v) : undefined);
+  const candidates = searchPlayerRows({
+    excludeClubId: u.club_id, pos: sp.pos, withSecondary: sp.sec === "1", category: sp.cat, gender: om?.gender ?? sp.g, foot: sp.foot,
+    levelMax: num(sp.lvl), heightMin: num(sp.hmin), comarca: sp.comarca, activeOnly: sp.disp === "actius", availability: sp.disp && sp.disp !== "actius" ? sp.disp : undefined,
+    verifiedOnly: sp.ver === "1", freeOnly: sp.lliure === "1",
+  });
+  const rows = candidates.filter((p) => {
     const v = clubCanSee(p, club, rel);
     if (!v.visible) {
       if (v.reason?.includes("Menor")) hiddenMinors++;
       return false;
     }
-    const age = ageAt(p.birth_date);
+    // text lliure: insensible a accents i majúscules (es fa aquí perquè LIKE de SQLite no normalitza accents)
     if (sp.q) {
-      const q = norm(sp.q);
+      const q = norm(sp.q.slice(0, 80));
       const hay = norm(`${p.first_name} ${p.last_name} ${p.city} ${p.comarca} ${p.club_name ?? ""} ${p.primary_position}`);
       if (!q.split(/\s+/).every((w) => hay.includes(w))) return false;
     }
-    if (sp.pos && p.primary_position !== sp.pos && !(sp.sec === "1" && secondaryOf(p).includes(sp.pos as never))) return false;
-    if (sp.cat && p.category !== sp.cat) return false;
-    if (sp.g && p.gender !== sp.g) return false;
+    const age = ageAt(p.birth_date);
     if (sp.amin && age < Number(sp.amin)) return false;
     if (sp.amax && age > Number(sp.amax)) return false;
-    if (sp.foot && p.foot !== sp.foot) return false;
-    if (sp.lvl && p.division_rank > Number(sp.lvl)) return false;
-    if (sp.hmin && (!p.height_cm || p.height_cm < Number(sp.hmin))) return false;
     if (center && distanceKm(p.lat, p.lng, center.lat, center.lng) > km) return false;
-    if (sp.comarca && p.comarca !== sp.comarca) return false;
-    if (sp.disp === "actius" && p.availability === "no_disponible") return false;
-    if (sp.disp && sp.disp !== "actius" && p.availability !== sp.disp) return false;
-    if (sp.ver === "1" && p.verification !== "verified") return false;
     if (sp.video === "1" && !(ctx.videos.get(p.id) ?? 0)) return false;
-    if (sp.lliure === "1" && p.club_id) return false;
     if (sp.minmin && (ctx.prev.get(p.id)?.minutes ?? 0) < Number(sp.minmin)) return false;
-    if (om && p.gender !== om.gender) return false;
     return true;
   });
 
@@ -94,7 +91,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <div>
-      <PageHeader eyebrow="Descobrir" title="Cercar jugadors" subtitle="Filtra per posició, edat, nivell, zona, disponibilitat i dades. Tria una oferta per ordenar per compatibilitat." actions={<Link href="/club/intelligence" className={btnClass("secondary")}>Prova la cerca en llenguatge natural</Link>} />
+      <PageHeader eyebrow="Descobrir" title="Cercar jugadors" subtitle="Filtra per posició, edat, nivell, zona, disponibilitat i dades. Tria una oportunitat per ordenar per compatibilitat." actions={<Link href="/club/intelligence" className={btnClass("secondary")}>Prova la cerca en llenguatge natural</Link>} />
       <div className="grid gap-5 lg:grid-cols-[300px_1fr]">
         <SearchFilters offers={offers.map((o) => ({ id: o.id, title: o.title }))} />
         <div className="min-w-0">
@@ -105,9 +102,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           {shown.length === 0 ? (
             <EmptyState icon={<Search className="size-5" />} title="Cap jugador amb aquests filtres" text="Amplia la zona, treu algun filtre o prova ScoutUp Intelligence." />
           ) : (
-            <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
               {shown.map(({ p, m, km: dist }, i) => (
-                <div key={p.id} className="group relative flex flex-col rounded-2xl border border-line bg-surface p-4 shadow-card transition hover:-translate-y-0.5 hover:border-line-strong hover:shadow-pop" style={{ animation: `rise .35s ${Math.min(i, 12) * 0.025}s both` }}>
+                <div key={p.id} className="group relative flex min-w-0 flex-col rounded-2xl border border-line bg-surface p-4 shadow-card transition hover:-translate-y-0.5 hover:border-line-strong hover:shadow-pop" style={{ animation: `rise .35s ${Math.min(i, 12) * 0.025}s both` }}>
                   <Link href={`/club/jugadors/${p.id}${om ? `?offer=${sp.offer}` : ""}`} className="absolute inset-0 z-0 rounded-2xl" aria-label={`Veure el perfil de ${p.name}`} />
                   <div className="pointer-events-none relative flex items-start gap-3">
                     <Avatar initials={p.initials} hue={p.hue} size={46} />

@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { useCallback, useEffect, useId, useRef, useState, useTransition } from "react";
 import type { ReactNode, InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, X } from "lucide-react";
@@ -81,8 +81,10 @@ export function ActionButton({ url, method, body, ok, okSub, children, variant, 
 
 export function Modal({ open, onClose, title, subtitle, children, size = "md", footer }: { open: boolean; onClose: () => void; title: ReactNode; subtitle?: ReactNode; children: ReactNode; size?: "sm" | "md" | "lg" | "xl"; footer?: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
+  const titleId = useId();
   useEffect(() => {
     if (!open) return;
+    const prev = document.activeElement as HTMLElement | null;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -90,16 +92,17 @@ export function Modal({ open, onClose, title, subtitle, children, size = "md", f
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      prev?.focus?.(); // retorna el focus a l'element que ha obert el diàleg
     };
   }, [open, onClose]);
   if (!open) return null;
   const w = size === "sm" ? "max-w-md" : size === "lg" ? "max-w-2xl" : size === "xl" ? "max-w-4xl" : "max-w-lg";
   return (
-    <div className="fixed inset-0 z-[90] flex items-end justify-center bg-night/50 p-0 backdrop-blur-[2px] animate-fade-in sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()} role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-[90] flex items-end justify-center bg-night/50 p-0 backdrop-blur-[2px] animate-fade-in sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()} role="dialog" aria-modal="true" aria-labelledby={titleId}>
       <div ref={ref} className={cn("flex max-h-[92dvh] w-full flex-col rounded-t-3xl border border-line bg-surface shadow-pop animate-pop sm:rounded-3xl", w)}>
         <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-4">
           <div>
-            <h2 className="text-[17px] font-extrabold tracking-tight">{title}</h2>
+            <h2 id={titleId} className="text-[17px] font-extrabold tracking-tight">{title}</h2>
             {subtitle && <p className="mt-0.5 text-[13px] text-muted">{subtitle}</p>}
           </div>
           <button onClick={onClose} className="grid size-8 place-items-center rounded-lg text-subtle hover:bg-sunken hover:text-ink" aria-label="Tancar">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, CalendarDays, Ruler, Footprints, Layers, Cake, Sparkles, Clock, FlaskConical, Inbox, Target, MessageSquareQuote } from "lucide-react";
+import { can } from "@/server/services/access";
 import { requireClubStaff } from "@/server/auth/session";
 import { all } from "@/server/db/client";
 import { club as getClub } from "@/server/services/club";
@@ -20,8 +21,8 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
   const sp = await searchParams;
   const o = offerRow(id);
   if (!o || o.club_id !== u.club_id) notFound();
-  if (u.role === "coach" && o.team_id !== u.team_id) {
-    return <EmptyState title="Oferta d'un altre equip" text="Com a entrenador només pots veure les ofertes del teu equip." />;
+  if (!can.seeTeam(u, o.team_id)) {
+    return <EmptyState title="Oportunitat d'un altre equip" text="Com a entrenador només pots veure les oportunitats del teu equip." />;
   }
   const club = getClub(u.club_id);
   const ctx = playerCtx();
@@ -45,7 +46,7 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
 
   return (
     <div className="space-y-5">
-      <Link href="/club/ofertes" className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted hover:text-ink"><ArrowLeft className="size-4" /> Totes les ofertes</Link>
+      <Link href="/club/oportunitats" className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted hover:text-ink"><ArrowLeft className="size-4" /> Totes les oportunitats</Link>
       <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
         <Card className="animate-rise">
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -58,7 +59,7 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
               <h1 className="mt-3 text-[28px] font-extrabold tracking-tight">{o.title}</h1>
               <p className="mt-1 text-[13px] text-muted">Publicada {fmtRelative(o.created_at)}{o.expires_at ? ` · caduca el ${fmtDate(o.expires_at, { short: true })}` : ""}{o.trial_date ? ` · prova ${fmtDateTime(o.trial_date)}` : ""}</p>
             </div>
-            {u.role === "director" && <OfferStatusControl id={o.id} status={o.status} />}
+            {can.manageOffers(u) && <OfferStatusControl id={o.id} status={o.status} />}
           </div>
           {o.description && <p className="mt-4 max-w-3xl text-[14px] leading-relaxed text-ink-2">{o.description}</p>}
           <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">

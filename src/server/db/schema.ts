@@ -4,7 +4,7 @@
  * Una sola font de veritat per a totes les taules. Les columnes JSON es guarden com a TEXT
  * i es llegeixen amb `parseJson` (src/server/db/client.ts). Totes les dates són ISO 8601.
  */
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export const SCHEMA_SQL = `
 PRAGMA foreign_keys = ON;
@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
   name TEXT NOT NULL,
-  role TEXT NOT NULL CHECK (role IN ('director','coach','player','guardian')),
+  role TEXT NOT NULL CHECK (role IN ('director','coordinator','coach','player','guardian')),
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','disabled')),
   title TEXT,
   club_id TEXT,
   team_id TEXT,
@@ -382,6 +383,7 @@ CREATE TABLE IF NOT EXISTS evaluations (
   scores TEXT NOT NULL,
   decision TEXT NOT NULL,
   comment TEXT,
+  context TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   UNIQUE (club_id, player_id, author_user_id)
@@ -455,6 +457,30 @@ CREATE TABLE IF NOT EXISTS reports (
   created_at TEXT NOT NULL
 );
 
+-- Registre d'auditoria d'accions sensibles (qui, què, sobre quin recurs, resultat).
+CREATE TABLE IF NOT EXISTS audit_log (
+  id TEXT PRIMARY KEY,
+  club_id TEXT,
+  actor_user_id TEXT,
+  action TEXT NOT NULL,
+  entity_type TEXT,
+  entity_id TEXT,
+  result TEXT NOT NULL CHECK (result IN ('ok','denied','error')),
+  detail TEXT,
+  created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_audit_club ON audit_log(club_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
+CREATE INDEX IF NOT EXISTS idx_users_club ON users(club_id);
+CREATE INDEX IF NOT EXISTS idx_favorites_user ON favorites(user_id, target_type);
+CREATE INDEX IF NOT EXISTS idx_evals_club_player ON evaluations(club_id, player_id);
+CREATE INDEX IF NOT EXISTS idx_notes_club_player ON notes(club_id, player_id);
+CREATE INDEX IF NOT EXISTS idx_reports_club ON scout_reports(club_id, player_id);
+CREATE INDEX IF NOT EXISTS idx_activity_club ON pipeline_activity(club_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_contacts_club ON contact_requests(club_id, player_id);
+CREATE INDEX IF NOT EXISTS idx_conv_club ON conversations(club_id, player_id);
 CREATE INDEX IF NOT EXISTS idx_players_club ON players(club_id);
 CREATE INDEX IF NOT EXISTS idx_players_team ON players(team_id);
 CREATE INDEX IF NOT EXISTS idx_offers_club ON offers(club_id);
@@ -468,7 +494,7 @@ CREATE INDEX IF NOT EXISTS idx_events_player ON events(player_id);
 `;
 
 export const TABLES_IN_DROP_ORDER = [
-  "reports", "blocks", "profile_views", "roster_entries", "scout_reports", "notes", "evaluations",
+  "audit_log", "reports", "blocks", "profile_views", "roster_entries", "scout_reports", "notes", "evaluations",
   "events", "notifications", "messages", "conversations", "contact_requests", "favorites",
   "pipeline_activity", "pipeline_entries", "applications", "offers", "videos", "achievements",
   "player_stats", "player_experiences", "player_career", "players", "team_seasons", "teams",

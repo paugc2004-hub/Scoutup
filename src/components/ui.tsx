@@ -283,3 +283,19 @@ export function btnClass(variant: "primary" | "secondary" | "ghost" | "dark" | "
   }[variant];
   return cn(base, sz, v);
 }
+
+/** Bloc de càrrega (skeleton). */
+export function Skeleton({ className }: { className?: string }) {
+  return <div aria-hidden className={cn("animate-pulse rounded-xl bg-sunken", className)} />;
+}
+
+/** Estat d'error recuperable dins d'una secció (no trenca la resta de la pàgina). */
+export function ErrorState({ title = "No hem pogut carregar aquesta secció", text = "La resta de l'aplicació continua funcionant. Torna-ho a provar d'aquí a una estona.", action }: { title?: string; text?: string; action?: ReactNode }) {
+  return (
+    <div role="alert" className="flex flex-col items-center justify-center rounded-2xl border border-danger-soft bg-danger-soft/40 px-6 py-10 text-center">
+      <p className="text-[15px] font-bold text-ink">{title}</p>
+      <p className="mt-1 max-w-sm text-[13px] leading-relaxed text-muted">{text}</p>
+      {action && <div className="mt-4">{action}</div>}
+    </div>
+  );
+}

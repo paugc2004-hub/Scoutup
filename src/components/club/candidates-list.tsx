@@ -2,11 +2,10 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { KanbanSquare, Check, SlidersHorizontal, MapPin, Inbox } from "lucide-react";
-import { Avatar, AvailabilityBadge, Badge, EmptyState, MatchRing, StageBadge, VerificationBadge, matchColor, cn } from "@/components/ui";
+import { Avatar, AvailabilityBadge, Badge, EmptyState, MatchRing, StageBadge, VerificationBadge, matchColor } from "@/components/ui";
 import { Chip, Select, useApi, Button } from "@/components/client/kit";
 import { CompareToggle } from "@/components/club/compare-tray";
 import { FOOT_LABEL } from "@/lib/domain";
-import type { Stage } from "@/lib/domain";
 
 import type { CandidateLite } from "@/components/club/candidate-lite";
 export type { CandidateLite };
@@ -140,9 +139,9 @@ export function OfferStatusControl({ id, status }: { id: string; status: string 
   const { call, pending } = useApi();
   return (
     <div className="flex items-center gap-2">
-      {status !== "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "oberta" }, ok: "Oferta reoberta" })}>Reobrir</Button>}
-      {status === "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "pausada" }, ok: "Oferta pausada", okSub: "Deixa de ser visible per als jugadors." })}>Pausar</Button>}
-      {status !== "tancada" && <Button size="sm" variant="danger" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "tancada" }, ok: "Oferta tancada" })}>Tancar</Button>}
+      {status !== "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "oberta" }, ok: "Oportunitat reoberta" })}>Reobrir</Button>}
+      {status === "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "pausada" }, ok: "Oportunitat pausada", okSub: "Deixa de ser visible per als jugadors." })}>Pausar</Button>}
+      {status !== "tancada" && <Button size="sm" variant="danger" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "tancada" }, ok: "Oportunitat tancada" })}>Tancar</Button>}
     </div>
   );
 }

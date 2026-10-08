@@ -80,7 +80,7 @@ export function RegisterForm({ initialType }: { initialType: "player" | "club" }
               <Field label="Persona responsable"><Input required value={f.name ?? ""} onChange={set("name")} /></Field>
             </div>
             <p className="rounded-xl bg-warn-soft px-3 py-2.5 text-[12.5px] leading-relaxed text-ink-2">
-              Els clubs nous queden <strong>pendents de verificació</strong>: poden explorar la plataforma i publicar ofertes, però no poden contactar jugadors fins que es verifiquen (a la demo, la verificació no es fa).
+              Els clubs nous queden <strong>pendents de verificació</strong>: poden explorar la plataforma i publicar oportunitats, però no poden contactar jugadors fins que es verifiquen (a la demo, la verificació no es fa).
             </p>
           </>
         )}

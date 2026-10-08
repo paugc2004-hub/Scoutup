@@ -1,4 +1,5 @@
 import { all, insert, nowIso, uid } from "@/server/db/client";
+import { canSeeTeam } from "@/lib/permissions";
 
 export type NotifyKind = "match" | "contact" | "application" | "event" | "message" | "profile" | "interest" | "system";
 
@@ -7,12 +8,12 @@ export function notify(userId: string | null | undefined, kind: NotifyKind, titl
   insert("notifications", { id: uid("nt_"), user_id: userId, kind, title, body, link, created_at: nowIso(), read_at: null });
 }
 
-/** Notifica el personal d'un club: direcció sempre; entrenadors, només si és el seu equip. */
+/** Notifica el personal d'un club: direcció i coordinació sempre; entrenadors, només si és el seu equip. */
 export function notifyClub(clubId: string, teamId: string | null | undefined, kind: NotifyKind, title: string, body: string | null = null, link: string | null = null, exceptUserId?: string) {
-  const staff = all<{ id: string; role: string; team_id: string | null }>("SELECT id, role, team_id FROM users WHERE club_id = ? AND role IN ('director','coach')", clubId);
+  const staff = all<{ id: string; role: string; team_id: string | null }>("SELECT id, role, team_id FROM users WHERE club_id = ? AND role IN ('director','coordinator','coach') AND status = 'active'", clubId);
   for (const s of staff) {
     if (s.id === exceptUserId) continue;
-    if (s.role === "coach" && (!teamId || s.team_id !== teamId)) continue;
+    if (!canSeeTeam(s, teamId)) continue;
     notify(s.id, kind, title, body, link);
   }
 }

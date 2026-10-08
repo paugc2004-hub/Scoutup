@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Sparkles, Cpu, ArrowRight, Megaphone } from "lucide-react";
+import { can } from "@/server/services/access";
 import { requireClubStaff } from "@/server/auth/session";
 import { club as getClub } from "@/server/services/club";
 import { runIntelligence } from "@/server/services/intelligence";
@@ -16,11 +17,11 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
   const { q } = await searchParams;
   const club = getClub(u.club_id);
   const res = q ? runIntelligence(q, club) : null;
-  const newOfferHref = res ? `/club/ofertes/nova?position=${res.offer.position}` : "/club/ofertes/nova";
+  const newOfferHref = res ? `/club/oportunitats/nova?position=${res.offer.position}` : "/club/oportunitats/nova";
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeader eyebrow="Assistent de captació" title={<span className="inline-flex items-center gap-2.5">ScoutUp Intelligence <Sparkles className="size-6 text-accent-600" /></span>} subtitle="Descriu en llenguatge natural el jugador que necessites. L'assistent ho converteix en criteris, ordena els perfils visibles per al teu club i t'explica per què encaixen." />
+      <PageHeader eyebrow="Assistent de captació" title={<span className="inline-flex items-center gap-2.5">ScoutUp Intelligence <Sparkles className="size-6 text-accent-600" /><Badge tone="warn">IA demo · copilot</Badge></span>} subtitle="Descriu en llenguatge natural el jugador que necessites. L'assistent ho converteix en criteris, ordena els perfils visibles per al teu club i t'explica per què encaixen. És un copilot: proposa i explica, però la decisió és sempre del club i no inventa dades." />
       <IntelligenceBox initial={q ?? ""} autoFocus={!q} />
 
       {res && (
@@ -39,7 +40,7 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
               </div>
             </div>
             <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-night-line pt-4">
-              {u.role === "director" && <Link href={newOfferHref} className="inline-flex h-8 items-center gap-1.5 rounded-xl bg-accent px-3 text-[12.5px] font-bold text-night hover:bg-accent-600"><Megaphone className="size-3.5" /> Convertir en oferta</Link>}
+              {can.manageOffers(u) && <Link href={newOfferHref} className="inline-flex h-8 items-center gap-1.5 rounded-xl bg-accent px-3 text-[12.5px] font-bold text-night hover:bg-accent-600"><Megaphone className="size-3.5" /> Convertir en oportunitat</Link>}
               <Link href={`/club/cercar?pos=${res.offer.position}&foot=${res.offer.foot === "indiferent" ? "" : res.offer.foot}&g=${res.offer.gender}`} className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-night-line px-3 text-[12.5px] font-semibold text-night-text hover:bg-night-2">Obrir a la cerca avançada <ArrowRight className="size-3.5" /></Link>
               <span className="ml-auto inline-flex items-center gap-1.5 text-[11.5px] text-night-muted"><Cpu className="size-3.5" /> Motor determinista local · sense IA externa</span>
             </div>
@@ -92,7 +93,7 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {[
             ["1 · Interpreta", "Detecta posició, peu, edat o categoria, zona, nivell, alçada i característiques (joc aeri, velocitat, visió…)."],
-            ["2 · Cerca", "Aplica el mateix motor de compatibilitat de les ofertes, només sobre perfils que la privacitat permet veure."],
+            ["2 · Cerca", "Aplica el mateix motor de compatibilitat de les oportunitats, només sobre perfils que la privacitat permet veure."],
             ["3 · Explica", "Cada resultat ve amb el seu perquè: què compleix i què cal tenir en compte."],
           ].map(([t, d]) => (
             <div key={t} className="rounded-2xl border border-line bg-surface p-5"><p className="text-[14px] font-bold">{t}</p><p className="mt-1.5 text-[13px] leading-relaxed text-muted">{d}</p></div>

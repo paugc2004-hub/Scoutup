@@ -28,9 +28,9 @@ export function SearchFilters({ offers }: { offers: { id: string; title: string 
   const panel = (
     <div className="space-y-4">
       <Field label="Text lliure"><Input value={q} onChange={(e) => setQ(e.target.value)} onBlur={() => setParam("q", q)} onKeyDown={(e) => e.key === "Enter" && setParam("q", q)} placeholder="Nom, municipi o club" /></Field>
-      <Field label="Comparar amb oferta" hint="Mostra i ordena per compatibilitat">
+      <Field label="Comparar amb oportunitat" hint="Mostra i ordena per compatibilitat">
         <Select value={val("offer")} onChange={(e) => setParam("offer", e.target.value)}>
-          <option value="">Cap oferta</option>
+          <option value="">Cap oportunitat</option>
           {offers.map((o) => <option key={o.id} value={o.id}>{o.title}</option>)}
         </Select>
       </Field>
@@ -72,7 +72,7 @@ export function SearchFilters({ offers }: { offers: { id: string; title: string 
         <Select value={val("comarca")} onChange={(e) => setParam("comarca", e.target.value)}><option value="">Totes</option>{COMARQUES.map((c) => <option key={c}>{c}</option>)}</Select>
       </Field>
       <Field label="Disponibilitat">
-        <Select value={val("disp")} onChange={(e) => setParam("disp", e.target.value)}><option value="">Totes</option><option value="obert">Obert a ofertes</option><option value="escoltant">Escoltant propostes</option><option value="actius">Obert o escoltant</option></Select>
+        <Select value={val("disp")} onChange={(e) => setParam("disp", e.target.value)}><option value="">Totes</option><option value="obert">Obert a oportunitats</option><option value="escoltant">Escoltant propostes</option><option value="actius">Obert o escoltant</option></Select>
       </Field>
       <Field label="Minuts mínims la temporada passada"><Input type="number" min={0} step={100} value={val("minmin")} onChange={(e) => setParam("minmin", e.target.value)} placeholder="p. ex. 1000" /></Field>
       <div className="divide-y divide-line rounded-xl border border-line px-3">

@@ -59,7 +59,7 @@ export function Kanban({ cards: initial, teams, offers }: { cards: KanbanCard[];
           </Select>
         )}
         <Select value={offer} onChange={(e) => setOffer(e.target.value)} className="!h-9 !w-auto !text-[13px]">
-          <option value="">Totes les ofertes</option>
+          <option value="">Totes les oportunitats</option>
           {offers.map((o) => <option key={o.id} value={o.id}>{o.title}</option>)}
         </Select>
         <p className="ml-auto text-[12.5px] text-muted">Arrossega les targetes entre columnes o fes servir el menú <MoreHorizontal className="inline size-3.5" /></p>
