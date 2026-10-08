@@ -86,7 +86,7 @@ export function RegisterForm({ initialType }: { initialType: "player" | "club" }
         )}
         <div className="grid grid-cols-2 gap-3">
           <Field label="Correo electrónico"><Input type="email" required value={f.email ?? ""} onChange={set("email")} /></Field>
-          <Field label="Contraseña"><Input type="password" required minLength={4} value={f.password ?? ""} onChange={set("password")} /></Field>
+          <Field label="Contraseña"><Input type="password" required minLength={8} value={f.password ?? ""} onChange={set("password")} /></Field>
         </div>
         <label className="flex items-start gap-2.5 text-[12.5px] leading-relaxed text-muted">
           <input type="checkbox" checked={accept} onChange={(e) => setAccept(e.target.checked)} className="mt-0.5 size-4 accent-[#00c768]" />

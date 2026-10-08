@@ -38,7 +38,7 @@ export default async function PlayerHome() {
       <PageHeader
         eyebrow={`${me.position_label} · ${me.club_name}`}
         title={`Hola, ${me.first_name}!`}
-        subtitle={<>Tienes <strong className="text-ink">{opportunitiesFor(row, ctx).filter((o) => !o.application && o.match.score >= 80).length} oportunitats</strong> per sobre del 80% d'encaix{pending.length ? <> i <strong className="text-ink">{pending.length} {pending.length === 1 ? "club quiere" : "clubes quieren"} parlar amb tu</strong></> : null}.</>}
+        subtitle={<>Tienes <strong className="text-ink">{opportunitiesFor(row, ctx).filter((o) => !o.application && o.match.score >= 80).length} oportunidades</strong> por encima del 80 % de encaje{pending.length ? <> y <strong className="text-ink">{pending.length} {pending.length === 1 ? "club quiere" : "clubes quieren"} hablar contigo</strong></> : null}.</>}
         actions={<><AvailabilityBadge value={me.availability} /><LinkButton href="/jugador/oportunitats" variant="primary" icon={<Compass className="size-4" />}>Ver oportunidades</LinkButton></>}
       />
 
@@ -65,7 +65,7 @@ export default async function PlayerHome() {
               ))}
             </div>
           )}
-          {staleDays > 45 && <p className="mt-3 rounded-xl bg-warn-soft px-3 py-2 text-[12.5px] text-ink-2">Tu perfil porta {Math.floor(staleDays / 30)} {Math.floor(staleDays / 30) === 1 ? "mes" : "mesos"} sense actualitzar-se. Els perfils actualitzats reben més visites.</p>}
+          {staleDays > 45 && <p className="mt-3 rounded-xl bg-warn-soft px-3 py-2 text-[12.5px] text-ink-2">Tu perfil lleva {Math.floor(staleDays / 30)} {Math.floor(staleDays / 30) === 1 ? "mes" : "meses"} sin actualizarse. Los perfiles actualizados reciben más visitas.</p>}
           <LinkButton href="/jugador/perfil/editar" variant="dark" size="sm" className="mt-4">Completar el perfil</LinkButton>
         </Card>
         <div className="grid grid-cols-2 gap-3">

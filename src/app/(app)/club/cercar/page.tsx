@@ -110,7 +110,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                     <Avatar initials={p.initials} hue={p.hue} size={46} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5"><p className="truncate text-[14.5px] font-bold group-hover:underline">{p.name}</p><VerificationBadge status={p.verification} compact /></div>
-                      <p className="truncate text-[12.5px] text-muted">{p.position_label} · {p.age} anys{p.minor ? " · menor" : ""}</p>
+                      <p className="truncate text-[12.5px] text-muted">{p.position_label} · {p.age} años{p.minor ? " · menor" : ""}</p>
                       <p className="truncate text-[12.5px] text-muted">{p.club_name}{p.team_name ? ` · ${p.team_name}` : ""}</p>
                     </div>
                     {m ? <MatchRing score={m.score} size={46} stroke={4.5} /> : null}
@@ -151,7 +151,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               <Link href={pageHref(Math.min(pages, page + 1))} className={cn(btnClass("secondary", "sm"), page === pages && "pointer-events-none opacity-40")}>Siguiente <ChevronRight className="size-4" /></Link>
             </div>
           )}
-          {hiddenMinors > 0 && <p className="mt-6 text-center text-[12px] text-subtle">{hiddenMinors} perfils de menors no es mostren perquè encara no tenen el consentiment del tutor legal.</p>}
+          {hiddenMinors > 0 && <p className="mt-6 text-center text-[12px] text-subtle">{hiddenMinors} perfiles de menores no se muestran porque todavía no tienen el consentimiento del tutor legal.</p>}
         </div>
       </div>
     </div>

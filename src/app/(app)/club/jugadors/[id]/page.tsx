@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, Footprints, Ruler, CalendarDays, Languages, Sparkles, Lock, Trophy, Binoculars, History, ShieldAlert, Info } from "lucide-react";
+import { ArrowLeft, MapPin, Footprints, Ruler, CalendarDays, Languages, Sparkles, Lock, Trophy, Binoculars, History, ShieldAlert, Info, Check, Circle, UserRound, BarChart3, Target, Compass } from "lucide-react";
+import { can, clubCanContact, clubCanSee, clubRelations, teamScope } from "@/server/services/access";
 import { requireClubStaff } from "@/server/auth/session";
 import { all, get } from "@/server/db/client";
-import { can, clubCanContact, clubCanSee, clubRelations, teamScope } from "@/server/services/access";
 import { club as getClub, recentActivity, scopedTeams } from "@/server/services/club";
 import { clubOffers, toMatchOffer } from "@/server/services/offers";
 import { currentSeason, playerCtx, playerRow, presentPlayer, privacyOf, toMatchPlayer } from "@/server/services/players";
@@ -22,6 +22,8 @@ import { ClientTabs, ContactControl, EvaluationForm, FavoriteButton, Interaction
 import type { ContactState } from "@/components/club/player-actions";
 import { CompareToggle } from "@/components/club/compare-tray";
 
+export const metadata = { title: "Perfil del jugador" };
+
 export default async function ClubPlayerPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ offer?: string; tab?: string }> }) {
   const u = await requireClubStaff();
   const { id } = await params;
@@ -34,7 +36,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
   if (!vis.visible) {
     return (
       <div className="mx-auto max-w-xl pt-10">
-        <EmptyState icon={<Lock className="size-5" />} title="Perfil no disponible" text={`Aquest perfil no és visible per al teu club. ${vis.reason ?? ""}`} action={<Link href="/club/cercar" className="text-[13px] font-semibold text-accent-ink hover:underline">Tornar a la cerca</Link>} />
+        <EmptyState icon={<Lock className="size-5" />} title="Perfil no disponible" text={`Este perfil no es visible para tu club. ${vis.reason ?? ""}`} action={<Link href="/club/cercar" className="text-[13px] font-semibold text-accent-ink hover:underline">Volver a la búsqueda</Link>} />
       </div>
     );
   }
@@ -44,7 +46,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
   const p = presentPlayer(row, ctx, { ownClub: row.club_id === u.club_id });
   const priv = privacyOf(row);
   const mp = toMatchPlayer(row, ctx.prev.get(row.id), ctx.career.get(row.id) ?? 0);
-  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && o.gender === row.gender && (can.allTeams(u) || o.team_id === u.team_id));
+  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && o.gender === row.gender && can.seeTeam(u, o.team_id));
   const scored = offers.map((o) => ({ o, m: computeMatch(mp, toMatchOffer(o), ctx.now) })).sort((a, b) => b.m.score - a.m.score);
   const sel = scored.find((s) => s.o.id === sp.offer) ?? scored[0] ?? null;
   const detail = playerDetail(id);
@@ -82,8 +84,9 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
   );
   const activity = recentActivity(u, 30, id);
 
-  // Context competitiu (proveïdor mock)
+  // Contexto competitivo (proveedor de demostración)
   const provider = competitionProvider();
+  void provider.label;
   const season = currentSeason();
   const comp = row.team_id ? provider.competitionForTeam(row.team_id, season.id) : null;
   const standings = comp ? provider.standings(comp.id) : [];
@@ -93,19 +96,42 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
   const avgEval = (sc: string) => {
     const o = JSON.parse(sc) as Record<string, Record<string, number>>;
     const v = Object.values(o).flatMap((x) => Object.values(x));
-    return Math.round((v.reduce((a, b) => a + b, 0) / v.length) * 10) / 10;
+    return v.length ? Math.round((v.reduce((a, b) => a + b, 0) / v.length) * 10) / 10 : 0;
   };
+
+  // Próximo paso recomendado (el proceso del club: guardar → pipeline → evaluar → contactar)
+  const steps = [
+    { key: "guardar", label: "Guardado", done: isFav || !!entry },
+    { key: "pipeline", label: "En el pipeline", done: !!entry },
+    { key: "evaluar", label: "Evaluado por ti", done: !!myEval },
+    { key: "contactar", label: "Contactado", done: contact.kind === "conversation" || contact.kind === "pending" },
+  ];
+  const next = !isFav && !entry
+    ? { title: "Guárdalo para no perderlo de vista", text: "Con «Guardar» queda en tu lista; con «Añadir al pipeline» el cuerpo técnico lo sigue contigo." }
+    : !entry
+      ? { title: "Añádelo al pipeline", text: "Así el proceso queda organizado por etapas y compartido con tu equipo." }
+      : !myEval
+        ? { title: "Deja tu evaluación", text: "Puntúa por áreas e indica el contexto. Es privada del club." }
+        : contact.kind === "can"
+          ? { title: "Contáctalo de forma segura", text: p.minor ? "Es menor: la solicitud irá primero a su tutor legal." : "La solicitud llega al jugador; si la acepta, se abre la conversación." }
+          : contact.kind === "pending"
+            ? { title: "Esperando respuesta", text: contact.status === "pendent_tutor" ? "La solicitud está pendiente del tutor legal." : "La solicitud está pendiente del jugador." }
+            : contact.kind === "conversation"
+              ? { title: "Continúa la conversación", text: "Programa una llamada o una prueba desde la conversación." }
+              : { title: "Contacto no disponible", text: contact.reason };
+
+  const prevTxt = p.prev ? `${p.prev.matches} partidos · ${p.prev.starts} de titular · ${p.prev.minutes.toLocaleString("es-ES")} min` : p.stats_hidden ? "Estadísticas ocultas por el jugador" : "Sin estadísticas de la temporada pasada";
 
   return (
     <div className="space-y-5">
       <Link href={sel ? `/club/oportunitats/${sel.o.id}` : "/club/cercar"} className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted hover:text-ink">
-        <ArrowLeft className="size-4" /> {sel ? `Tornar a «${sel.o.title}»` : "Tornar a la cerca"}
+        <ArrowLeft className="size-4" /> {sel ? `Volver a «${sel.o.title}»` : "Volver a la búsqueda"}
       </Link>
 
-      {/* Capçalera */}
+      {/* Cabecera: quién es + acciones */}
       <Card pad={false} className="overflow-hidden animate-rise">
-        <div className="h-20 bg-night" style={{ background: `linear-gradient(110deg, #0b0d13 0%, #0b0d13 55%, ${row.club_color ?? "#0f5132"} 140%)` }} />
-        <div className="flex flex-col gap-5 px-5 pb-5 md:flex-row md:items-end md:px-6">
+        <div className="h-20" style={{ background: `linear-gradient(110deg, #0b0d13 0%, #0b0d13 55%, ${row.club_color ?? "#0f5132"} 140%)` }} />
+        <div className="flex flex-col gap-5 px-5 pb-5 lg:flex-row lg:items-end lg:px-6">
           <div className="-mt-10 flex items-end gap-4">
             <div className="rounded-full bg-surface p-1 shadow-card"><Avatar initials={p.initials} hue={p.hue} size={88} /></div>
           </div>
@@ -117,7 +143,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
             </div>
             <p className="mt-0.5 text-[14px] text-muted">
               <span className="font-semibold text-ink">{p.position_label}</span>
-              {p.secondary.length > 0 && <> · també {p.secondary.map((s) => POSITION_LABEL[s].toLowerCase()).join(", ")}</>} · {p.age} anys ({p.birth_year})
+              {p.secondary.length > 0 && <> · también {p.secondary.map((s) => POSITION_LABEL[s].toLowerCase()).join(", ")}</>} · {p.age} años ({p.birth_year})
             </p>
             <div className="mt-2.5 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold">
@@ -130,21 +156,53 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <FavoriteButton type="player" id={id} initial={isFav} label={false} />
+            <FavoriteButton type="player" id={id} initial={isFav} />
             <CompareToggle id={id} name={p.name} initials={p.initials} />
             {entryOutOfScope ? (
-              <Badge tone="neutral" title="L'està seguint un altre equip del club">Seguit per {entry!.team_name}</Badge>
+              <Badge tone="neutral" title="Lo sigue otro equipo del club">Lo sigue {entry!.team_name}</Badge>
             ) : (
-              <PipelineControl playerId={id} entry={entry ? { id: entry.id, stage: entry.stage, team_name: entry.team_name } : null} teams={teams} offerId={sel?.o.id} canTeamSelect={can.allTeams(u)} defaultTeam={sel?.o.team_id ?? teams.find((t) => t.name === "Juvenil A")?.id} />
+              <PipelineControl playerId={id} entry={entry ? { id: entry.id, stage: entry.stage, team_name: entry.team_name } : null} teams={teams} offerId={sel?.o.id} canTeamSelect={can.allTeams(u)} defaultTeam={sel?.o.team_id ?? teams[0]?.id} />
             )}
             <ContactControl playerId={id} firstName={p.first_name} state={contact} clubName={club.name} offerTitle={sel?.o.title} teams={teams} defaultTeam={sel?.o.team_id ?? entry?.team_id ?? null} />
           </div>
         </div>
       </Card>
 
+      {/* Respuestas rápidas */}
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <Card className="p-4">
+          <p className="flex items-center gap-1.5 text-[11.5px] font-bold uppercase tracking-[0.1em] text-subtle"><UserRound className="size-3.5" /> ¿Quién es?</p>
+          <p className="mt-2 text-[13.5px] leading-relaxed text-ink-2">{p.position_label} {FOOT_LABEL[p.foot].toLowerCase()}, {p.height ? `${p.height} cm, ` : ""}{p.category.toLowerCase()} en {p.level_label}. {p.location}.</p>
+        </Card>
+        <Card className="p-4">
+          <p className="flex items-center gap-1.5 text-[11.5px] font-bold uppercase tracking-[0.1em] text-subtle"><BarChart3 className="size-3.5" /> ¿Qué ha hecho?</p>
+          <p className="mt-2 text-[13.5px] leading-relaxed text-ink-2">Temporada {ctx.prevSeason.label}: {prevTxt}. {detail.career.length} temporadas de trayectoria{detail.videos.length && !videosHidden ? ` · ${detail.videos.length} vídeos` : ""}.</p>
+        </Card>
+        <Card className={cn("p-4", sel && sel.m.score >= 80 && "border-accent-soft-2 bg-accent-soft/40")}>
+          <p className="flex items-center gap-1.5 text-[11.5px] font-bold uppercase tracking-[0.1em] text-subtle"><Target className="size-3.5" /> ¿Encaja?</p>
+          {sel ? (
+            <p className="mt-2 text-[13.5px] leading-relaxed text-ink-2"><strong className="text-[20px] font-extrabold text-ink tabular">{sel.m.score}%</strong> de compatibilidad con «{sel.o.title}». Cumple {sel.m.factors.filter((f) => f.status === "ok").length} de 7 factores.</p>
+          ) : (
+            <p className="mt-2 text-[13.5px] text-muted">Crea una oportunidad para calcular la compatibilidad.</p>
+          )}
+        </Card>
+        <Card className="p-4">
+          <p className="flex items-center gap-1.5 text-[11.5px] font-bold uppercase tracking-[0.1em] text-subtle"><Compass className="size-3.5" /> ¿Qué hacemos ahora?</p>
+          <p className="mt-2 text-[13.5px] font-bold text-ink">{next.title}</p>
+          <p className="text-[12.5px] leading-relaxed text-muted">{next.text}</p>
+          <ol className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1" aria-label="Progreso del proceso">
+            {steps.map((s) => (
+              <li key={s.key} className={cn("inline-flex items-center gap-1 text-[11.5px] font-semibold", s.done ? "text-accent-ink" : "text-subtle")}>
+                {s.done ? <Check className="size-3.5" /> : <Circle className="size-3" />} {s.label}
+              </li>
+            ))}
+          </ol>
+        </Card>
+      </div>
+
       {apps.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-accent-soft-2 bg-accent-soft px-4 py-3 text-[13px]">
-          <span className="font-bold text-accent-ink">S'ha inscrit a les teves oportunitats:</span>
+          <span className="font-bold text-accent-ink">Se ha inscrito a tus oportunidades:</span>
           {apps.map((a) => (
             <Link key={a.id} href={`/club/oportunitats/${a.offer_id}?tab=sollicituds`} className="inline-flex items-center gap-1.5 rounded-full bg-surface px-2.5 py-1 font-semibold hover:underline">
               {a.title} <span className="text-muted">· {APP_STATUS_LABEL[a.status]} · {fmtRelative(a.created_at)}</span>
@@ -153,18 +211,18 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
         </div>
       )}
 
-      <div className="grid gap-5 xl:grid-cols-[1fr_380px]">
+      <div className="grid gap-5 xl:grid-cols-[1fr_400px]">
         <div className="min-w-0 space-y-5">
           <Card>
             <div className="flex items-start gap-3 rounded-xl bg-bg p-4">
               <Sparkles className="mt-0.5 size-5 shrink-0 text-accent-ink" />
               <div>
-                <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-accent-ink">Resum ScoutUp Intelligence</p>
+                <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-accent-ink">Resumen · IA demo</p>
                 <p className="mt-1 text-[14px] leading-relaxed text-ink-2">{profileSummary(p)}</p>
               </div>
             </div>
             {p.description && (
-              <blockquote className="mt-4 border-l-2 border-accent pl-4 text-[14px] italic leading-relaxed text-muted">«{p.description}»<span className="mt-1 block text-[12px] not-italic text-subtle">— Descripció escrita pel jugador</span></blockquote>
+              <blockquote className="mt-4 border-l-2 border-accent pl-4 text-[14px] italic leading-relaxed text-muted">«{p.description}»<span className="mt-1 block text-[12px] not-italic text-subtle">— Descripción escrita por el jugador</span></blockquote>
             )}
           </Card>
 
@@ -173,17 +231,17 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
               initial={sp.tab}
               tabs={[
                 {
-                  key: "resum", label: "Rendiment", content: (
+                  key: "resum", label: "Rendimiento", content: (
                     <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
                       <div className="flex flex-col items-center gap-3">
                         <Radar series={[{ name: p.name, color: "#00b85f", values: p.radar }]} size={240} />
-                        <p className="text-[11.5px] text-subtle">Atributs declarats i avaluats (escala 1–10)</p>
+                        <p className="text-[11.5px] text-subtle">Atributos declarados y evaluados (escala 1–10)</p>
                       </div>
                       <div>
                         <AttrBars attrs={p.attrs} position={p.position} />
                         {p.prev && (
                           <div className="mt-5 grid grid-cols-3 gap-2 sm:grid-cols-6">
-                            {[["Conv.", p.prev.callups], ["Partits", p.prev.matches], ["Titular", p.prev.starts], ["Minuts", p.prev.minutes.toLocaleString("es-ES")], [p.position === "POR" ? "Porteria 0" : "Gols", p.position === "POR" ? p.prev.clean_sheets : p.prev.goals], ["Targetes", p.prev.yellow + p.prev.red]].map(([k, v]) => (
+                            {[["Conv.", p.prev.callups], ["Partidos", p.prev.matches], ["Titular", p.prev.starts], ["Minutos", p.prev.minutes.toLocaleString("es-ES")], [p.position === "POR" ? "Portería 0" : "Goles", p.position === "POR" ? p.prev.clean_sheets : p.prev.goals], ["Tarjetas", p.prev.yellow + p.prev.red]].map(([k, v]) => (
                               <div key={k as string} className="rounded-xl bg-sunken p-2.5 text-center">
                                 <p className="text-[18px] font-extrabold tabular">{v}</p>
                                 <p className="text-[11px] text-muted">{k}</p>
@@ -196,10 +254,10 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
                     </div>
                   ),
                 },
-                { key: "estadistiques", label: "Estadístiques", content: <StatsTable stats={detail.stats} hidden={p.stats_hidden} /> },
-                { key: "trajectoria", label: "Trajectòria", count: detail.career.length, content: <div className="space-y-5"><CareerList career={detail.career} /><div><p className="mb-2 text-[12px] font-bold uppercase tracking-[0.1em] text-subtle">Assoliments</p><Achievements items={detail.achievements} experiences={detail.experiences} /></div></div> },
+                { key: "estadistiques", label: "Estadísticas", content: <StatsTable stats={detail.stats} hidden={p.stats_hidden} /> },
+                { key: "trajectoria", label: "Trayectoria", count: detail.career.length, content: <div className="space-y-5"><CareerList career={detail.career} /><div><p className="mb-2 text-[12px] font-bold uppercase tracking-[0.1em] text-subtle">Logros</p><Achievements items={detail.achievements} experiences={detail.experiences} /></div></div> },
                 { key: "videos", label: "Vídeos", count: videosHidden ? undefined : detail.videos.length, content: <VideoGrid videos={detail.videos} hidden={videosHidden} /> },
-                { key: "avaluacio", label: "Avaluació", count: evals.length, content: (
+                { key: "avaluacio", label: "Evaluación", count: evals.length, content: (
                   <div className="space-y-6">
                     {evals.length > 0 && (
                       <div className="grid gap-3 md:grid-cols-2">
@@ -209,13 +267,13 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
                             <div key={e.id} className="rounded-2xl border border-line p-4">
                               <div className="flex items-center justify-between">
                                 <div><p className="text-[13.5px] font-bold">{e.author_name}</p><p className="text-[12px] text-muted">{e.author_title} · {fmtRelative(e.updated_at)}{e.context ? ` · ${e.context}` : ""}</p></div>
-                                <div className="text-right"><p className="text-[22px] font-extrabold tabular leading-none">{avgEval(e.scores)}</p><p className="text-[11px] text-subtle">mitjana</p></div>
+                                <div className="text-right"><p className="text-[22px] font-extrabold tabular leading-none">{avgEval(e.scores)}</p><p className="text-[11px] text-subtle">media</p></div>
                               </div>
                               <div className="mt-3 grid grid-cols-5 gap-1.5">
                                 {EVAL_AREAS.map((a) => {
                                   const v = Object.values(sc[a.key] ?? {});
                                   const m = v.length ? v.reduce((x, y) => x + y, 0) / v.length : 0;
-                                  return <div key={a.key} className="rounded-lg bg-sunken px-1 py-1.5 text-center"><p className="text-[14px] font-bold tabular">{m.toFixed(1)}</p><p className="text-[10.5px] text-muted">{a.label}</p></div>;
+                                  return <div key={a.key} className="rounded-lg bg-sunken px-1 py-1.5 text-center"><p className="text-[14px] font-bold tabular">{m ? m.toFixed(1) : "—"}</p><p className="text-[10.5px] text-muted">{a.label}</p></div>;
                                 })}
                               </div>
                               <p className="mt-3 text-[12.5px]"><Badge tone={e.decision === "descartar" ? "danger" : e.decision === "fitxar" ? "accent" : e.decision === "prova" ? "info" : "neutral"}>{EVAL_DECISIONS[e.decision]}</Badge></p>
@@ -226,16 +284,16 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
                       </div>
                     )}
                     <div>
-                      <p className="mb-3 text-[13px] font-bold">{myEval ? "La teva avaluació" : "Nova avaluació"}</p>
+                      <p className="mb-3 text-[13px] font-bold">{myEval ? "Tu evaluación" : "Nueva evaluación"} <span className="font-normal text-muted">· privada del club</span></p>
                       <EvaluationForm playerId={id} initial={myEval ? { scores: JSON.parse(myEval.scores), decision: myEval.decision, comment: myEval.comment ?? "", context: myEval.context } : null} />
                     </div>
                   </div>
                 ) },
-                { key: "notes", label: "Notes privades", count: notes.length, content: <NotesPanel playerId={id} notes={notes} meId={u.id} isDirector={can.manageUsers(u)} /> },
-                { key: "activitat", label: "Activitat", count: activity.length, content: (
+                { key: "notes", label: "Notas privadas", count: notes.length, content: <NotesPanel playerId={id} notes={notes} meId={u.id} isDirector={can.manageUsers(u)} /> },
+                { key: "activitat", label: "Actividad", count: activity.length, content: (
                   <div>
-                    <div className="mb-4 flex items-center justify-between"><p className="text-[13px] text-muted">Historial d'aquest jugador al teu club.</p><InteractionForm playerId={id} /></div>
-                    {activity.length === 0 ? <EmptyState icon={<History className="size-5" />} title="Sense activitat" /> : (
+                    <div className="mb-4 flex items-center justify-between"><p className="text-[13px] text-muted">Historial de este jugador en tu club.</p><InteractionForm playerId={id} /></div>
+                    {activity.length === 0 ? <EmptyState icon={<History className="size-5" />} title="Sin actividad" /> : (
                       <ol className="relative space-y-3 border-l border-line pl-5">
                         {activity.map((a) => (
                           <li key={a.id} className="relative text-[13px]">
@@ -254,7 +312,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
 
           {reports.length > 0 && (
             <Card>
-              <CardHeader title="Informes de scouting" subtitle="Observacions en partits" icon={<Binoculars className="size-4" />} />
+              <CardHeader title="Informes de observación" subtitle="Observaciones en partidos" icon={<Binoculars className="size-4" />} />
               <div className="space-y-3">
                 {reports.map((r) => (
                   <div key={r.id} className="rounded-xl border border-line p-3.5">
@@ -273,42 +331,43 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
 
         {/* Columna lateral */}
         <div className="space-y-5">
-          <Card>
+          <Card className="border-accent-soft-2">
             {sel ? (
               <>
-                <div className="mb-4 space-y-1.5">
-                  <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-subtle">Compatibilitat amb l'oportunitat</p>
-                  <OfferSelector offers={scored.map((s) => ({ id: s.o.id, title: s.o.title, score: s.m.score }))} value={sel.o.id} />
+                <div className="mb-4">
+                  <h2 className="text-[17px] font-extrabold tracking-tight">¿Por qué encaja?</h2>
+                  <p className="mt-0.5 text-[12.5px] text-muted">Compatibilidad con la oportunidad: siete factores ponderados, cada uno con su explicación. No es una probabilidad de fichaje.</p>
+                  <div className="mt-3"><OfferSelector offers={scored.map((s) => ({ id: s.o.id, title: s.o.title, score: s.m.score }))} value={sel.o.id} /></div>
                 </div>
                 <MatchBreakdown match={sel.m} />
               </>
             ) : (
-              <EmptyState title="Sense oportunitats obertes" text="Crea una oportunitat per veure la compatibilitat d'aquest jugador." />
+              <EmptyState title="Sin oportunidades abiertas" text="Crea una oportunidad para ver la compatibilidad de este jugador." />
             )}
           </Card>
 
           <Card>
-            <CardHeader title="Dades bàsiques" />
+            <CardHeader title="Datos básicos" />
             <div className="flex gap-4">
               <PositionPitch primary={p.position} secondary={p.secondary} size={96} />
               <dl className="min-w-0 flex-1 space-y-2 text-[13px]">
                 <div className="flex items-center gap-2"><MapPin className="size-4 text-subtle" /><span>{p.location}</span></div>
-                <div className="flex items-center gap-2"><Footprints className="size-4 text-subtle" /><span>Peu {FOOT_LABEL[p.foot].toLowerCase()}</span></div>
-                <div className="flex items-center gap-2"><Ruler className="size-4 text-subtle" /><span>{p.height ? `${p.height} cm` : "Alçada no visible"}</span></div>
+                <div className="flex items-center gap-2"><Footprints className="size-4 text-subtle" /><span>Pie {FOOT_LABEL[p.foot].toLowerCase()}</span></div>
+                <div className="flex items-center gap-2"><Ruler className="size-4 text-subtle" /><span>{p.height ? `${p.height} cm` : "Altura no visible"}</span></div>
                 <div className="flex items-center gap-2"><CalendarDays className="size-4 text-subtle" /><span>{CONTRACT_LABEL[row.contract_status]}</span></div>
                 <div className="flex items-center gap-2"><Languages className="size-4 text-subtle" /><span>{p.languages ?? "—"}</span></div>
               </dl>
             </div>
-            {p.style && <p className="mt-3 rounded-xl bg-sunken px-3 py-2 text-[13px]"><span className="text-muted">Estil:</span> <span className="font-semibold">{p.style}</span></p>}
-            <p className="mt-3 text-[11.5px] text-subtle">Perfil actualitzat {fmtRelative(p.updated_at)} · completat al {p.completeness}%</p>
+            {p.style && <p className="mt-3 rounded-xl bg-sunken px-3 py-2 text-[13px]"><span className="text-muted">Estilo:</span> <span className="font-semibold">{p.style}</span></p>}
+            <p className="mt-3 text-[11.5px] text-subtle">Perfil actualizado {fmtRelative(p.updated_at)} · completado al {p.completeness}%</p>
           </Card>
 
           <Card>
-            <CardHeader title="Context competitiu" subtitle={comp ? `${comp.name} · ${season.label}` : "Sense competició associada"} icon={<Trophy className="size-4" />} />
+            <CardHeader title="Contexto competitivo" subtitle={comp ? `${comp.name} · ${season.label}` : "Sin competición asociada"} icon={<Trophy className="size-4" />} />
             {comp && myRow ? (
               <>
                 <div className="grid grid-cols-3 gap-2">
-                  {[["Posició", `${myRow.pos}a`], ["Punts", myRow.points], ["Jornades", myRow.played]].map(([k, v]) => (
+                  {[["Posición", `${myRow.pos}º`], ["Puntos", myRow.points], ["Jornadas", myRow.played]].map(([k, v]) => (
                     <div key={k as string} className="rounded-xl bg-sunken p-2.5 text-center"><p className="text-[18px] font-extrabold tabular">{v}</p><p className="text-[11px] text-muted">{k}</p></div>
                   ))}
                 </div>
@@ -323,11 +382,11 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
                 </div>
                 <div className="mt-3 flex gap-2 rounded-xl border border-dashed border-line-strong p-3 text-[11.5px] leading-relaxed text-muted">
                   <Info className="mt-0.5 size-3.5 shrink-0" />
-                  <span><strong className="text-ink-2">Dades de demostració</strong> ({provider.label.toLowerCase()}). Amb una font oficial, la competició, el grup i la classificació serien contrastables.</span>
+                  <span><strong className="text-ink-2">Datos ficticios de demostración.</strong> No replican ninguna clasificación oficial; usar datos de la FCF requiere validación FCF, legal y técnica.</span>
                 </div>
               </>
             ) : (
-              <p className="text-[13px] text-muted">El jugador no té un equip actual a la plataforma.</p>
+              <p className="text-[13px] text-muted">El jugador no tiene un equipo actual en la plataforma.</p>
             )}
           </Card>
 
@@ -335,7 +394,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
             <Card className="border-[#ddd6fe] bg-violet-soft/60">
               <div className="flex gap-3">
                 <ShieldAlert className="size-5 shrink-0 text-violet" />
-                <p className="text-[12.5px] leading-relaxed text-ink-2"><strong>Menor protegit.</strong> Ubicació mostrada només per comarca. Qualsevol contacte requereix l'autorització del tutor legal, que pot revocar-la en qualsevol moment.</p>
+                <p className="text-[12.5px] leading-relaxed text-ink-2"><strong>Menor protegido.</strong> Ubicación mostrada solo por comarca. Cualquier contacto requiere la autorización del tutor legal, que puede revocarla en cualquier momento.</p>
               </div>
             </Card>
           )}

@@ -64,7 +64,7 @@ export function Thread({ conversationId, messages, me, readOnly, minor, otherNam
           {(risky || warn) && (
             <div className="mb-2 flex items-start gap-2 rounded-xl border border-[#fde68a] bg-warn-soft px-3 py-2 text-[12.5px] text-ink-2">
               <ShieldAlert className="mt-0.5 size-4 shrink-0 text-warn" />
-              <span>Per seguretat{minor ? " (es menor)" : ""}, et recomanem mantenir la comunicació dins de ScoutUp i no compartir telèfons, correus ni xarxes socials. Els missatges amb dades de contacte queden marcats per a revisió.</span>
+              <span>Por seguridad{minor ? " (es menor)" : ""}, te recomendamos mantener la comunicación dentro de ScoutUp y no compartir teléfonos, correos ni redes sociales. Los mensajes con datos de contacto quedan marcados para revisión.</span>
             </div>
           )}
           <form

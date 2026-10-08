@@ -48,7 +48,7 @@ export default async function OffersPage() {
           <div><p className="text-[20px] font-extrabold tabular">{r.s.total}</p><p className="text-[11.5px] text-muted">solicitudes</p></div>
           <div className="flex flex-col items-center justify-center">
             <div className="flex -space-x-2">{r.cands.slice(0, 3).map((c) => <Avatar key={c.player.id} initials={c.player.initials} hue={c.player.hue} size={28} className="ring-2 ring-surface" />)}</div>
-            <p className="mt-1 text-[11.5px] text-muted">millors</p>
+            <p className="mt-1 text-[11.5px] text-muted">mejores</p>
           </div>
         </div>
         <p className="mt-4 flex items-center gap-3 text-[12px] text-subtle">

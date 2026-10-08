@@ -13,14 +13,14 @@ export const metadata = { title: "Demo" };
 export const dynamic = "force-dynamic";
 
 const ROLES = [
-  { role: "director" as const, icon: <Building2 className="size-5" />, title: "Direcció esportiva", who: "Marta Casanovas · CF Vallès Nord", text: "Accés complet: oportunitats, jugadors, pipeline, avaluacions, equips, calendari, usuaris i permisos." },
-  { role: "coordinator" as const, icon: <Network className="size-5" />, title: "Coordinació", who: "Sergi Puig · CF Vallès Nord", text: "Tots els equips del club i gestió d'oportunitats. No administra el club ni els usuaris." },
-  { role: "coach" as const, icon: <ClipboardList className="size-5" />, title: "Entrenador", who: "Jordi Esteve · Juvenil A", text: "La mateixa eina, limitada al seu equip. Els permisos s'apliquen al servidor." },
-  { role: "clubB" as const, icon: <Building2 className="size-5" />, title: "Un altre club (Club B)", who: "FC Mediterrani · direcció", text: "Per comprovar l'aïllament: un club no pot veure res privat d'un altre." },
+  { role: "director" as const, icon: <Building2 className="size-5" />, title: "Dirección deportiva", who: "Marta Casanovas · CF Vallès Nord", text: "Acceso completo: oportunidades, jugadores, pipeline, evaluaciones, equipos, calendario, usuarios y permisos." },
+  { role: "coordinator" as const, icon: <Network className="size-5" />, title: "Coordinación", who: "Sergi Puig · CF Vallès Nord", text: "Todos los equipos del club y gestión de oportunidades. No administra el club ni los usuarios." },
+  { role: "coach" as const, icon: <ClipboardList className="size-5" />, title: "Entrenador", who: "Jordi Esteve · Juvenil A", text: "La misma herramienta, limitada a su equipo. Los permisos se aplican en el servidor." },
+  { role: "clubB" as const, icon: <Building2 className="size-5" />, title: "Otro club (Club B)", who: "FC Mediterrani · dirección", text: "Para comprobar el aislamiento: un club no puede ver nada privado de otro." },
 ];
 const OTHER_SIDE = [
-  { role: "player" as const, icon: <UserRound className="size-5" />, title: "Jugador (ScoutUp Player)", who: "Pol Serra Batlle · 18 anys", text: "Fora de l'abast d'aquesta demo de club: serveix per simular les respostes dels jugadors." },
-  { role: "guardian" as const, icon: <ShieldCheck className="size-5" />, title: "Tutora legal", who: "Anna Font · mare d'en Nil (16 anys)", text: "Autoritza o denega els contactes dels clubs amb el menor." },
+  { role: "player" as const, icon: <UserRound className="size-5" />, title: "Jugador (ScoutUp Player)", who: "Pol Serra Batlle · 18 años", text: "Fuera del alcance de esta demo de club: sirve para simular las respuestas de los jugadores." },
+  { role: "guardian" as const, icon: <ShieldCheck className="size-5" />, title: "Tutora legal", who: "Anna Font · madre de Nil (16 años)", text: "Autoriza o deniega los contactos de los clubes con el menor." },
 ];
 
 export default async function DemoPage() {
@@ -37,7 +37,7 @@ export default async function DemoPage() {
         <div className="mx-auto flex max-w-[1200px] items-center justify-between px-5 py-4 md:px-8">
           <Logo dark={false} />
           <div className="flex items-center gap-2">
-            <Link href="/" className="rounded-lg px-3 py-2 text-[13.5px] font-medium text-muted hover:text-ink">Inici</Link>
+            <Link href="/" className="rounded-lg px-3 py-2 text-[13.5px] font-medium text-muted hover:text-ink">Inicio</Link>
             <Link href="/entrar" className="rounded-lg px-3 py-2 text-[13.5px] font-semibold text-ink hover:bg-sunken">Entrar</Link>
           </div>
         </div>
@@ -45,14 +45,14 @@ export default async function DemoPage() {
 
       <div className="mx-auto max-w-[1200px] px-5 py-10 md:px-8">
         <div className="animate-rise">
-          <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-accent-ink">Mode demo</p>
+          <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-accent-ink">Modo demo</p>
           <h1 className="mt-2 text-[34px] font-extrabold leading-tight tracking-[-0.025em] md:text-[42px]">Explora ScoutUp Club</h1>
           <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
-            El software del club per detectar necessitats, trobar jugadors compatibles, organitzar el procés i decidir en equip. Tot funciona de veritat: les accions es guarden a la base de dades i es veuen des dels altres rols. Totes les dades són fictícies.
+            El software del club para detectar necesidades, encontrar jugadores compatibles, organizar el proceso y decidir en equipo. Todo funciona de verdad: las acciones se guardan en la base de datos y se ven desde los otros roles. Todos los datos son ficticios.
           </p>
         </div>
 
-        <h2 className="mb-3 mt-10 text-[13px] font-bold uppercase tracking-[0.12em] text-subtle">Recorreguts guiats</h2>
+        <h2 className="mb-3 mt-10 text-[13px] font-bold uppercase tracking-[0.12em] text-subtle">Recorridos guiados</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {DEMO_FLOWS.map((f, i) => (
             <div key={f.id} className={`flex flex-col rounded-2xl border p-5 shadow-card ${i === 0 ? "border-night bg-night text-white" : "border-line bg-surface"}`}>
@@ -72,13 +72,13 @@ export default async function DemoPage() {
                 ))}
               </ol>
               <DemoLoginButton role={f.steps[0].role} next={f.steps[0].href} guide={f.id} size="md" variant={i === 0 ? "primary" : "dark"} className="mt-5 self-start" icon={<Play className="size-4" />}>
-                Començar recorregut
+                Empezar recorrido
               </DemoLoginButton>
             </div>
           ))}
         </div>
 
-        <h2 className="mb-3 mt-12 text-[13px] font-bold uppercase tracking-[0.12em] text-subtle">O entra lliurement amb un usuari del club</h2>
+        <h2 className="mb-3 mt-12 text-[13px] font-bold uppercase tracking-[0.12em] text-subtle">O entra libremente con un usuario del club</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {ROLES.map((r) => (
             <div key={r.role} className="flex flex-col rounded-2xl border border-line bg-surface p-5 shadow-card">
@@ -91,7 +91,7 @@ export default async function DemoPage() {
           ))}
         </div>
 
-        <h2 className="mb-3 mt-10 text-[13px] font-bold uppercase tracking-[0.12em] text-subtle">L'altra banda (només per simular respostes)</h2>
+        <h2 className="mb-3 mt-10 text-[13px] font-bold uppercase tracking-[0.12em] text-subtle">El otro lado (solo para simular respuestas)</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {OTHER_SIDE.map((r) => (
             <div key={r.role} className="flex items-start gap-4 rounded-2xl border border-dashed border-line-strong bg-surface p-5">
@@ -108,9 +108,9 @@ export default async function DemoPage() {
 
         <div className="mt-12 grid gap-4 lg:grid-cols-3">
           <div className="rounded-2xl border border-line bg-surface p-5 shadow-card lg:col-span-2">
-            <div className="flex items-center gap-2.5"><Database className="size-5 text-subtle" /><p className="text-[15px] font-bold">Dades de la demo</p></div>
+            <div className="flex items-center gap-2.5"><Database className="size-5 text-subtle" /><p className="text-[15px] font-bold">Datos de la demo</p></div>
             <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-7">
-              {Object.entries({ Clubs: counts.clubs, Equips: counts.teams, Jugadors: counts.players, Oportunitats: counts.offers, Candidatures: counts.applications, Converses: counts.conversations, Esdeveniments: counts.events }).map(([k, v]) => (
+              {Object.entries({ Clubes: counts.clubs, Equipos: counts.teams, Jugadores: counts.players, Oportunidades: counts.offers, Solicitudes: counts.applications, Conversaciones: counts.conversations, Eventos: counts.events }).map(([k, v]) => (
                 <div key={k} className="rounded-xl bg-sunken p-3">
                   <p className="text-[20px] font-extrabold tabular">{v}</p>
                   <p className="text-[11.5px] text-muted">{k}</p>
@@ -118,28 +118,28 @@ export default async function DemoPage() {
               ))}
             </div>
             <p className="mt-4 text-[12.5px] leading-relaxed text-muted">
-              Clubs, jugadors, competicions, classificacions i estadístiques són inventats. Els municipis són reals només com a referència geogràfica. Cap indicador «Verificat» representa una verificació oficial.
-              {seeded && <> Dades carregades {fmtRelative(seeded)}.</>}
+              Clubes, jugadores, competiciones, clasificaciones y estadísticas son inventados. Los municipios son reales solo como referencia geográfica. Ningún indicador «Verificado» representa una verificación oficial.
+              {seeded && <> Datos cargados {fmtRelative(seeded)}.</>}
             </p>
-            {canReset ? <ResetDemoButton className="mt-4" /> : <p className="mt-4 text-[12.5px] text-subtle">Per restaurar les dades, entra com a direcció esportiva (Configuració → Dades de la demo).</p>}
+            {canReset ? <ResetDemoButton className="mt-4" /> : <p className="mt-4 text-[12.5px] text-subtle">Para restaurar los datos, entra como dirección deportiva (Configuración → Datos de la demo).</p>}
           </div>
           <div className="rounded-2xl border border-line bg-surface p-5 shadow-card">
-            <div className="flex items-center gap-2.5"><PlugZap className="size-5 text-subtle" /><p className="text-[15px] font-bold">Font de dades de competició</p></div>
+            <div className="flex items-center gap-2.5"><PlugZap className="size-5 text-subtle" /><p className="text-[15px] font-bold">Fuente de datos de competición</p></div>
             <p className="mt-3 text-[13px] leading-relaxed text-muted">
-              L'aplicació llegeix tota la informació competitiva a través d'un <code className="rounded bg-sunken px-1 text-[12px]">CompetitionDataProvider</code>.
+              La aplicación lee toda la información competitiva a través de un <code className="rounded bg-sunken px-1 text-[12px]">CompetitionDataProvider</code>.
             </p>
             <div className="mt-3 space-y-2 text-[13px]">
-              <div className="flex items-center justify-between rounded-xl border border-accent-soft-2 bg-accent-soft px-3 py-2"><span className="font-semibold">MockCompetitionProvider</span><span className="text-[11.5px] font-bold text-accent-ink">ACTIU</span></div>
-              <div className="flex items-center justify-between rounded-xl border border-dashed border-line-strong px-3 py-2 text-muted"><span className="font-semibold">FCFCompetitionProvider</span><span className="text-[11.5px] font-bold">NO IMPLEMENTAT</span></div>
+              <div className="flex items-center justify-between rounded-xl border border-accent-soft-2 bg-accent-soft px-3 py-2"><span className="font-semibold">MockCompetitionProvider</span><span className="text-[11.5px] font-bold text-accent-ink">ACTIVO</span></div>
+              <div className="flex items-center justify-between rounded-xl border border-dashed border-line-strong px-3 py-2 text-muted"><span className="font-semibold">FCFCompetitionProvider</span><span className="text-[11.5px] font-bold">NO IMPLEMENTADO</span></div>
             </div>
-            <p className="mt-3 text-[12px] leading-relaxed text-subtle">{provider.label}. Sense connexió, scraping ni API de la FCF.</p>
+            <p className="mt-3 text-[12px] leading-relaxed text-subtle">{provider.label}. Sin conexión, scraping ni API de la FCF.</p>
           </div>
         </div>
 
         <div className="mt-4 flex items-start gap-3 rounded-2xl border border-line bg-surface p-5 shadow-card">
           <Sparkles className="mt-0.5 size-5 shrink-0 text-accent-ink" />
           <p className="text-[13px] leading-relaxed text-muted">
-            <strong className="text-ink">ScoutUp Intelligence</strong> és un motor determinista i local: interpreta la petició, la converteix en criteris i reutilitza el càlcul de compatibilitat. No depèn de cap servei d'IA extern.
+            <strong className="text-ink">ScoutUp Intelligence</strong> es un motor determinista y local (IA demo): interpreta la petición, la convierte en criterios y reutiliza el cálculo de compatibilidad. No depende de ningún servicio de IA externo y no inventa datos.
           </p>
         </div>
       </div>

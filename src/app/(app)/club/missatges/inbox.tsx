@@ -29,7 +29,7 @@ export function ClubInbox({ u, activeId }: { u: SessionUser & { club_id: string 
       <div className={cn("flex min-h-0 flex-col border-r border-line", active && "hidden md:flex")}>
         <div className="border-b border-line px-4 py-3.5">
           <p className="text-[15px] font-bold">Mensajes</p>
-          <p className="text-[12px] text-muted">{convs.length} converses · {reqs.filter((r) => r.status.startsWith("pendent")).length} sol·licituds pendents</p>
+          <p className="text-[12px] text-muted">{convs.length} conversaciones · {reqs.filter((r) => r.status.startsWith("pendent")).length} solicitudes pendientes</p>
         </div>
         <div className="scroll-thin flex-1 overflow-y-auto">
           {convs.length === 0 && <p className="px-4 py-10 text-center text-[13px] text-subtle">Todavía no hay conversaciones.</p>}

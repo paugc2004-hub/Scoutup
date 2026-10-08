@@ -7,7 +7,7 @@ export type DemoAccount = "director" | "coordinator" | "coach" | "clubB" | "play
 export async function loginAs(page: Page, account: DemoAccount) {
   await page.goto("/entrar");
   const labels: Record<DemoAccount, RegExp> = {
-    director: /Directora esportiva/, coordinator: /Coordinació/, coach: /Entrenador · Juvenil A/, clubB: /Club B/, player: /Jugador · Pol/, guardian: /Tutora legal/,
+    director: /Directora deportiva/, coordinator: /Club · Coordinación/, coach: /Entrenador · Juvenil A/, clubB: /Club B/, player: /Jugador · Pol/, guardian: /Tutora legal/,
   };
   await page.getByRole("button", { name: labels[account] }).click();
   await page.waitForURL((u) => !u.pathname.startsWith("/entrar"));

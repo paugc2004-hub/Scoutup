@@ -83,7 +83,7 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
                   </div>
                 </Card>
               ))}
-              <p className="pt-2 text-center text-[12px] text-subtle">Mostrant els {res.results.length} millors de {res.total} perfils compatibles (≥45%).</p>
+              <p className="pt-2 text-center text-[12px] text-subtle">Mostrando los {res.results.length} mejores de {res.total} perfiles compatibles (≥45 %).</p>
             </div>
           )}
         </div>

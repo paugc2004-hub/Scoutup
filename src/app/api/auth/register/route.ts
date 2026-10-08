@@ -75,13 +75,12 @@ export const POST = api(async (req) => {
     const initials = d.club_name.replace(/^(CF|FC|CE|UE|CD|AE|UD|AD)\s+/i, "").split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase() || "CL";
     tx(() => {
       insert("clubs", { id: clubId, name: d.club_name, short_name: d.club_name.replace(/^(CF|FC|CE|UE|CD|AE|UD|AD)\s+/i, ""), initials, color_primary: "#334155", color_secondary: "#e2e8f0", founded: null, city: place.city, comarca: place.comarca, province: place.province, region: "Catalunya", country: "Espanya", lat: place.lat, lng: place.lng, website: null, instagram: null, email: d.email, phone: null, office_hours: null, languages: "Catalán, castellano", description: "Club nuevo en ScoutUp. Completa el perfil para que los jugadores te conozcan.", history: null, philosophy: null, values_text: null, objectives: null, sporting_model: null, facilities: "[]", tier: 3, verified: 0, created_at: now });
-      insert("teams", { id: uid("t_"), club_id: clubId, name: "Juvenil A", category: "Juvenil", gender: "M", is_first_team: 0 });
-      insert("users", { id: userId, email: d.email, password_hash: hashPassword(d.password), name: d.name, role: "director", title: "Direcció esportiva", club_id: clubId, avatar_hue: Math.floor(Math.random() * 360), is_demo_login: 0, created_at: now });
+      insert("users", { id: userId, email: d.email, password_hash: hashPassword(d.password), name: d.name, role: "director", title: "Dirección deportiva", club_id: clubId, avatar_hue: Math.floor(Math.random() * 360), is_demo_login: 0, created_at: now });
     });
     notify(userId, "system", "Club creado · pendiente de verificación", "Mientras el club no esté verificado, puedes explorar y publicar oportunidades, pero no contactar jugadores.", "/club/perfil");
     audit({ actor: { id: userId, club_id: clubId }, action: "club.register", entity: { type: "club", id: clubId } });
     await createSession(userId);
-    return { ok: true, redirect: "/club" };
+    return { ok: true, redirect: "/club/bienvenida" };
   }
   throw new ApiError(400, "Tipo de cuenta no válido.");
 });

@@ -2,7 +2,7 @@
 import { expect, test } from "@playwright/test";
 import { loginAs } from "./fixtures";
 
-const PAGES = ["/club", "/club/oportunitats", "/club/oportunitats/o_vn_central", "/club/cercar", "/club/jugadors/p_biel?offer=o_vn_central", "/club/pipeline", "/club/avaluacions", "/club/configuracio", "/club/comparar?ids=p_biel,p_arnau&offer=o_vn_central"];
+const PAGES = ["/club", "/club/oportunitats", "/club/oportunitats/o_vn_ld", "/club/bienvenida", "/club/cercar", "/club/jugadors/p_hugo?offer=o_vn_ld", "/club/pipeline", "/club/avaluacions", "/club/configuracio", "/club/comparar?ids=p_biel,p_arnau&offer=o_vn_central"];
 
 for (const width of [1440, 1280, 1024, 768]) {
   test(`sense scroll horitzontal a ${width}px`, async ({ page }) => {

@@ -7,7 +7,7 @@ import { all } from "@/server/db/client";
 import { club as getClub } from "@/server/services/club";
 import { offerRow, rankCandidates, toMatchOffer, traitsOf } from "@/server/services/offers";
 import { playerCtx } from "@/server/services/players";
-import { Avatar, Badge, Card, CardHeader, EmptyState, MatchRing, StageBadge } from "@/components/ui";
+import { Avatar, Badge, Card, EmptyState, MatchRing, StageBadge } from "@/components/ui";
 import { CandidatesList, ApplicationActions, OfferStatusControl } from "@/components/club/candidates-list";
 import { toLite } from "@/components/club/candidate-lite";
 import { ClientTabs } from "@/components/club/player-actions";
@@ -27,6 +27,7 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
   const club = getClub(u.club_id);
   const ctx = playerCtx();
   const cands = rankCandidates(toMatchOffer(o), club, { ctx, minScore: 40, offerId: id });
+  const compatibles = cands.filter((c) => c.match.score >= 70);
   const apps = all<{ id: string; status: AppStatus; message: string | null; created_at: string; match_score: number; player_id: string; first_name: string; last_name: string; avatar_hue: number; primary_position: string; birth_date: string; club_name: string | null; stage: Stage | null }>(
     `SELECT a.*, p.first_name, p.last_name, p.avatar_hue, p.primary_position, p.birth_date, c.name AS club_name, pe.stage
      FROM applications a JOIN players p ON p.id = a.player_id LEFT JOIN clubs c ON c.id = p.club_id LEFT JOIN pipeline_entries pe ON pe.player_id = a.player_id AND pe.club_id = ?
@@ -76,14 +77,26 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
           </div>
           {o.restrictions && <p className="mt-4 rounded-xl border border-[#fde68a] bg-warn-soft px-3.5 py-2.5 text-[13px] text-ink-2"><strong>Condiciones:</strong> {o.restrictions}</p>}
         </Card>
-        <Card>
-          <CardHeader title="Resumen" />
-          <div className="grid grid-cols-2 gap-2">
-            {[["Compatibles ≥80%", cands.filter((c) => c.match.score >= 80).length], ["Compatibles ≥70%", cands.filter((c) => c.match.score >= 70).length], ["Solicitudes", apps.length], ["Nuevas", apps.filter((a) => a.status === "enviada").length]].map(([k, v]) => (
-              <div key={k as string} className="rounded-xl bg-sunken p-3"><p className="text-[22px] font-extrabold tabular">{v}</p><p className="text-[11.5px] text-muted">{k}</p></div>
+        <Card className="bg-night text-white border-night">
+          <p className="text-[11.5px] font-bold uppercase tracking-[0.12em] text-night-muted">ScoutUp ha encontrado</p>
+          <p className="mt-2 text-[48px] font-extrabold leading-none tabular text-accent">{compatibles.length}</p>
+          <p className="mt-1 text-[14px] font-semibold">jugadores compatibles <span className="font-normal text-night-muted">(≥70 %)</span></p>
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            {[["≥80 %", cands.filter((c) => c.match.score >= 80).length], ["Solicitudes", apps.length], ["Nuevas", apps.filter((a) => a.status === "enviada").length]].map(([k, v]) => (
+              <div key={k as string} className="rounded-xl bg-night-2 p-2.5"><p className="text-[18px] font-extrabold tabular">{v}</p><p className="text-[11px] text-night-muted">{k}</p></div>
             ))}
           </div>
-          <p className="mt-4 text-[12px] leading-relaxed text-muted">La compatibilidad se calcula con siete factores ponderados: posición 25, categoría y nivel 20, edad 15, ubicación 10, disponibilidad 10, características 10 y experiencia 10.</p>
+          {compatibles[0] && (
+            <Link href={`/club/jugadors/${compatibles[0].player.id}?offer=${o.id}`} className="mt-4 flex items-center gap-3 rounded-xl border border-night-line bg-night-2 p-3 transition hover:border-accent/60">
+              <Avatar initials={compatibles[0].player.initials} hue={compatibles[0].player.hue} size={40} />
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-night-muted">Mejor encaje</p>
+                <p className="truncate text-[14px] font-bold">{compatibles[0].player.name}</p>
+              </div>
+              <span className="text-[22px] font-extrabold tabular text-accent">{compatibles[0].match.score}%</span>
+            </Link>
+          )}
+          <p className="mt-4 text-[11.5px] leading-relaxed text-night-muted">Compatibilidad, no probabilidad de fichaje: siete factores ponderados (posición 25, categoría y nivel 20, edad 15, ubicación 10, disponibilidad 10, características 10 y experiencia 10). Solo se cuentan perfiles visibles para tu club.</p>
         </Card>
       </div>
 
@@ -109,7 +122,7 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
                               {a.status === "enviada" ? <Badge tone="accent">Nueva</Badge> : <Badge>{APP_STATUS_LABEL[a.status]}</Badge>}
                               {a.stage && <StageBadge stage={a.stage} />}
                             </div>
-                            <p className="text-[12.5px] text-muted">{POSITION_LABEL[a.primary_position as Position]} · {age} anys · {a.club_name ?? "Sin equipo"} · {fmtRelative(a.created_at)}</p>
+                            <p className="text-[12.5px] text-muted">{POSITION_LABEL[a.primary_position as Position]} · {age} años · {a.club_name ?? "Sin equipo"} · {fmtRelative(a.created_at)}</p>
                             {a.message && <p className="mt-1.5 flex gap-1.5 text-[13px] italic text-ink-2"><MessageSquareQuote className="mt-0.5 size-3.5 shrink-0 text-subtle" />«{a.message}»</p>}
                           </div>
                         </Link>

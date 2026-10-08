@@ -80,7 +80,7 @@ export default async function Landing() {
                   <Avatar initials={hero.p.initials} hue={hero.p.hue} size={52} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[15px] font-bold">{hero.p.name}</p>
-                    <p className="text-[12.5px] text-night-muted">{hero.p.position_label} · {hero.p.age} anys · {hero.p.club_name}</p>
+                    <p className="text-[12.5px] text-night-muted">{hero.p.position_label} · {hero.p.age} años · {hero.p.club_name}</p>
                   </div>
                   <div className="rounded-full bg-white p-1"><MatchRing score={hero.m.score} size={58} /></div>
                 </div>

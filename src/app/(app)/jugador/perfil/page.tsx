@@ -45,7 +45,7 @@ export default async function MyProfile({ searchParams }: { searchParams: Promis
               <Avatar initials={p.initials} hue={p.hue} size={84} />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2"><p className="text-[22px] font-extrabold tracking-tight">{p.name}</p><VerificationBadge status={p.verification} />{p.minor && <MinorBadge />}</div>
-                <p className="text-[14px] text-muted">{p.position_label}{p.secondary.length ? ` · también ${p.secondary.map((s) => POSITION_LABEL[s].toLowerCase()).join(", ")}` : ""} · {p.age} anys</p>
+                <p className="text-[14px] text-muted">{p.position_label}{p.secondary.length ? ` · también ${p.secondary.map((s) => POSITION_LABEL[s].toLowerCase()).join(", ")}` : ""} · {p.age} años</p>
                 <div className="mt-2 flex flex-wrap gap-2"><Badge>{p.club_name}{p.team_name ? ` · ${p.team_name}` : ""}</Badge><Badge>{p.category} · {p.level_label}</Badge><AvailabilityBadge value={p.availability} /></div>
                 <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-[13px] text-muted">
                   <span className="inline-flex items-center gap-1.5"><MapPin className="size-4" />{p.location}</span>

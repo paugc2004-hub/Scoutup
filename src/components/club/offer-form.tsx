@@ -147,7 +147,7 @@ export function OfferForm({ teams, clubCity, initial }: { teams: Team[]; clubCit
                 {pv.top.map((t) => (
                   <div key={t.id} className="flex items-center gap-2.5 rounded-xl bg-night-2 p-2">
                     <Avatar initials={t.initials} hue={t.hue} size={32} />
-                    <div className="min-w-0 flex-1"><p className="truncate text-[12.5px] font-bold">{t.name}</p><p className="truncate text-[11.5px] text-night-muted">{t.pos} · {t.age} anys · {t.club}</p></div>
+                    <div className="min-w-0 flex-1"><p className="truncate text-[12.5px] font-bold">{t.name}</p><p className="truncate text-[11.5px] text-night-muted">{t.pos} · {t.age} años · {t.club}</p></div>
                     <div className="rounded-full bg-white p-0.5"><MatchRing score={t.score} size={34} stroke={3.5} /></div>
                   </div>
                 ))}

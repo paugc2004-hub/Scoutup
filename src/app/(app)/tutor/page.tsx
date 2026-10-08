@@ -28,8 +28,8 @@ export default async function TutorPage() {
           <Avatar initials={p.initials} hue={p.hue} size={64} />
           <div className="min-w-0 flex-1">
             <p className="text-[18px] font-extrabold">{p.name}</p>
-            <p className="text-[13px] text-muted">{p.age} anys · {p.position_label} · {p.club_name}{p.team_name ? ` · ${p.team_name}` : ""}</p>
-            <div className="mt-2 flex flex-wrap gap-2"><Badge tone="violet"><Lock className="size-3" /> Menor protegido</Badge><Badge tone={row.guardian_consent ? "accent" : "warn"}>{row.guardian_consent ? "Consentimiento activo" : "Sin consentimiento"}</Badge><Badge><Eye className="size-3" /> {views} visites de clubs (30 dies)</Badge></div>
+            <p className="text-[13px] text-muted">{p.age} años · {p.position_label} · {p.club_name}{p.team_name ? ` · ${p.team_name}` : ""}</p>
+            <div className="mt-2 flex flex-wrap gap-2"><Badge tone="violet"><Lock className="size-3" /> Menor protegido</Badge><Badge tone={row.guardian_consent ? "accent" : "warn"}>{row.guardian_consent ? "Consentimiento activo" : "Sin consentimiento"}</Badge><Badge><Eye className="size-3" /> {views} visitas de clubes (30 días)</Badge></div>
           </div>
         </div>
         <div className="mt-4 border-t border-line pt-2"><ConsentToggle consent={!!row.guardian_consent} /></div>

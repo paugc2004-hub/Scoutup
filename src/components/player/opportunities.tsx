@@ -86,7 +86,7 @@ export function ApplyPanel({ offerId, clubName, status, appliedAt, blocked, scor
         <div className="flex items-center gap-2 rounded-xl bg-accent-soft px-3 py-2.5 text-[14px] font-bold text-accent-ink"><CheckCircle2 className="size-5" /> {APP_STATUS_LABEL[status]}</div>
         {appliedAt && <p className="mt-2 text-[12px] text-muted">Solicitud enviada {fmtRelative(appliedAt)}.</p>}
         {status === "rebutjat" ? (
-          <p className="mt-3 rounded-xl bg-bg p-3 text-[13px] leading-relaxed text-muted">{clubName} ha decidit no continuar amb aquesta oportunitat. No et desanimis: hi ha més clubs que busquen perfils com el teu.</p>
+          <p className="mt-3 rounded-xl bg-bg p-3 text-[13px] leading-relaxed text-muted">{clubName} ha decidido no continuar con esta oportunidad. No te desanimes: hay más clubes que buscan perfiles como el tuyo.</p>
         ) : (
           <ol className="mt-4 space-y-3">
             {STEPS.map((s, i) => (

@@ -13,7 +13,7 @@ export function RequestCard({ r, compact }: { r: { id: string; club_name: string
       <div className="flex items-start gap-3">
         <ClubCrest initials={r.club_initials} color={r.club_color} size={40} />
         <div className="min-w-0 flex-1">
-          <p className="text-[14px] font-bold">{r.club_name} vol parlar amb tu {r.club_verified ? <ShieldCheck className="inline size-4 text-accent-ink" aria-label="Club verificado" /> : null}</p>
+          <p className="text-[14px] font-bold">{r.club_name} quiere hablar contigo {r.club_verified ? <ShieldCheck className="inline size-4 text-accent-ink" aria-label="Club verificado" /> : null}</p>
           <p className="text-[12px] text-muted">{r.from_name}{r.team_name ? ` · ${r.team_name}` : ""} · {r.club_city} · {fmtRelative(r.created_at)}</p>
           {!compact && <p className="mt-2 rounded-xl bg-surface p-3 text-[13.5px] leading-relaxed">{r.message}</p>}
         </div>

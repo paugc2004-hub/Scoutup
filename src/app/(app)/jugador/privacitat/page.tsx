@@ -33,7 +33,7 @@ export default async function PrivacyPage() {
             <Card className="border-[#ddd6fe] bg-violet-soft/50">
               <CardHeader title="Tutor legal" icon={<UserCheck className="size-4 text-violet" />} />
               <p className="text-[13px]">{guardian ? <><strong>{guardian.name}</strong> gestiona el consentimiento de tu perfil.</> : <>Tutor: {p.guardian_email}</>}</p>
-              <p className="mt-2 text-[12.5px] text-muted">Consentiment: {p.guardian_consent ? <Badge tone="accent">Activo</Badge> : <Badge tone="warn">Pendiente</Badge>} · Els contactes de clubs passen primer pel tutor.</p>
+              <p className="mt-2 text-[12.5px] text-muted">Consentimiento: {p.guardian_consent ? <Badge tone="accent">Activo</Badge> : <Badge tone="warn">Pendiente</Badge>} · Los contactos de clubes pasan primero por el tutor.</p>
             </Card>
           )}
           <Card>

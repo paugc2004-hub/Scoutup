@@ -47,7 +47,7 @@ describe("motor de compatibilitat", () => {
     const m = computeMatch({ ...ideal, primary_position: "MCD", secondary_positions: ["DC"] }, offer, now);
     const pos = m.factors.find((f) => f.key === "posicio")!;
     expect(pos.score).toBeLessThan(25);
-    expect(pos.detail).toMatch(/secundària/);
+    expect(pos.detail).toMatch(/secundaria/);
   });
 
   it("parla de compatibilitat, no de probabilitat de fitxatge", () => {
