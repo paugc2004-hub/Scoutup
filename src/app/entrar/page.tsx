@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Building2, UserRound, ClipboardList, ShieldCheck } from "lucide-react";
+import { Building2, UserRound, ClipboardList, ShieldCheck, Network } from "lucide-react";
 import { Logo } from "@/components/shell/app-shell";
 import { LoginForm } from "@/components/client/login-form";
 import { DemoLoginButton } from "@/components/client/demo-login";
@@ -37,8 +37,14 @@ export default async function LoginPage() {
               <DemoLoginButton role="director" size="md" variant="dark" className="w-full justify-start" icon={<Building2 className="size-4" />}>
                 Club · Directora esportiva <span className="ml-auto text-[11.5px] font-medium text-night-muted">director@scoutup.demo</span>
               </DemoLoginButton>
+              <DemoLoginButton role="coordinator" size="md" variant="secondary" className="w-full justify-start" icon={<Network className="size-4" />}>
+                Club · Coordinació <span className="ml-auto text-[11.5px] font-medium text-subtle">coordinacio@scoutup.demo</span>
+              </DemoLoginButton>
               <DemoLoginButton role="coach" size="md" variant="secondary" className="w-full justify-start" icon={<ClipboardList className="size-4" />}>
                 Entrenador · Juvenil A <span className="ml-auto text-[11.5px] font-medium text-subtle">coach@scoutup.demo</span>
+              </DemoLoginButton>
+              <DemoLoginButton role="clubB" size="md" variant="secondary" className="w-full justify-start" icon={<Building2 className="size-4" />}>
+                Club B · FC Mediterrani <span className="ml-auto text-[11.5px] font-medium text-subtle">club-b@scoutup.demo</span>
               </DemoLoginButton>
               <DemoLoginButton role="player" size="md" variant="secondary" className="w-full justify-start" icon={<UserRound className="size-4" />}>
                 Jugador · Pol Serra <span className="ml-auto text-[11.5px] font-medium text-subtle">player@scoutup.demo</span>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Columns3, Sparkles, X } from "lucide-react";
 import { requireClubStaff } from "@/server/auth/session";
 import { all } from "@/server/db/client";
-import { clubCanSee, clubRelations } from "@/server/services/access";
+import { can, clubCanSee, clubRelations } from "@/server/services/access";
 import { club as getClub } from "@/server/services/club";
 import { clubOffers, toMatchOffer } from "@/server/services/offers";
 import { playerCtx, playerRow, presentPlayer, toMatchPlayer } from "@/server/services/players";
@@ -31,7 +31,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
     const pipe = all<{ player_id: string; first_name: string; last_name: string; avatar_hue: number }>("SELECT pe.player_id, p.first_name, p.last_name, p.avatar_hue FROM pipeline_entries pe JOIN players p ON p.id = pe.player_id WHERE pe.club_id = ? ORDER BY pe.updated_at DESC LIMIT 9", u.club_id);
     return (
       <div>
-        <PageHeader eyebrow="Decidir" title="Comparar jugadors" subtitle="Tria fins a 3 jugadors amb el botó «Comparar» (a la cerca, a les ofertes o al perfil) i compara'ls cara a cara." />
+        <PageHeader eyebrow="Decidir" title="Comparar jugadors" subtitle="Tria fins a 3 jugadors amb el botó «Comparar» (a la cerca, a les oportunitats o al perfil) i compara'ls cara a cara." />
         <EmptyState icon={<Columns3 className="size-5" />} title="Selecciona almenys dos jugadors" text="Fes servir el botó + dels resultats o afegeix-los des del teu pipeline:" />
         <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {pipe.map((p) => (
@@ -46,7 +46,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
     );
   }
 
-  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && o.gender === rows[0].gender && (u.role === "director" || o.team_id === u.team_id));
+  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && o.gender === rows[0].gender && (can.allTeams(u) || o.team_id === u.team_id));
   const avg = (o: (typeof offers)[number]) => rows.reduce((a, r) => a + computeMatch(toMatchPlayer(r, ctx.prev.get(r.id), ctx.career.get(r.id) ?? 0), toMatchOffer(o), ctx.now).score, 0);
   const offer = offers.find((o) => o.id === sp.offer) ?? [...offers].sort((a, b) => avg(b) - avg(a))[0];
   const matches: (MatchResult | null)[] = rows.map((r) => (offer ? computeMatch(toMatchPlayer(r, ctx.prev.get(r.id), ctx.career.get(r.id) ?? 0), toMatchOffer(offer), ctx.now) : null));

@@ -41,7 +41,7 @@ export function toMatchOffer(o: OfferRow): MatchOffer {
 
 export type Candidate = { player: PlayerView; match: MatchResult; stage: Stage | null; application: { id: string; status: string; created_at: string; message: string | null } | null; km: number };
 
-/** Candidats per a una oferta (o per a una "oferta virtual" de la cerca intel·ligent), ordenats per compatibilitat. */
+/** Candidats per a una oportunitat (o per a una "oferta virtual" de la cerca intel·ligent), ordenats per compatibilitat. */
 export function rankCandidates(offer: MatchOffer, club: { id: string; verified: number }, opts: { ctx?: PlayerCtx; minScore?: number; offerId?: string; limit?: number } = {}): Candidate[] {
   const ctx = opts.ctx ?? playerCtx();
   const rel = clubRelations(club.id);
@@ -70,7 +70,7 @@ export function offerStats(offerIds: string[]): Map<string, { total: number; nou
   return new Map(rows.map((r) => [r.offer_id, { total: r.total, nous: r.nous }]));
 }
 
-/** Oportunitats per a un jugador: ofertes obertes del seu gènere, amb compatibilitat i estat. */
+/** Oportunitats per a un jugador: oportunitats obertes del seu gènere, amb compatibilitat i estat. */
 export function opportunitiesFor(p: PlayerRow, ctx: PlayerCtx = playerCtx()) {
   const mp = toMatchPlayer(p, ctx.prev.get(p.id), ctx.career.get(p.id) ?? 0);
   const blocked = new Set(all<{ club_id: string }>("SELECT club_id FROM blocks WHERE player_id = ?", p.id).map((r) => r.club_id));

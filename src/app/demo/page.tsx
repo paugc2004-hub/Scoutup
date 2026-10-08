@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { Building2, ClipboardList, UserRound, ShieldCheck, ArrowRight, Database, PlugZap, Sparkles, Play } from "lucide-react";
+import { Building2, ClipboardList, Network, UserRound, ShieldCheck, ArrowRight, Database, PlugZap, Sparkles, Play } from "lucide-react";
 import { Logo } from "@/components/shell/app-shell";
 import { DemoLoginButton, ResetDemoButton } from "@/components/client/demo-login";
 import { DEMO_FLOWS } from "@/lib/demo-flows";
 import { get } from "@/server/db/client";
+import { currentUser } from "@/server/auth/session";
+import { hasPermission } from "@/lib/permissions";
 import { competitionProvider } from "@/server/competition/provider";
 import { fmtRelative } from "@/lib/time";
 
@@ -11,13 +13,19 @@ export const metadata = { title: "Demo" };
 export const dynamic = "force-dynamic";
 
 const ROLES = [
-  { role: "director" as const, icon: <Building2 className="size-5" />, title: "Club · Directora esportiva", who: "Marta Casanovas · CF Vallès Nord", text: "Accés complet: ofertes, cerca, pipeline, avaluacions, plantilla, calendari i configuració." },
-  { role: "coach" as const, icon: <ClipboardList className="size-5" />, title: "Club · Entrenador", who: "Jordi Esteve · Juvenil A", text: "Mateixa eina, però limitada al seu equip: permisos per rol aplicats al servidor." },
-  { role: "player" as const, icon: <UserRound className="size-5" />, title: "Jugador", who: "Pol Serra Batlle · 18 anys · central", text: "Perfil, oportunitats amb % d'encaix, M'interessa, seguiment, missatges i privacitat." },
-  { role: "guardian" as const, icon: <ShieldCheck className="size-5" />, title: "Tutora legal", who: "Anna Font · mare d'en Nil (16 anys)", text: "Autoritza o denega els contactes dels clubs i controla la visibilitat del menor." },
+  { role: "director" as const, icon: <Building2 className="size-5" />, title: "Direcció esportiva", who: "Marta Casanovas · CF Vallès Nord", text: "Accés complet: oportunitats, jugadors, pipeline, avaluacions, equips, calendari, usuaris i permisos." },
+  { role: "coordinator" as const, icon: <Network className="size-5" />, title: "Coordinació", who: "Sergi Puig · CF Vallès Nord", text: "Tots els equips del club i gestió d'oportunitats. No administra el club ni els usuaris." },
+  { role: "coach" as const, icon: <ClipboardList className="size-5" />, title: "Entrenador", who: "Jordi Esteve · Juvenil A", text: "La mateixa eina, limitada al seu equip. Els permisos s'apliquen al servidor." },
+  { role: "clubB" as const, icon: <Building2 className="size-5" />, title: "Un altre club (Club B)", who: "FC Mediterrani · direcció", text: "Per comprovar l'aïllament: un club no pot veure res privat d'un altre." },
+];
+const OTHER_SIDE = [
+  { role: "player" as const, icon: <UserRound className="size-5" />, title: "Jugador (ScoutUp Player)", who: "Pol Serra Batlle · 18 anys", text: "Fora de l'abast d'aquesta demo de club: serveix per simular les respostes dels jugadors." },
+  { role: "guardian" as const, icon: <ShieldCheck className="size-5" />, title: "Tutora legal", who: "Anna Font · mare d'en Nil (16 anys)", text: "Autoritza o denega els contactes dels clubs amb el menor." },
 ];
 
 export default async function DemoPage() {
+  const me = await currentUser();
+  const canReset = hasPermission(me?.role, "demo.reset");
   const seeded = get<{ value: string }>("SELECT value FROM meta WHERE key = 'seeded_at'")?.value;
   const provider = competitionProvider();
   const counts = Object.fromEntries(
@@ -38,9 +46,9 @@ export default async function DemoPage() {
       <div className="mx-auto max-w-[1200px] px-5 py-10 md:px-8">
         <div className="animate-rise">
           <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-accent-ink">Mode demo</p>
-          <h1 className="mt-2 text-[34px] font-extrabold leading-tight tracking-[-0.025em] md:text-[42px]">Explora ScoutUp des de cada rol</h1>
+          <h1 className="mt-2 text-[34px] font-extrabold leading-tight tracking-[-0.025em] md:text-[42px]">Explora ScoutUp Club</h1>
           <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
-            Tot funciona de veritat: les accions es guarden a la base de dades local i es veuen des dels altres rols. Totes les dades són fictícies i es poden restaurar en qualsevol moment.
+            El software del club per detectar necessitats, trobar jugadors compatibles, organitzar el procés i decidir en equip. Tot funciona de veritat: les accions es guarden a la base de dades i es veuen des dels altres rols. Totes les dades són fictícies.
           </p>
         </div>
 
@@ -70,7 +78,7 @@ export default async function DemoPage() {
           ))}
         </div>
 
-        <h2 className="mb-3 mt-12 text-[13px] font-bold uppercase tracking-[0.12em] text-subtle">O entra lliurement</h2>
+        <h2 className="mb-3 mt-12 text-[13px] font-bold uppercase tracking-[0.12em] text-subtle">O entra lliurement amb un usuari del club</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {ROLES.map((r) => (
             <div key={r.role} className="flex flex-col rounded-2xl border border-line bg-surface p-5 shadow-card">
@@ -83,11 +91,26 @@ export default async function DemoPage() {
           ))}
         </div>
 
+        <h2 className="mb-3 mt-10 text-[13px] font-bold uppercase tracking-[0.12em] text-subtle">L'altra banda (només per simular respostes)</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {OTHER_SIDE.map((r) => (
+            <div key={r.role} className="flex items-start gap-4 rounded-2xl border border-dashed border-line-strong bg-surface p-5">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-sunken text-ink-2">{r.icon}</span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[14.5px] font-bold">{r.title}</p>
+                <p className="text-[12.5px] font-medium text-muted">{r.who}</p>
+                <p className="mt-1.5 text-[13px] leading-relaxed text-muted">{r.text}</p>
+                <DemoLoginButton role={r.role} size="sm" variant="ghost" className="mt-2 -ml-2">Entrar <ArrowRight className="size-3.5" /></DemoLoginButton>
+              </div>
+            </div>
+          ))}
+        </div>
+
         <div className="mt-12 grid gap-4 lg:grid-cols-3">
           <div className="rounded-2xl border border-line bg-surface p-5 shadow-card lg:col-span-2">
             <div className="flex items-center gap-2.5"><Database className="size-5 text-subtle" /><p className="text-[15px] font-bold">Dades de la demo</p></div>
             <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-7">
-              {Object.entries({ Clubs: counts.clubs, Equips: counts.teams, Jugadors: counts.players, Ofertes: counts.offers, Candidatures: counts.applications, Converses: counts.conversations, Esdeveniments: counts.events }).map(([k, v]) => (
+              {Object.entries({ Clubs: counts.clubs, Equips: counts.teams, Jugadors: counts.players, Oportunitats: counts.offers, Candidatures: counts.applications, Converses: counts.conversations, Esdeveniments: counts.events }).map(([k, v]) => (
                 <div key={k} className="rounded-xl bg-sunken p-3">
                   <p className="text-[20px] font-extrabold tabular">{v}</p>
                   <p className="text-[11.5px] text-muted">{k}</p>
@@ -98,7 +121,7 @@ export default async function DemoPage() {
               Clubs, jugadors, competicions, classificacions i estadístiques són inventats. Els municipis són reals només com a referència geogràfica. Cap indicador «Verificat» representa una verificació oficial.
               {seeded && <> Dades carregades {fmtRelative(seeded)}.</>}
             </p>
-            <ResetDemoButton className="mt-4" />
+            {canReset ? <ResetDemoButton className="mt-4" /> : <p className="mt-4 text-[12.5px] text-subtle">Per restaurar les dades, entra com a direcció esportiva (Configuració → Dades de la demo).</p>}
           </div>
           <div className="rounded-2xl border border-line bg-surface p-5 shadow-card">
             <div className="flex items-center gap-2.5"><PlugZap className="size-5 text-subtle" /><p className="text-[15px] font-bold">Font de dades de competició</p></div>

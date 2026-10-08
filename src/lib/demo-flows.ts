@@ -1,47 +1,52 @@
 /** Recorreguts guiats de la demo (els fa servir la pàgina /demo i la guia flotant). */
-export type DemoStep = { role: "director" | "coach" | "player" | "guardian"; href: string; title: string; text: string };
+
+/** Comptes d'accés ràpid de la demo (vegeu /api/auth/demo). */
+export type DemoAccount = "director" | "coordinator" | "coach" | "clubB" | "player" | "guardian";
+export const DEMO_EMAILS: Record<DemoAccount, string> = {
+  director: "director@scoutup.demo",
+  coordinator: "coordinacio@scoutup.demo",
+  coach: "coach@scoutup.demo",
+  clubB: "club-b@scoutup.demo",
+  player: "player@scoutup.demo",
+  guardian: "tutor@scoutup.demo",
+};
+export function demoAccountOf(email: string): DemoAccount | null {
+  return (Object.entries(DEMO_EMAILS).find(([, e]) => e === email)?.[0] as DemoAccount | undefined) ?? null;
+}
+
+export type DemoStep = { role: DemoAccount; href: string; title: string; text: string };
 export type DemoFlow = { id: string; title: string; subtitle: string; minutes: string; steps: DemoStep[] };
+
+const BIEL = "/club/jugadors/p_biel?offer=o_vn_central";
 
 export const DEMO_FLOWS: DemoFlow[] = [
   {
-    id: "fcf",
-    title: "Escenari FCF · «El club necessita un central sub-19»",
-    subtitle: "De la necessitat al contacte, i on la informació de competició aporta context.",
-    minutes: "4 min",
+    id: "estrella",
+    title: "Recorregut estrella · «El Juvenil A necessita un central»",
+    subtitle: "Necessitat → oportunitat → compatibles → perfil 87% → guardar → comparar → pipeline → avaluació → contacte → activitat.",
+    minutes: "5 min",
     steps: [
-      { role: "director", href: "/club", title: "Una necessitat real", text: "Al tauler del CF Vallès Nord apareix la necessitat del Juvenil A: dos centrals acaben etapa i cap no és esquerrà." },
-      { role: "director", href: "/club/intelligence?q=Necessito%20un%20central%20esquerr%C3%A0%20sub-19%20de%20la%20zona%20del%20Vall%C3%A8s%20amb%20bon%20joc%20aeri", title: "ScoutUp Intelligence", text: "La petició en llenguatge natural es converteix en criteris i en una llista ordenada i explicada. Sense IA externa: motor determinista." },
-      { role: "director", href: "/club/jugadors/p_biel?offer=o_vn_central", title: "Perfil i context esportiu", text: "Compatibilitat del 87% desglossada factor per factor. Fixa't en el bloc «Context competitiu»: avui és simulat; amb dades oficials seria contrastable." },
-      { role: "director", href: "/club/comparar?ids=p_biel,p_arnau,p_pol&offer=o_vn_central", title: "Comparar", text: "Tres centrals cara a cara: radar, estadístiques i encaix amb l'oferta." },
-      { role: "director", href: "/club/jugadors/p_biel?offer=o_vn_central", title: "Pipeline i contacte", text: "Afegeix-lo al pipeline, mou-lo a «Interessant» i envia una sol·licitud de contacte. Amb «Simular resposta» veuràs com s'obre la conversa." },
+      { role: "director", href: "/club", title: "Una necessitat real", text: "Entres com a directora esportiva del CF Vallès Nord. Al tauler, la necessitat del Juvenil A: dos centrals acaben etapa i cap no és esquerrà." },
+      { role: "director", href: "/club/oportunitats/o_vn_central", title: "L'oportunitat", text: "La necessitat ja és una oportunitat oberta. ScoutUp hi ordena els jugadors compatibles per % de compatibilitat (no és probabilitat de fitxatge)." },
+      { role: "director", href: BIEL, title: "Perfil · 87% compatible", text: "Obre el desglossament «Per què encaixa»: posició, nivell, edat, ubicació, disponibilitat, característiques i experiència, cadascun amb el seu pes." },
+      { role: "director", href: BIEL, title: "Guardar", text: "Prem l'estrella per guardar-lo a la llista del club. Queda registrat a l'activitat." },
+      { role: "director", href: "/club/comparar?ids=p_biel,p_arnau,p_pol&offer=o_vn_central", title: "Comparar candidats", text: "Tres centrals cara a cara: radar, estadístiques i compatibilitat amb la mateixa oportunitat." },
+      { role: "director", href: BIEL, title: "Afegir al pipeline", text: "«Afegir al pipeline» i mou-lo a «Interessant». El pipeline és compartit amb el cos tècnic segons els permisos de cadascú." },
+      { role: "director", href: `${BIEL}&tab=avaluacio`, title: "Avaluació privada", text: "Puntua per àrees, indica el context (partit, entrenament, vídeo) i la decisió. Les avaluacions mai no són visibles per al jugador." },
+      { role: "director", href: BIEL, title: "Contacte segur", text: "«Contactar» envia una sol·licitud per la plataforma. Amb «Simular resposta del jugador» (només demo) s'obre la conversa. Amb menors, sempre decideix el tutor." },
+      { role: "director", href: "/club", title: "Tot queda registrat", text: "Torna al tauler: l'activitat recent mostra el que acabes de fer (guardar, pipeline, avaluació, contacte)." },
     ],
   },
   {
-    id: "club",
-    title: "Flux del club",
-    subtitle: "Oferta → candidats → perfil → comparar → pipeline → contacte → conversa.",
-    minutes: "3–4 min",
+    id: "permisos",
+    title: "Rols, permisos i aïllament entre clubs",
+    subtitle: "Direcció, coordinació i entrenador veuen coses diferents; un altre club no veu res de privat.",
+    minutes: "3 min",
     steps: [
-      { role: "director", href: "/club", title: "Tauler del club", text: "Indicadors, necessitats de la plantilla, nous perfils compatibles i agenda." },
-      { role: "director", href: "/club/ofertes/o_vn_central", title: "Oferta «Busquem central sub-19»", text: "Candidats recomanats ordenats per compatibilitat. Filtra per peu esquerre i «No al pipeline»." },
-      { role: "director", href: "/club/jugadors/p_biel?offer=o_vn_central", title: "Perfil del jugador · 87%", text: "Obre el desglossament: posició, nivell, edat, ubicació, disponibilitat, característiques i experiència." },
-      { role: "director", href: "/club/comparar?ids=p_biel,p_arnau,p_pol&offer=o_vn_central", title: "Comparar 3 jugadors", text: "Radar superposat, estadístiques i resum automàtic." },
-      { role: "director", href: "/club/pipeline", title: "Pipeline", text: "Arrossega la targeta (o fes servir el menú) de Nou → Interessant → Contactat." },
-      { role: "director", href: "/club/jugadors/p_biel?offer=o_vn_central", title: "Enviar sol·licitud", text: "Botó «Contactar». Després, «Simular resposta del jugador» per obrir la conversa." },
-      { role: "director", href: "/club/missatges", title: "Conversa", text: "Missatgeria interna, amb avís si algú intenta treure la conversa fora de la plataforma. Prova «Programar videotrucada»." },
-    ],
-  },
-  {
-    id: "player",
-    title: "Flux del jugador",
-    subtitle: "Perfil → oportunitat 89% → M'interessa → el club ho veu.",
-    minutes: "2 min",
-    steps: [
-      { role: "player", href: "/jugador", title: "Tauler del jugador", text: "Perfil al 82% (i què hi falta), clubs interessats, agenda i oportunitats per a tu." },
-      { role: "player", href: "/jugador/oportunitats/o_vn_central", title: "Oportunitat 89% compatible", text: "«Per què encaixes»: el mateix desglossament que veu el club, explicat al jugador." },
-      { role: "player", href: "/jugador/oportunitats/o_vn_central", title: "M'interessa", text: "Prem «M'interessa» i envia la sol·licitud. L'estat passa a «Sol·licitud enviada»." },
-      { role: "player", href: "/jugador/seguiment", title: "Seguiment", text: "Totes les candidatures i contactes, amb el seu estat." },
-      { role: "director", href: "/club/ofertes/o_vn_central?tab=sollicituds", title: "El club ho rep", text: "Entra com a club: la sol·licitud apareix a la pestanya «Sol·licituds», amb notificació." },
+      { role: "director", href: "/club/configuracio", title: "Usuaris i permisos", text: "La direcció esportiva canvia rols i equips. La matriu surt del mateix RBAC que aplica el servidor, i cada canvi queda al registre d'auditoria." },
+      { role: "coordinator", href: "/club/oportunitats", title: "Coordinació", text: "El coordinador veu tots els equips i pot gestionar oportunitats, però no pot editar el club ni els usuaris." },
+      { role: "coach", href: "/club/pipeline", title: "Entrenador", text: "L'entrenador del Juvenil A només veu el pipeline, les converses i les avaluacions del seu equip." },
+      { role: "clubB", href: "/club/pipeline", title: "Un altre club", text: "El FC Mediterrani (Club B) té el seu propi pipeline. No pot veure ni modificar res intern del CF Vallès Nord, encara que en conegui els identificadors." },
     ],
   },
   {
@@ -52,6 +57,17 @@ export const DEMO_FLOWS: DemoFlow[] = [
     steps: [
       { role: "guardian", href: "/tutor", title: "Panell del tutor", text: "El CF Vallès Nord vol contactar amb en Nil (16 anys). Sense l'autorització de la tutora, el club no pot escriure-li." },
       { role: "guardian", href: "/tutor", title: "Autoritzar o denegar", text: "Si autoritza, s'obre la conversa i la tutora en pot consultar el contingut. Pot revocar la visibilitat en qualsevol moment." },
+    ],
+  },
+  {
+    id: "player",
+    title: "L'altra banda: el jugador (ScoutUp Player)",
+    subtitle: "Per entendre d'on surten les sol·licituds que rep el club.",
+    minutes: "2 min",
+    steps: [
+      { role: "player", href: "/jugador/oportunitats/o_vn_central", title: "Oportunitat compatible", text: "El jugador veu el mateix desglossament de compatibilitat, explicat des del seu punt de vista." },
+      { role: "player", href: "/jugador/oportunitats/o_vn_central", title: "M'interessa", text: "Prem «M'interessa» i envia la sol·licitud." },
+      { role: "director", href: "/club/oportunitats/o_vn_central?tab=sollicituds", title: "El club ho rep", text: "La sol·licitud apareix a la pestanya «Sol·licituds» de l'oportunitat, amb notificació." },
     ],
   },
 ];

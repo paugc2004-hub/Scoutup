@@ -1,3 +1,4 @@
+import { isClubRole } from "@/lib/permissions";
 import { all } from "@/server/db/client";
 import type { SessionUser } from "@/server/auth/session";
 import { teamFilterSql } from "@/server/services/access";
@@ -13,7 +14,7 @@ export function conversationsFor(u: SessionUser): ConvListItem[] {
   const otherSide = u.role === "player" || u.role === "guardian" ? "club" : "player";
   let where = "";
   const params: unknown[] = [];
-  if (u.role === "director" || u.role === "coach") {
+  if (isClubRole(u.role)) {
     const tf = teamFilterSql(u, "c.team_id");
     where = `c.club_id = ? AND ${tf.sql}`;
     params.push(u.club_id, ...tf.params);

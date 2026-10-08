@@ -79,7 +79,7 @@ export default async function OpportunityDetail({ params }: { params: Promise<{ 
             {club.philosophy && <p className="mt-2 text-[13px] leading-relaxed text-ink-2"><strong>Filosofia:</strong> {club.philosophy}</p>}
             <Link href={`/jugador/clubs/${o.club_id}`} className="mt-3 inline-block text-[13px] font-semibold text-accent-ink hover:underline">Veure el perfil del club →</Link>
           </Card>
-          <div className="flex justify-center"><ReportButton targetType="offer" targetId={o.id} label="Denunciar aquesta oferta" icon={<Flag className="size-3.5" />} /></div>
+          <div className="flex justify-center"><ReportButton targetType="offer" targetId={o.id} label="Denunciar aquesta oportunitat" icon={<Flag className="size-3.5" />} /></div>
         </div>
       </div>
     </div>

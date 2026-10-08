@@ -140,9 +140,9 @@ export function OfferStatusControl({ id, status }: { id: string; status: string 
   const { call, pending } = useApi();
   return (
     <div className="flex items-center gap-2">
-      {status !== "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "oberta" }, ok: "Oferta reoberta" })}>Reobrir</Button>}
-      {status === "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "pausada" }, ok: "Oferta pausada", okSub: "Deixa de ser visible per als jugadors." })}>Pausar</Button>}
-      {status !== "tancada" && <Button size="sm" variant="danger" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "tancada" }, ok: "Oferta tancada" })}>Tancar</Button>}
+      {status !== "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "oberta" }, ok: "Oportunitat reoberta" })}>Reobrir</Button>}
+      {status === "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "pausada" }, ok: "Oportunitat pausada", okSub: "Deixa de ser visible per als jugadors." })}>Pausar</Button>}
+      {status !== "tancada" && <Button size="sm" variant="danger" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "tancada" }, ok: "Oportunitat tancada" })}>Tancar</Button>}
     </div>
   );
 }

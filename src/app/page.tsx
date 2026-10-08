@@ -72,7 +72,7 @@ export default async function Landing() {
               <div className="absolute -inset-4 rounded-[32px] bg-gradient-to-br from-accent/25 to-transparent blur-2xl" />
               <div className="relative rounded-3xl border border-night-line bg-night-2 p-5 shadow-pop">
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-night-muted">Oferta · {hero.o.club_name}</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-night-muted">Oportunitat · {hero.o.club_name}</p>
                   <Badge tone="dark" className="!border-night-line !bg-night-3 !text-night-text">{hero.o.team_name}</Badge>
                 </div>
                 <p className="text-[19px] font-extrabold tracking-tight">{hero.o.title}</p>
@@ -124,7 +124,7 @@ export default async function Landing() {
         <h2 className="mt-2 max-w-2xl text-[32px] font-extrabold leading-tight tracking-[-0.025em] md:text-[40px]">De la necessitat del club al contacte, en quatre passos.</h2>
         <div className="mt-10 grid gap-4 md:grid-cols-4">
           {[
-            { icon: <Target className="size-5" />, t: "El club defineix la necessitat", d: "Una oferta amb posició, categoria, nivell, zona i característiques. O una petició en llenguatge natural." },
+            { icon: <Target className="size-5" />, t: "El club defineix la necessitat", d: "Una oportunitat amb posició, categoria, nivell, zona i característiques. O una petició en llenguatge natural." },
             { icon: <Sparkles className="size-5" />, t: "ScoutUp calcula l'encaix", d: "Set factors ponderats i explicables. Sense caixes negres: cada percentatge té el seu perquè." },
             { icon: <KanbanSquare className="size-5" />, t: "El club avalua i decideix", d: "Pipeline, comparador, avaluacions per àrees, notes privades i informes de scouting." },
             { icon: <MessagesSquare className="size-5" />, t: "Contacte segur", d: "El jugador (o el seu tutor, si és menor) decideix si accepta. Missatgeria interna i moderada." },
@@ -145,7 +145,7 @@ export default async function Landing() {
           <Building2 className="size-6 text-accent" />
           <h3 className="mt-4 text-[26px] font-extrabold tracking-tight">Per a clubs</h3>
           <ul className="mt-5 space-y-3 text-[14.5px] text-night-text">
-            {["Cerca avançada i ScoutUp Intelligence", "Ofertes amb candidats ordenats per compatibilitat", "Pipeline de captació amb nou etapes", "Comparador, avaluacions i notes privades", "Plantilla visual, equips i calendari", "Permisos per rol: direcció i entrenadors"].map((x) => (
+            {["Cerca avançada i ScoutUp Intelligence", "Oportunitats amb candidats ordenats per compatibilitat", "Pipeline de captació amb nou etapes", "Comparador, avaluacions i notes privades", "Plantilla visual, equips i calendari", "Permisos per rol: direcció i entrenadors"].map((x) => (
               <li key={x} className="flex gap-2.5"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-accent" />{x}</li>
             ))}
           </ul>

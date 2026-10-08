@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Star, KanbanSquare, Send, MessageSquare, Clock3, Trash2, Lock, FlaskConical, ChevronDown, NotebookPen, Plus } from "lucide-react";
-import { ActionButton, Button, Field, Modal, Select, Textarea, Tabs, useApi, Chip } from "@/components/client/kit";
+import { ActionButton, Button, Field, Input, Modal, Select, Textarea, Tabs, useApi, Chip } from "@/components/client/kit";
 import { btnClass, cn, Dot } from "@/components/ui";
 import { CONTACT_REASONS, PIPELINE_STAGES, STAGE_COLOR, STAGE_LABEL, EVAL_AREAS, EVAL_DECISIONS } from "@/lib/domain";
 import type { Stage } from "@/lib/domain";
@@ -90,7 +90,7 @@ export function ContactControl({ playerId, firstName, state, clubName, offerTitl
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState(offerTitle ? "oferta" : "seguiment");
   const [team, setTeam] = useState(defaultTeam ?? teams[0]?.id ?? "");
-  const [msg, setMsg] = useState(`Hola ${firstName}, t'escrivim des del ${clubName}.${offerTitle ? ` Hem vist el teu perfil i creiem que encaixes molt bé amb la nostra oferta «${offerTitle}».` : " Hem vist el teu perfil i ens agradaria conèixer-te."} T'agradaria que en parléssim?`);
+  const [msg, setMsg] = useState(`Hola ${firstName}, t'escrivim des del ${clubName}.${offerTitle ? ` Hem vist el teu perfil i creiem que encaixes molt bé amb la nostra oportunitat «${offerTitle}».` : " Hem vist el teu perfil i ens agradaria conèixer-te."} T'agradaria que en parléssim?`);
   const { call, pending } = useApi();
   const router = useRouter();
 
@@ -210,11 +210,12 @@ export function ClientTabs({ tabs, initial }: { tabs: { key: string; label: stri
   );
 }
 
-export function EvaluationForm({ playerId, initial }: { playerId: string; initial: { scores: Record<string, Record<string, number>>; decision: string; comment: string } | null }) {
+export function EvaluationForm({ playerId, initial }: { playerId: string; initial: { scores: Record<string, Record<string, number>>; decision: string; comment: string; context?: string | null } | null }) {
   const base = Object.fromEntries(EVAL_AREAS.map((a) => [a.key, Object.fromEntries(a.criteria.map((c) => [c.key, initial?.scores?.[a.key]?.[c.key] ?? 6]))]));
   const [scores, setScores] = useState<Record<string, Record<string, number>>>(base);
   const [decision, setDecision] = useState(initial?.decision ?? "seguir");
   const [comment, setComment] = useState(initial?.comment ?? "");
+  const [context, setContext] = useState(initial?.context ?? "");
   const { call, pending } = useApi();
   const avg = (k: string) => {
     const v = Object.values(scores[k]);
@@ -244,11 +245,19 @@ export function EvaluationForm({ playerId, initial }: { playerId: string; initia
           <div className="flex flex-wrap gap-2">
             {Object.entries(EVAL_DECISIONS).map(([k, l]) => <Chip key={k} active={decision === k} onClick={() => setDecision(k)}>{l}</Chip>)}
           </div>
-          <Textarea className="mt-3" rows={4} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Comentari de l'avaluació (només visible per al club)" />
+          <label className="mt-3 block">
+            <span className="mb-1 block text-[12.5px] font-semibold text-ink-2">Context</span>
+            <Input list="eval-contexts" maxLength={120} value={context} onChange={(e) => setContext(e.target.value)} placeholder="P. ex. Partit de lliga vs UE Serralada" />
+            <datalist id="eval-contexts"><option value="Partit de lliga" /><option value="Sessió d'entrenament" /><option value="Prova al club" /><option value="Vídeo del partit" /><option value="Torneig" /></datalist>
+          </label>
+          <label className="mt-3 block">
+            <span className="mb-1 block text-[12.5px] font-semibold text-ink-2">Observacions</span>
+            <Textarea rows={4} maxLength={1500} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Només visible per al club" />
+          </label>
         </div>
       </div>
       <div className="flex justify-end">
-        <Button variant="dark" loading={pending} onClick={() => call("/api/evaluations", { body: { playerId, scores, decision, comment }, ok: initial ? "Avaluació actualitzada" : "Avaluació guardada" })}>
+        <Button variant="dark" loading={pending} onClick={() => call("/api/evaluations", { body: { playerId, scores, decision, comment, context: context.trim() || null }, ok: initial ? "Avaluació actualitzada" : "Avaluació guardada" })}>
           {initial ? "Actualitzar la meva avaluació" : "Guardar avaluació"}
         </Button>
       </div>

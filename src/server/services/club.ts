@@ -3,6 +3,8 @@ import type { SessionUser } from "@/server/auth/session";
 import { teamFilterSql } from "@/server/services/access";
 import { currentSeason } from "@/server/services/players";
 import type { Stage } from "@/lib/domain";
+import { hasClubScope } from "@/lib/permissions";
+import type { ClubRole } from "@/lib/permissions";
 
 export type ClubRow = {
   id: string; name: string; short_name: string; initials: string; color_primary: string; color_secondary: string; founded: number | null;
@@ -26,7 +28,7 @@ export function clubTeams(clubId: string): TeamRow[] {
 }
 export function scopedTeams(u: SessionUser & { club_id: string }): TeamRow[] {
   const all_ = clubTeams(u.club_id);
-  return u.role === "director" ? all_ : all_.filter((t) => t.id === u.team_id);
+  return hasClubScope(u.role) ? all_ : all_.filter((t) => t.id === u.team_id);
 }
 
 export type Need = { position: string; text: string; priority: "alta" | "mitjana" | "baixa"; team_id: string; team_name: string };
@@ -65,8 +67,8 @@ export function pipelineRows(u: SessionUser & { club_id: string }): PipelineRow[
 export type ActivityRow = { id: string; player_id: string; kind: string; text: string; created_at: string; user_name: string | null; player_name: string; from_stage: string | null; to_stage: string | null };
 export function recentActivity(u: SessionUser & { club_id: string }, limit = 8, playerId?: string): ActivityRow[] {
   const tf = teamFilterSql(u, "pe.team_id");
-  const scope = u.role === "director" ? "1=1" : `(pa.user_id = ? OR pa.entry_id IN (SELECT pe.id FROM pipeline_entries pe WHERE ${tf.sql}))`;
-  const params = u.role === "director" ? [] : [u.id, ...tf.params];
+  const scope = hasClubScope(u.role) ? "1=1" : `(pa.user_id = ? OR pa.entry_id IN (SELECT pe.id FROM pipeline_entries pe WHERE ${tf.sql}))`;
+  const params = hasClubScope(u.role) ? [] : [u.id, ...tf.params];
   return all<ActivityRow>(
     `SELECT pa.*, us.name AS user_name, p.first_name || ' ' || p.last_name AS player_name FROM pipeline_activity pa
      LEFT JOIN users us ON us.id = pa.user_id JOIN players p ON p.id = pa.player_id
@@ -75,9 +77,10 @@ export function recentActivity(u: SessionUser & { club_id: string }, limit = 8, 
   );
 }
 
-export function staffUsers(clubId: string) {
-  return all<{ id: string; name: string; email: string; role: string; title: string | null; team_id: string | null; team_name: string | null; avatar_hue: number; last_login_at: string | null; is_demo_login: number }>(
-    "SELECT u.id, u.name, u.email, u.role, u.title, u.team_id, t.name AS team_name, u.avatar_hue, u.last_login_at, u.is_demo_login FROM users u LEFT JOIN teams t ON t.id = u.team_id WHERE u.club_id = ? AND u.role IN ('director','coach') ORDER BY CASE u.role WHEN 'director' THEN 0 ELSE 1 END, u.name",
+export type StaffUser = { id: string; name: string; email: string; role: ClubRole; status: "active" | "disabled"; title: string | null; team_id: string | null; team_name: string | null; avatar_hue: number; last_login_at: string | null; is_demo_login: number };
+export function staffUsers(clubId: string): StaffUser[] {
+  return all<StaffUser>(
+    "SELECT u.id, u.name, u.email, u.role, u.status, u.title, u.team_id, t.name AS team_name, u.avatar_hue, u.last_login_at, u.is_demo_login FROM users u LEFT JOIN teams t ON t.id = u.team_id WHERE u.club_id = ? AND u.role IN ('director','coordinator','coach') ORDER BY CASE u.role WHEN 'director' THEN 0 WHEN 'coordinator' THEN 1 ELSE 2 END, u.name",
     clubId,
   );
 }

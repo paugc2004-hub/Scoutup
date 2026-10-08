@@ -4,23 +4,28 @@
  */
 import { all, get } from "@/server/db/client";
 import { isMinor } from "@/lib/domain";
+import { canSeeTeam, hasClubScope, hasPermission, teamScopeFor } from "@/lib/permissions";
 import type { SessionUser } from "@/server/auth/session";
 import type { PlayerRow } from "@/server/services/players";
-import { privacyOf } from "@/server/services/players";
+import { playerRow, privacyOf } from "@/server/services/players";
+import { ApiError } from "@/server/api";
+import { audit } from "@/server/security/audit";
 
-// ─── Rols ─────────────────────────────────────────────────────────────────────
+// ─── Rols (vegeu src/lib/permissions.ts) ──────────────────────────────────────
 export const can = {
-  manageOffers: (u: SessionUser) => u.role === "director",
-  editClub: (u: SessionUser) => u.role === "director",
-  resetDemo: (u: SessionUser) => u.role === "director",
-  manageUsers: (u: SessionUser) => u.role === "director",
-  /** El director veu tot el club; l'entrenador només el seu equip. */
-  seeTeam: (u: SessionUser, teamId: string | null | undefined) => u.role === "director" || (!!teamId && teamId === u.team_id),
+  manageOffers: (u: SessionUser) => hasPermission(u.role, "opportunities.manage"),
+  editClub: (u: SessionUser) => hasPermission(u.role, "club.edit"),
+  resetDemo: (u: SessionUser) => hasPermission(u.role, "demo.reset"),
+  manageUsers: (u: SessionUser) => hasPermission(u.role, "users.manage"),
+  viewAudit: (u: SessionUser) => hasPermission(u.role, "audit.view"),
+  /** Direcció i coordinació veuen tot el club; l'entrenador només el seu equip. */
+  seeTeam: (u: SessionUser, teamId: string | null | undefined) => canSeeTeam(u, teamId),
+  allTeams: (u: SessionUser) => hasClubScope(u.role),
 };
 
 /** Llista d'equips que pot veure l'usuari de club (null = tots). */
 export function teamScope(u: SessionUser): string[] | null {
-  return u.role === "director" ? null : u.team_id ? [u.team_id] : [];
+  return teamScopeFor(u);
 }
 
 /** Fragment SQL per filtrar una columna team_id segons el rol. */
@@ -34,7 +39,7 @@ export function teamFilterSql(u: SessionUser, col = "team_id", includeNull = fal
 // ─── Relacions club ↔ jugador ────────────────────────────────────────────────
 export type ClubRelations = {
   contacted: Set<string>; // contacte acceptat o conversa
-  applied: Set<string>; // el jugador s'ha inscrit a una oferta del club
+  applied: Set<string>; // el jugador s'ha inscrit a una oportunitat del club
   blockedBy: Set<string>; // jugadors que han bloquejat el club
   pending: Set<string>; // sol·licituds pendents
 };
@@ -55,7 +60,7 @@ export type Visibility = { visible: boolean; reason?: string };
  * - Un jugador que ha bloquejat el club no és visible.
  * - Un menor sense consentiment del tutor no és visible per a cap club.
  * - Un menor, com a màxim, és visible per a clubs verificats.
- * - Si el jugador s'ha inscrit a una oferta del club, ha decidit compartir el perfil amb aquest club.
+ * - Si el jugador s'ha inscrit a una oportunitat del club, ha decidit compartir el perfil amb aquest club.
  */
 export function clubCanSee(p: PlayerRow, club: { id: string; verified: number }, rel: ClubRelations, now = new Date()): Visibility {
   if (p.club_id === club.id) return { visible: true };
@@ -89,4 +94,21 @@ export function clubCanContact(p: PlayerRow, club: { id: string; verified: numbe
 
 export function clubById(id: string) {
   return get<{ id: string; name: string; short_name: string; initials: string; color_primary: string; color_secondary: string; verified: number; city: string; comarca: string; lat: number; lng: number }>("SELECT * FROM clubs WHERE id = ?", id);
+}
+
+/**
+ * Guard central d'accés a un jugador per a qualsevol acció del club (pipeline, notes, avaluacions,
+ * informes, desar, esdeveniments…). Sempre es comprova al servidor: user → club → visibilitat → recurs.
+ * Un jugador que el club no pot veure respon com a «no trobat» (no se'n revela l'existència).
+ */
+export function assertPlayerVisible(u: SessionUser & { club_id: string }, playerId: string, action = "player.access"): PlayerRow {
+  const p = playerRow(playerId);
+  const club = clubById(u.club_id);
+  if (!p || !club) throw new ApiError(404, "Jugador no trobat.");
+  const vis = clubCanSee(p, club, clubRelations(u.club_id));
+  if (!vis.visible) {
+    audit({ actor: u, action, entity: { type: "player", id: playerId }, result: "denied", detail: vis.reason ?? "no visible" });
+    throw new ApiError(404, "Jugador no trobat.");
+  }
+  return p;
 }

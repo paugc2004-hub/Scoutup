@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Search, MapPin, Video, ChevronLeft, ChevronRight } from "lucide-react";
 import { requireClubStaff } from "@/server/auth/session";
 import { all } from "@/server/db/client";
-import { clubCanSee, clubRelations } from "@/server/services/access";
+import { can, clubCanSee, clubRelations } from "@/server/services/access";
 import { club as getClub } from "@/server/services/club";
 import { clubOffers, offerRow, toMatchOffer } from "@/server/services/offers";
 import { allPlayerRows, playerCtx, presentPlayer, secondaryOf, toMatchPlayer } from "@/server/services/players";
@@ -28,7 +28,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const club = getClub(u.club_id);
   const rel = clubRelations(u.club_id);
   const ctx = playerCtx();
-  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && (u.role === "director" || o.team_id === u.team_id));
+  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && (can.allTeams(u) || o.team_id === u.team_id));
   const offer = sp.offer ? offerRow(sp.offer) : null;
   const om = offer && offer.club_id === u.club_id ? toMatchOffer(offer) : null;
   const stages = new Map(all<{ player_id: string; stage: Stage }>("SELECT player_id, stage FROM pipeline_entries WHERE club_id = ?", u.club_id).map((r) => [r.player_id, r.stage]));
@@ -94,7 +94,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <div>
-      <PageHeader eyebrow="Descobrir" title="Cercar jugadors" subtitle="Filtra per posició, edat, nivell, zona, disponibilitat i dades. Tria una oferta per ordenar per compatibilitat." actions={<Link href="/club/intelligence" className={btnClass("secondary")}>Prova la cerca en llenguatge natural</Link>} />
+      <PageHeader eyebrow="Descobrir" title="Cercar jugadors" subtitle="Filtra per posició, edat, nivell, zona, disponibilitat i dades. Tria una oportunitat per ordenar per compatibilitat." actions={<Link href="/club/intelligence" className={btnClass("secondary")}>Prova la cerca en llenguatge natural</Link>} />
       <div className="grid gap-5 lg:grid-cols-[300px_1fr]">
         <SearchFilters offers={offers.map((o) => ({ id: o.id, title: o.title }))} />
         <div className="min-w-0">

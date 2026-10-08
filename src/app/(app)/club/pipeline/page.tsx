@@ -1,4 +1,5 @@
 import { KanbanSquare } from "lucide-react";
+import { can } from "@/server/services/access";
 import { requireClubStaff } from "@/server/auth/session";
 import { all } from "@/server/db/client";
 import { club as getClub, pipelineRows, scopedTeams } from "@/server/services/club";
@@ -35,9 +36,9 @@ export default async function PipelinePage() {
   const offers = clubOffers(u.club_id).filter((o) => cards.some((c) => c.offerId === o.id)).map((o) => ({ id: o.id, title: o.title }));
   return (
     <div>
-      <PageHeader eyebrow={club.name} title="Pipeline de captació" subtitle={u.role === "director" ? "Tots els jugadors que el club segueix, per etapes. Els canvis d'etapa actualitzen l'estat que veu el jugador." : "Jugadors que segueix el teu equip. Els d'altres equips del club no es mostren."} actions={<LinkButton href="/club/cercar">Afegir jugadors</LinkButton>} />
+      <PageHeader eyebrow={club.name} title="Pipeline de captació" subtitle={can.allTeams(u) ? "Tots els jugadors que el club segueix, per etapes. Els canvis d'etapa actualitzen l'estat que veu el jugador." : "Jugadors que segueix el teu equip. Els d'altres equips del club no es mostren."} actions={<LinkButton href="/club/cercar">Afegir jugadors</LinkButton>} />
       {cards.length === 0 ? (
-        <EmptyState icon={<KanbanSquare className="size-5" />} title="El pipeline és buit" text="Afegeix jugadors des de la cerca, les ofertes o ScoutUp Intelligence." action={<LinkButton href="/club/cercar" variant="primary">Cercar jugadors</LinkButton>} />
+        <EmptyState icon={<KanbanSquare className="size-5" />} title="El pipeline és buit" text="Afegeix jugadors des de la cerca, les oportunitats o ScoutUp Intelligence." action={<LinkButton href="/club/cercar" variant="primary">Cercar jugadors</LinkButton>} />
       ) : (
         <Kanban cards={cards} teams={scopedTeams(u).map((t) => ({ id: t.id, name: t.name }))} offers={offers} />
       )}

@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Compass, ChevronLeft, ChevronRight, X, ArrowRight, Loader2 } from "lucide-react";
 import { DEMO_FLOWS } from "@/lib/demo-flows";
+import type { DemoAccount } from "@/lib/demo-flows";
 import { cn } from "@/components/ui";
 
 const KEY = "su_guide";
-const ROLE_LABEL: Record<string, string> = { director: "club (direcció)", coach: "entrenador", player: "jugador", guardian: "tutor" };
+const ROLE_LABEL: Record<DemoAccount, string> = { director: "club (direcció)", coordinator: "coordinació", coach: "entrenador", clubB: "Club B", player: "jugador", guardian: "tutor" };
 
 type State = { flow: string; step: number } | null;
 function read(): State {
@@ -33,7 +34,8 @@ export function startGuide(flow: string) {
   write({ flow, step: 0 });
 }
 
-export function DemoGuide({ role }: { role: string }) {
+/** `role` és el compte de demo actual (vegeu demoAccountOf), no el rol del RBAC. */
+export function DemoGuide({ role }: { role: DemoAccount | null }) {
   const [state, setState] = useState<State>(null);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -55,8 +57,7 @@ export function DemoGuide({ role }: { role: string }) {
     if (!flow) return;
     const st = flow.steps[i];
     set({ flow: flow.id, step: i });
-    const sameRole = st.role === role || (st.role === "director" && role === "coach" && false);
-    if (!sameRole) {
+    if (st.role !== role) {
       setBusy(true);
       await goAs(st.role, st.href);
       return;

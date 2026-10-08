@@ -4,10 +4,11 @@ import { ApiError } from "@/server/api";
 import type { SessionUser } from "@/server/auth/session";
 import { completenessItems, completenessScore } from "@/lib/completeness";
 import type { CompletenessInput } from "@/lib/completeness";
-import { POSITIONS, DEFAULT_PRIVACY, DEFAULT_PREFERENCES, categoryForBirthYear, currentSeasonStartYear, isMinor, seasonId } from "@/lib/domain";
+import { ATTRS, POSITIONS, DEFAULT_PRIVACY, DEFAULT_PREFERENCES, categoryForBirthYear, currentSeasonStartYear, isMinor, seasonId } from "@/lib/domain";
 import { placeByCity } from "@/lib/geo";
 import { playerRow, privacyOf, preferencesOf, secondaryOf } from "@/server/services/players";
 import { notify } from "@/server/services/notify";
+import { zIsoDate, zText } from "@/server/validation";
 
 type Me = SessionUser & { player_id: string };
 
@@ -39,31 +40,31 @@ export function recompute(playerId: string) {
 }
 
 export const ProfilePatch = z.object({
-  first_name: z.string().trim().min(2).optional(),
-  last_name: z.string().trim().min(2).optional(),
-  birth_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  city: z.string().optional(),
-  nationality: z.string().max(60).optional(),
-  languages: z.string().max(120).optional(),
+  first_name: zText(40, 2).optional(),
+  last_name: zText(60, 2).optional(),
+  birth_date: zIsoDate.optional(),
+  city: zText(60).optional(),
+  nationality: zText(60).optional(),
+  languages: zText(120).optional(),
   primary_position: z.enum(POSITIONS).optional(),
   secondary_positions: z.array(z.enum(POSITIONS)).max(3).optional(),
   foot: z.enum(["dret", "esquerre", "ambdues"]).optional(),
   height_cm: z.number().int().min(140).max(215).nullable().optional(),
-  style: z.string().max(120).optional(),
-  description: z.string().max(800).optional(),
-  club_name_free: z.string().max(80).optional(),
+  style: zText(120).optional(),
+  description: zText(800).optional(),
+  club_name_free: zText(80).optional(),
   division_rank: z.number().int().min(1).max(5).optional(),
   availability: z.enum(["obert", "escoltant", "no_disponible"]).optional(),
-  available_from: z.string().nullable().optional(),
+  available_from: zIsoDate.nullable().optional(),
   contract_status: z.enum(["amb_fitxa", "final_temporada", "lliure"]).optional(),
-  attrs: z.record(z.string(), z.number().min(1).max(10)).optional(),
-  preferences: z.object({ categories: z.array(z.string()), maxKm: z.number().int().min(5).max(200), interests: z.array(z.string()), levelMin: z.number().int().nullable(), notes: z.string().max(400) }).optional(),
+  attrs: z.record(z.enum([...ATTRS, "reflexos", "sortides"]), z.number().min(1).max(10)).optional(),
+  preferences: z.object({ categories: z.array(zText(30)).max(6), maxKm: z.number().int().min(5).max(200), interests: z.array(zText(40)).max(8), levelMin: z.number().int().min(1).max(5).nullable(), notes: zText(400) }).optional(),
   privacy: z.object({
     profile: z.enum(["tots", "verificats", "contactats", "ocult"]), videos: z.enum(["tots", "verificats", "contactats"]), contact: z.enum(["tots", "verificats", "ningu"]),
     showStats: z.boolean(), showHeight: z.boolean(), location: z.enum(["ciutat", "comarca", "provincia"]), notifyEmail: z.boolean(),
   }).optional(),
   onboarding_done: z.boolean().optional(),
-});
+}).strict();
 
 export function patchProfile(u: Me, d: z.infer<typeof ProfilePatch>) {
   const p = playerRow(u.player_id);

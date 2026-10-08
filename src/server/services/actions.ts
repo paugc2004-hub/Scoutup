@@ -5,7 +5,9 @@
 import { all, get, insert, nowIso, run, tx, uid, update } from "@/server/db/client";
 import { ApiError } from "@/server/api";
 import type { SessionUser } from "@/server/auth/session";
-import { can, clubById, clubCanContact, clubRelations } from "@/server/services/access";
+import { assertPlayerVisible, can, clubById, clubCanContact, clubRelations } from "@/server/services/access";
+import { audit } from "@/server/security/audit";
+import { isClubRole } from "@/lib/permissions";
 import { notify, notifyClub, notifyPlayer } from "@/server/services/notify";
 import { playerRow, playerCtx, toMatchPlayer } from "@/server/services/players";
 import type { PlayerRow } from "@/server/services/players";
@@ -28,7 +30,7 @@ function mustClub(id: string) {
   return c;
 }
 function assertTeam(u: Staff, teamId: string | null | undefined) {
-  if (u.role === "director") {
+  if (can.allTeams(u)) {
     if (teamId) {
       const t = get<{ club_id: string }>("SELECT club_id FROM teams WHERE id = ?", teamId);
       if (!t || t.club_id !== u.club_id) throw new ApiError(400, "Equip no vàlid.");
@@ -59,9 +61,13 @@ function syncApplication(clubId: string, playerId: string, stage: Stage, clubNam
 }
 
 export function addToPipeline(u: Staff, playerId: string, opts: { teamId?: string | null; offerId?: string | null; stage?: Stage } = {}): PipelineEntry {
-  const p = mustPlayer(playerId);
+  const p = assertPlayerVisible(u, playerId, "pipeline.add");
+  if (opts.offerId) {
+    const o = offerRow(opts.offerId);
+    if (!o || o.club_id !== u.club_id) throw new ApiError(404, "Oportunitat no trobada.");
+  }
   const club = mustClub(u.club_id);
-  const teamId = opts.teamId ?? (u.role === "coach" ? u.team_id : null) ?? (opts.offerId ? offerRow(opts.offerId)?.team_id ?? null : null);
+  const teamId = opts.teamId ?? (can.allTeams(u) ? null : u.team_id) ?? (opts.offerId ? offerRow(opts.offerId)?.team_id ?? null : null);
   assertTeam(u, teamId);
   const existing = get<PipelineEntry>("SELECT * FROM pipeline_entries WHERE club_id = ? AND player_id = ?", u.club_id, playerId);
   if (existing) return existing;
@@ -71,7 +77,7 @@ export function addToPipeline(u: Staff, playerId: string, opts: { teamId?: strin
   const maxSort = get<{ m: number | null }>("SELECT MAX(sort) AS m FROM pipeline_entries WHERE club_id = ?", u.club_id)?.m ?? 0;
   insert("pipeline_entries", { id, club_id: u.club_id, team_id: teamId, player_id: playerId, offer_id: opts.offerId ?? null, stage, added_by: u.id, sort: maxSort + 1, created_at: now, updated_at: now });
   const offerTitle = opts.offerId ? offerRow(opts.offerId)?.title : null;
-  logActivity(u.club_id, playerId, id, u.id, "afegit", offerTitle ? `Afegit al pipeline des de l'oferta «${offerTitle}»` : "Afegit al pipeline", null, stage);
+  logActivity(u.club_id, playerId, id, u.id, "afegit", offerTitle ? `Afegit al pipeline des de l'oportunitat «${offerTitle}»` : "Afegit al pipeline", null, stage);
   // el jugador veu que un club s'interessa per ell (sense saber detalls interns)
   notifyPlayer(p, "interest", "Nou club interessat en el teu perfil.", `${club.name} ha afegit el teu perfil a la seva llista de seguiment.`, "/jugador/seguiment");
   if (stage !== "nou") syncApplication(u.club_id, playerId, stage, club.name);
@@ -102,6 +108,7 @@ export function removeFromPipeline(u: Staff, entryId: string) {
 }
 
 export function logInteraction(u: Staff, playerId: string, text: string) {
+  assertPlayerVisible(u, playerId, "pipeline.interaction");
   const e = get<PipelineEntry>("SELECT * FROM pipeline_entries WHERE club_id = ? AND player_id = ?", u.club_id, playerId);
   if (e && !can.seeTeam(u, e.team_id)) throw new ApiError(403, "No pots registrar interaccions d'aquest jugador.");
   logActivity(u.club_id, playerId, e?.id ?? null, u.id, "interaccio", text);
@@ -138,7 +145,7 @@ export function applyToOffer(u: SessionUser & { player_id: string }, offerId: st
   const id = uid("ap_");
   const now = nowIso();
   insert("applications", { id, offer_id: offerId, player_id: p.id, origin: "jugador", status: "enviada", message: message?.trim() || null, match_score: m.score, created_at: now, updated_at: now });
-  notifyClub(o.club_id, o.team_id, "application", `Nova sol·licitud a «${o.title}»`, `${p.first_name} ${p.last_name} · ${m.score}% compatible.`, `/club/ofertes/${offerId}?tab=sollicituds`);
+  notifyClub(o.club_id, o.team_id, "application", `Nova sol·licitud a «${o.title}»`, `${p.first_name} ${p.last_name} · ${m.score}% compatible.`, `/club/oportunitats/${offerId}?tab=sollicituds`);
   return { id, score: m.score };
 }
 
@@ -152,7 +159,7 @@ export function withdrawApplication(u: SessionUser & { player_id: string }, appl
 export function rejectApplication(u: Staff, applicationId: string) {
   const a = get<{ id: string; player_id: string; club_id: string; team_id: string | null; title: string }>("SELECT a.id, a.player_id, o.club_id, o.team_id, o.title FROM applications a JOIN offers o ON o.id = a.offer_id WHERE a.id = ?", applicationId);
   if (!a || a.club_id !== u.club_id) throw new ApiError(404, "Sol·licitud no trobada.");
-  if (!can.seeTeam(u, a.team_id)) throw new ApiError(403, "Aquesta oferta és d'un altre equip.");
+  if (!can.seeTeam(u, a.team_id)) throw new ApiError(403, "Aquesta oportunitat és d'un altre equip.");
   run("UPDATE applications SET status = 'rebutjat', updated_at = ? WHERE id = ?", nowIso(), a.id);
   const p = playerRow(a.player_id);
   if (p) notifyPlayer(p, "application", "Actualització d'una sol·licitud", `El club ha decidit no continuar amb «${a.title}». Ànims: hi ha més oportunitats per a tu.`, "/jugador/seguiment");
@@ -162,12 +169,12 @@ export function rejectApplication(u: Staff, applicationId: string) {
 
 // ─── Contactes ────────────────────────────────────────────────────────────────
 export function sendContactRequest(u: Staff, playerId: string, input: { reason: string; message: string; teamId?: string | null }) {
-  const p = mustPlayer(playerId);
+  const p = assertPlayerVisible(u, playerId, "contact.request");
   const club = mustClub(u.club_id);
   const rel = clubRelations(u.club_id);
   const check = clubCanContact(p, club, rel);
   if (!check.ok) throw new ApiError(400, check.reason ?? "No es pot contactar aquest jugador.");
-  const teamId = input.teamId ?? (u.role === "coach" ? u.team_id : null);
+  const teamId = input.teamId ?? (can.allTeams(u) ? null : u.team_id);
   assertTeam(u, teamId);
   const id = uid("cr_");
   const status = check.needsGuardian ? "pendent_tutor" : "pendent";
@@ -178,6 +185,7 @@ export function sendContactRequest(u: Staff, playerId: string, input: { reason: 
     else if (PIPELINE_STAGES.indexOf(e.stage) < PIPELINE_STAGES.indexOf("contactat")) moveStage(u, e.id, "contactat");
     logActivity(u.club_id, playerId, e.id, u.id, "contacte", check.needsGuardian ? "Sol·licitud de contacte enviada (pendent del tutor legal)" : "Sol·licitud de contacte enviada");
   });
+  audit({ actor: u, action: "contact.request", entity: { type: "player", id: playerId }, detail: status });
   if (check.needsGuardian) {
     notify(p.guardian_user_id, "contact", `${club.name} vol contactar amb ${p.first_name}.`, "Cal la teva autorització abans que el club pugui escriure-li.", "/tutor");
   } else {
@@ -191,7 +199,7 @@ function openConversationFor(req: { id: string; club_id: string; player_id: stri
   if (existing) return existing.id;
   const id = uid("cv_");
   const now = nowIso();
-  const subject = { oferta: "Interès per una oferta", prova: "Invitació a una prova", seguiment: "Seguiment", informacio: "Sol·licitud d'informació" }[req.reason] ?? "Conversa";
+  const subject = { oferta: "Interès per una oportunitat", prova: "Invitació a una prova", seguiment: "Seguiment", informacio: "Sol·licitud d'informació" }[req.reason] ?? "Conversa";
   insert("conversations", { id, club_id: req.club_id, player_id: req.player_id, team_id: req.team_id, subject, status: "activa", created_at: now, last_message_at: now });
   insert("messages", { id: uid("m_"), conversation_id: id, sender_user_id: req.from_user_id, sender_side: "club", body: req.message, flagged: 0, created_at: now, read_by_club_at: now, read_by_player_at: null });
   return id;
@@ -262,7 +270,7 @@ export type ConversationRow = { id: string; club_id: string; player_id: string; 
 export function conversationFor(u: SessionUser, conversationId: string): { conv: ConversationRow; side: "club" | "player" | "guardian" } {
   const conv = get<ConversationRow>("SELECT * FROM conversations WHERE id = ?", conversationId);
   if (!conv) throw new ApiError(404, "Conversa no trobada.");
-  if ((u.role === "director" || u.role === "coach") && conv.club_id === u.club_id) {
+  if (isClubRole(u.role) && conv.club_id === u.club_id) {
     if (!can.seeTeam(u, conv.team_id)) throw new ApiError(403, "Aquesta conversa és d'un altre equip del club.");
     return { conv, side: "club" };
   }
@@ -313,10 +321,16 @@ export function createEvent(u: SessionUser, input: { kind: string; title: string
   if (isNaN(start.getTime())) throw new ApiError(400, "Data no vàlida.");
   const end = new Date(start.getTime() + Math.max(15, input.duration) * 60000);
   const id = uid("ev_");
-  if (u.role === "director" || u.role === "coach") {
+  if (isClubRole(u.role) && u.club_id) {
     const staff = u as Staff;
-    const teamId = input.team_id || (u.role === "coach" ? u.team_id : null);
-    if (u.role === "coach") assertTeam(staff, teamId);
+    const teamId = input.team_id || (can.allTeams(u) ? null : u.team_id);
+    assertTeam(staff, teamId);
+    if (input.related_player_id) assertPlayerVisible(staff, input.related_player_id, "event.create");
+    if (input.conversation_id) {
+      // la conversa ha de ser d'aquest club, de l'àmbit de l'usuari i del mateix jugador
+      const { conv, side } = conversationFor(u, input.conversation_id);
+      if (side !== "club" || conv.player_id !== input.related_player_id) throw new ApiError(400, "La conversa no correspon a aquest jugador.");
+    }
     insert("events", { id, club_id: staff.club_id, team_id: teamId, player_id: null, owner_user_id: u.id, kind: input.kind, title: input.title, starts_at: start.toISOString(), ends_at: end.toISOString(), location: input.location ?? null, opponent: null, notes: input.notes ?? null, related_player_id: input.related_player_id ?? null, created_at: nowIso() });
     // si és una prova o una trucada amb un jugador, també apareix al seu calendari i se li notifica
     if (input.related_player_id && (input.kind === "prova" || input.kind === "trucada" || input.kind === "reunio")) {
@@ -337,25 +351,26 @@ export function createEvent(u: SessionUser, input: { kind: string; title: string
 export function deleteEvent(u: SessionUser, eventId: string) {
   const e = get<{ id: string; club_id: string | null; team_id: string | null; player_id: string | null; owner_user_id: string | null }>("SELECT * FROM events WHERE id = ?", eventId);
   if (!e) throw new ApiError(404, "Esdeveniment no trobat.");
-  const ok = (u.role === "player" && e.player_id === u.player_id) || ((u.role === "director" || u.role === "coach") && e.club_id === u.club_id && (u.role === "director" || e.owner_user_id === u.id || e.team_id === u.team_id));
+  const ok = (u.role === "player" && e.player_id === u.player_id) || (isClubRole(u.role) && e.club_id === u.club_id && (can.allTeams(u) || e.owner_user_id === u.id || (!!e.team_id && e.team_id === u.team_id)));
   if (!ok) throw new ApiError(403, "No pots eliminar aquest esdeveniment.");
   run("DELETE FROM events WHERE id = ?", eventId);
 }
 
 // ─── Avaluacions, notes i informes ────────────────────────────────────────────
-export function saveEvaluation(u: Staff, playerId: string, input: { scores: Record<string, Record<string, number>>; decision: string; comment: string }) {
-  mustPlayer(playerId);
+export function saveEvaluation(u: Staff, playerId: string, input: { scores: Record<string, Record<string, number>>; decision: string; comment: string; context?: string | null }) {
+  assertPlayerVisible(u, playerId, "evaluation.save");
   const e = get<PipelineEntry>("SELECT * FROM pipeline_entries WHERE club_id = ? AND player_id = ?", u.club_id, playerId);
   if (e && !can.seeTeam(u, e.team_id)) throw new ApiError(403, "Aquest jugador el segueix un altre equip.");
   const now = nowIso();
   const existing = get<{ id: string }>("SELECT id FROM evaluations WHERE club_id = ? AND player_id = ? AND author_user_id = ?", u.club_id, playerId, u.id);
-  if (existing) update("evaluations", existing.id, { scores: input.scores, decision: input.decision, comment: input.comment, updated_at: now });
-  else insert("evaluations", { id: uid("e_"), club_id: u.club_id, player_id: playerId, author_user_id: u.id, team_id: e?.team_id ?? u.team_id ?? null, scores: input.scores, decision: input.decision, comment: input.comment, created_at: now, updated_at: now });
+  const context = input.context?.trim() || null;
+  if (existing) update("evaluations", existing.id, { scores: input.scores, decision: input.decision, comment: input.comment, context, updated_at: now });
+  else insert("evaluations", { id: uid("e_"), club_id: u.club_id, player_id: playerId, author_user_id: u.id, team_id: e?.team_id ?? u.team_id ?? null, scores: input.scores, decision: input.decision, comment: input.comment, context, created_at: now, updated_at: now });
   logActivity(u.club_id, playerId, e?.id ?? null, u.id, "avaluacio", "Avaluació guardada");
 }
 
 export function addNote(u: Staff, playerId: string, body: string) {
-  mustPlayer(playerId);
+  assertPlayerVisible(u, playerId, "note.add");
   const text = body.trim();
   if (!text) throw new ApiError(400, "La nota és buida.");
   const e = get<PipelineEntry>("SELECT * FROM pipeline_entries WHERE club_id = ? AND player_id = ?", u.club_id, playerId);
@@ -364,12 +379,12 @@ export function addNote(u: Staff, playerId: string, body: string) {
 export function deleteNote(u: Staff, noteId: string) {
   const n = get<{ id: string; author_user_id: string; club_id: string }>("SELECT * FROM notes WHERE id = ?", noteId);
   if (!n || n.club_id !== u.club_id) throw new ApiError(404, "Nota no trobada.");
-  if (n.author_user_id !== u.id && u.role !== "director") throw new ApiError(403, "Només pots eliminar les teves notes.");
+  if (n.author_user_id !== u.id && !can.manageUsers(u)) throw new ApiError(403, "Només pots eliminar les teves notes.");
   run("DELETE FROM notes WHERE id = ?", noteId);
 }
 
 export function createScoutReport(u: Staff, input: { player_id: string; match_title: string; match_date: string; competition?: string | null; position_observed?: string | null; rating: number; observations: string; recommendation: string; reminder_at?: string | null }) {
-  mustPlayer(input.player_id);
+  assertPlayerVisible(u, input.player_id, "report.create");
   const id = uid("sr_");
   insert("scout_reports", { id, club_id: u.club_id, author_user_id: u.id, team_id: u.team_id ?? null, player_id: input.player_id, match_title: input.match_title, match_date: input.match_date, competition: input.competition ?? null, position_observed: input.position_observed ?? null, rating: input.rating, observations: input.observations, recommendation: input.recommendation, reminder_at: input.reminder_at ?? null, created_at: nowIso() });
   logActivity(u.club_id, input.player_id, null, u.id, "informe", `Informe de scouting: ${input.match_title}`);
@@ -382,15 +397,25 @@ export function createScoutReport(u: Staff, input: { player_id: string; match_ti
 
 // ─── Favorits ─────────────────────────────────────────────────────────────────
 export function toggleFavorite(u: SessionUser, type: "player" | "offer" | "club", targetId: string): boolean {
+  // el destí ha d'existir i ser accessible per a qui el desa
+  if (type === "player") {
+    if (!isClubRole(u.role) || !u.club_id) throw new ApiError(403, "Només el club pot desar jugadors.");
+    assertPlayerVisible(u as Staff, targetId, "player.save");
+  } else if (type === "offer") {
+    const o = offerRow(targetId);
+    if (!o || (o.status !== "oberta" && o.club_id !== u.club_id)) throw new ApiError(404, "Oportunitat no trobada.");
+  } else if (!clubById(targetId)) throw new ApiError(404, "Club no trobat.");
   const f = get<{ id: string }>("SELECT id FROM favorites WHERE user_id = ? AND target_type = ? AND target_id = ?", u.id, type, targetId);
   if (f) {
     run("DELETE FROM favorites WHERE id = ?", f.id);
+    if (type === "player" && u.club_id) logActivity(u.club_id, targetId, null, u.id, "desat", "Tret de la llista de guardats");
     return false;
   }
   insert("favorites", { id: uid("f_"), user_id: u.id, target_type: type, target_id: targetId, created_at: nowIso() });
-  if (type === "player" && (u.role === "director" || u.role === "coach")) {
+  if (type === "player" && u.club_id) {
+    logActivity(u.club_id, targetId, null, u.id, "desat", "Guardat a la llista del club");
     const p = playerRow(targetId);
-    const club = u.club_id ? clubById(u.club_id) : null;
+    const club = clubById(u.club_id);
     if (p && club) notifyPlayer(p, "interest", "Un club t'ha desat com a favorit.", `${club.name} segueix el teu perfil.`, "/jugador/seguiment");
   }
   return true;

@@ -4,8 +4,9 @@ import type { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { btnClass, cn } from "@/components/ui";
 import { useToast } from "@/components/client/toast";
+import type { DemoAccount } from "@/lib/demo-flows";
 
-export function DemoLoginButton({ role, children, variant = "primary", size = "lg", className, icon, next, guide }: { role: "director" | "coach" | "player" | "guardian"; children: ReactNode; variant?: "primary" | "secondary" | "dark" | "ghost"; size?: "sm" | "md" | "lg"; className?: string; icon?: ReactNode; next?: string; guide?: string }) {
+export function DemoLoginButton({ role, children, variant = "primary", size = "lg", className, icon, next, guide }: { role: DemoAccount; children: ReactNode; variant?: "primary" | "secondary" | "dark" | "ghost"; size?: "sm" | "md" | "lg"; className?: string; icon?: ReactNode; next?: string; guide?: string }) {
   const [busy, setBusy] = useState(false);
   const toast = useToast();
   const go = async () => {

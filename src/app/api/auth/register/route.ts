@@ -1,5 +1,7 @@
 import { z } from "zod";
-import { api, ApiError, body } from "@/server/api";
+import { api, ApiError, body, clientIp, rateLimit } from "@/server/api";
+import { zEmail, zNewPassword, zText } from "@/server/validation";
+import { audit } from "@/server/security/audit";
 import { get, insert, nowIso, tx, uid } from "@/server/db/client";
 import { hashPassword } from "@/server/auth/password";
 import { createSession } from "@/server/auth/session";
@@ -10,28 +12,29 @@ import { notify } from "@/server/services/notify";
 
 const Player = z.object({
   type: z.literal("player"),
-  first_name: z.string().trim().min(2, "massa curt"),
-  last_name: z.string().trim().min(2, "massa curt"),
-  email: z.string().trim().email("correu no vàlid"),
-  password: z.string().min(4, "mínim 4 caràcters"),
+  first_name: zText(40, 2),
+  last_name: zText(60, 2),
+  email: zEmail,
+  password: zNewPassword,
   birth_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "data no vàlida"),
   gender: z.enum(["M", "F"]),
-  city: z.string().min(2),
+  city: zText(60, 2),
   position: z.enum(POSITIONS),
-  guardian_email: z.string().trim().email().optional().or(z.literal("")),
+  guardian_email: zEmail.optional().or(z.literal("")),
   accept: z.literal(true, { message: "cal acceptar les condicions de la demo" }),
 });
 const Club = z.object({
   type: z.literal("club"),
-  club_name: z.string().trim().min(3, "massa curt"),
-  city: z.string().min(2),
-  name: z.string().trim().min(3, "massa curt"),
-  email: z.string().trim().email("correu no vàlid"),
-  password: z.string().min(4, "mínim 4 caràcters"),
+  club_name: zText(80, 3),
+  city: zText(60, 2),
+  name: zText(80, 3),
+  email: zEmail,
+  password: zNewPassword,
   accept: z.literal(true, { message: "cal acceptar les condicions de la demo" }),
 });
 
 export const POST = api(async (req) => {
+  rateLimit("register", await clientIp());
   const raw = await body<{ type?: string }>(req);
   const now = nowIso();
   if (raw.type === "player") {
@@ -75,7 +78,8 @@ export const POST = api(async (req) => {
       insert("teams", { id: uid("t_"), club_id: clubId, name: "Juvenil A", category: "Juvenil", gender: "M", is_first_team: 0 });
       insert("users", { id: userId, email: d.email, password_hash: hashPassword(d.password), name: d.name, role: "director", title: "Direcció esportiva", club_id: clubId, avatar_hue: Math.floor(Math.random() * 360), is_demo_login: 0, created_at: now });
     });
-    notify(userId, "system", "Club creat · pendent de verificació", "Mentre el club no estigui verificat, pots explorar i publicar ofertes, però no contactar jugadors.", "/club/perfil");
+    notify(userId, "system", "Club creat · pendent de verificació", "Mentre el club no estigui verificat, pots explorar i publicar oportunitats, però no contactar jugadors.", "/club/perfil");
+    audit({ actor: { id: userId, club_id: clubId }, action: "club.register", entity: { type: "club", id: clubId } });
     await createSession(userId);
     return { ok: true, redirect: "/club" };
   }

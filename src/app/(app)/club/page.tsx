@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Megaphone, Inbox, KanbanSquare, CalendarClock, ArrowRight, Plus, Sparkles, AlertCircle, Target, Activity } from "lucide-react";
 import { requireClubStaff } from "@/server/auth/session";
 import { all, get } from "@/server/db/client";
-import { teamFilterSql } from "@/server/services/access";
+import { can, teamFilterSql } from "@/server/services/access";
 import { club as getClub, clubEvents, pipelineRows, recentActivity, teamNeeds } from "@/server/services/club";
 import { clubOffers, rankCandidates, toMatchOffer } from "@/server/services/offers";
 import { playerCtx } from "@/server/services/players";
@@ -24,7 +24,7 @@ export default async function ClubHome() {
   const club = getClub(u.club_id);
   const now = new Date();
   const of = teamFilterSql(u, "o.team_id");
-  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && (u.role === "director" || o.team_id === u.team_id));
+  const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && (can.allTeams(u) || o.team_id === u.team_id));
   const newApps = all<{ id: string; created_at: string; match_score: number; offer_id: string; offer_title: string; player_id: string; first_name: string; last_name: string; avatar_hue: number; primary_position: string }>(
     `SELECT a.id, a.created_at, a.match_score, a.offer_id, o.title AS offer_title, p.id AS player_id, p.first_name, p.last_name, p.avatar_hue, p.primary_position
      FROM applications a JOIN offers o ON o.id = a.offer_id JOIN players p ON p.id = a.player_id WHERE o.club_id = ? AND a.status = 'enviada' AND ${of.sql} ORDER BY a.created_at DESC`,
@@ -38,7 +38,7 @@ export default async function ClubHome() {
   const activity = recentActivity(u, 7);
   const ctx = playerCtx();
 
-  // nous perfils compatibles: millors candidats (≥ 80%) de cada oferta oberta que encara no són al pipeline
+  // nous perfils compatibles: millors candidats (≥ 80%) de cada oportunitat oberta que encara no són al pipeline
   const seen = new Set<string>();
   const suggestions = offers.flatMap((o) =>
     rankCandidates(toMatchOffer(o), club, { ctx, minScore: 80, offerId: o.id })
@@ -50,26 +50,27 @@ export default async function ClubHome() {
       }),
   ).sort((a, b) => b.match.score - a.match.score).slice(0, 5);
 
-  const unreadConv = get<{ n: number }>(`SELECT COUNT(DISTINCT m.conversation_id) AS n FROM messages m JOIN conversations c ON c.id = m.conversation_id WHERE c.club_id = ? AND m.sender_side = 'player' AND m.read_by_club_at IS NULL`, u.club_id)?.n ?? 0;
+  const cf = teamFilterSql(u, "c.team_id");
+  const unreadConv = get<{ n: number }>(`SELECT COUNT(DISTINCT m.conversation_id) AS n FROM messages m JOIN conversations c ON c.id = m.conversation_id WHERE c.club_id = ? AND m.sender_side = 'player' AND m.read_by_club_at IS NULL AND ${cf.sql}`, u.club_id, ...cf.params)?.n ?? 0;
   const firstName = u.name.split(" ")[0];
 
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow={u.role === "director" ? club.name : `${club.name} · ${u.title}`}
+        eyebrow={can.allTeams(u) ? club.name : `${club.name} · ${u.title}`}
         title={`${greeting()}, ${firstName}`}
         subtitle={<>Avui és {fmtDate(now, { weekday: true })}. {newApps.length ? <><strong className="text-ink">{newApps.length} sol·licituds noves</strong> per revisar</> : "Cap sol·licitud nova"}{unreadConv ? <> i <strong className="text-ink">{unreadConv} {unreadConv === 1 ? "conversa" : "converses"}</strong> amb missatges sense llegir</> : null}.</>}
         actions={
           <>
             <LinkButton href="/club/intelligence" icon={<Sparkles className="size-4" />}>Cerca intel·ligent</LinkButton>
-            {u.role === "director" && <LinkButton href="/club/ofertes/nova" variant="primary" icon={<Plus className="size-4" />}>Nova oferta</LinkButton>}
+            {can.manageOffers(u) && <LinkButton href="/club/oportunitats/nova" variant="primary" icon={<Plus className="size-4" />}>Nova oportunitat</LinkButton>}
           </>
         }
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label="Ofertes actives" value={offers.length} hint={`${offers.filter((o) => o.kind === "prova").length} jornades de proves`} icon={<Megaphone className="size-4" />} href="/club/ofertes" />
-        <Stat label="Sol·licituds noves" value={newApps.length} hint="Pendents de revisar" icon={<Inbox className="size-4" />} tone="accent" href="/club/ofertes" />
+        <Stat label="Oportunitats actives" value={offers.length} hint={`${offers.filter((o) => o.kind === "prova").length} jornades de proves`} icon={<Megaphone className="size-4" />} href="/club/oportunitats" />
+        <Stat label="Sol·licituds noves" value={newApps.length} hint="Pendents de revisar" icon={<Inbox className="size-4" />} tone="accent" href="/club/oportunitats" />
         <Stat label="Jugadors al pipeline" value={pipe.length} hint={`${pipe.filter((p) => ["contactat", "en_conversa", "prova"].includes(p.stage)).length} en procés actiu`} icon={<KanbanSquare className="size-4" />} tone="info" href="/club/pipeline" />
         <Stat label="Proves aquesta setmana" value={trialsWeek} hint="Al calendari del club" icon={<CalendarClock className="size-4" />} tone="violet" href="/club/calendari" />
       </div>
@@ -100,9 +101,9 @@ export default async function ClubHome() {
         </Card>
 
         <Card>
-          <CardHeader title="Nous perfils compatibles" subtitle="Superen el 80% en alguna de les teves ofertes i encara no els segueixes." icon={<Target className="size-4" />} />
+          <CardHeader title="Nous perfils compatibles" subtitle="Superen el 80% en alguna de les teves oportunitats i encara no els segueixes." icon={<Target className="size-4" />} />
           {suggestions.length === 0 ? (
-            <EmptyState title="Cap perfil nou per sobre del 80%" text="Quan un jugador actualitzi el perfil i encaixi amb una oferta, apareixerà aquí." />
+            <EmptyState title="Cap perfil nou per sobre del 80%" text="Quan un jugador actualitzi el perfil i encaixi amb una oportunitat, apareixerà aquí." />
           ) : (
             <div className="-mx-2 space-y-1">
               {suggestions.map((s) => (
@@ -123,7 +124,7 @@ export default async function ClubHome() {
 
       <div className="grid gap-4 xl:grid-cols-3">
         <Card className="xl:col-span-2">
-          <CardHeader title="Sol·licituds noves" subtitle="Jugadors que s'han inscrit a les teves ofertes." action={<LinkButton href="/club/ofertes" size="sm" variant="ghost">Totes <ArrowRight className="size-3.5" /></LinkButton>} icon={<Inbox className="size-4" />} />
+          <CardHeader title="Sol·licituds noves" subtitle="Jugadors que s'han inscrit a les teves oportunitats." action={<LinkButton href="/club/oportunitats" size="sm" variant="ghost">Totes <ArrowRight className="size-3.5" /></LinkButton>} icon={<Inbox className="size-4" />} />
           {newApps.length === 0 ? (
             <EmptyState title="Estàs al dia" text="No hi ha sol·licituds pendents de revisar." />
           ) : (

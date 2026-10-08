@@ -4,10 +4,11 @@
  * `node --experimental-strip-types` des de scripts/seed.ts.
  */
 
-export type Role = "director" | "coach" | "player" | "guardian";
+export type Role = "director" | "coordinator" | "coach" | "player" | "guardian";
 
 export const ROLE_LABEL: Record<Role, string> = {
   director: "Director esportiu",
+  coordinator: "Coordinador",
   coach: "Entrenador",
   player: "Jugador",
   guardian: "Tutor legal",
@@ -122,7 +123,7 @@ export const RADAR_AXES: { key: string; label: string; from: AttrKey[] }[] = [
   { key: "mental", label: "Mental", from: ["lideratge", "posicionament", "visio"] },
 ];
 
-// ─── Característiques (traits) que pot demanar una oferta ─────────────────────
+// ─── Característiques (traits) que pot demanar una oportunitat ─────────────────────
 export const TRAITS: { key: string; label: string; attr: AttrKey }[] = [
   { key: "joc_aeri", label: "Joc aeri", attr: "joc_aeri" },
   { key: "sortida_pilota", label: "Sortida de pilota", attr: "passada" },
@@ -151,7 +152,7 @@ export const FOOT_LABEL: Record<string, string> = {
 
 // ─── Estats ───────────────────────────────────────────────────────────────────
 export const AVAILABILITY_LABEL: Record<string, string> = {
-  obert: "Obert a ofertes",
+  obert: "Obert a noves oportunitats",
   escoltant: "Escoltant propostes",
   no_disponible: "No disponible",
 };
@@ -242,7 +243,7 @@ export const CONTACT_STATUS_LABEL: Record<string, string> = {
 };
 
 export const CONTACT_REASONS: { key: string; label: string }[] = [
-  { key: "oferta", label: "Interès per una oferta concreta" },
+  { key: "oferta", label: "Interès per una oportunitat concreta" },
   { key: "prova", label: "Convidar a una prova" },
   { key: "seguiment", label: "Seguiment de cara a la propera temporada" },
   { key: "informacio", label: "Sol·licitar més informació" },

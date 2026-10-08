@@ -1,18 +1,20 @@
 import { z } from "zod";
 import { api, apiStaff, ApiError, body } from "@/server/api";
+import { zId } from "@/server/validation";
 import { get, nowIso, run, tx, uid, insert } from "@/server/db/client";
 import { notifyClub } from "@/server/services/notify";
 import { PIPELINE_STAGES } from "@/lib/domain";
 import type { Stage } from "@/lib/domain";
 
-const Schema = z.object({ requestId: z.string() });
+const Schema = z.object({ requestId: zId });
 
 /**
  * NOMÉS DEMO: simula que el jugador accepta la sol·licitud de contacte, perquè el recorregut del club
  * es pugui fer sense canviar d'usuari. Els menors queden exclosos (sempre cal el tutor).
  */
 export const POST = api(async (req) => {
-  const u = await apiStaff();
+  if (process.env.SCOUTUP_DEMO_LOGIN === "off") throw new ApiError(404, "No disponible.");
+  const u = await apiStaff("contact.send");
   const { requestId } = Schema.parse(await body(req));
   const r = get<{ id: string; club_id: string; player_id: string; team_id: string | null; message: string; from_user_id: string; reason: string; status: string }>("SELECT * FROM contact_requests WHERE id = ? AND club_id = ?", requestId, u.club_id);
   if (!r) throw new ApiError(404, "Sol·licitud no trobada.");
@@ -24,7 +26,7 @@ export const POST = api(async (req) => {
     const now = nowIso();
     const id = existing?.id ?? uid("cv_");
     if (!existing) {
-      insert("conversations", { id, club_id: r.club_id, player_id: r.player_id, team_id: r.team_id, subject: r.reason === "prova" ? "Invitació a una prova" : "Interès per una oferta", status: "activa", created_at: now, last_message_at: now });
+      insert("conversations", { id, club_id: r.club_id, player_id: r.player_id, team_id: r.team_id, subject: r.reason === "prova" ? "Invitació a una prova" : "Interès per una oportunitat", status: "activa", created_at: now, last_message_at: now });
       insert("messages", { id: uid("m_"), conversation_id: id, sender_user_id: r.from_user_id, sender_side: "club", body: r.message, flagged: 0, created_at: now, read_by_club_at: now, read_by_player_at: now });
     }
     const later = new Date(Date.now() + 1000).toISOString();

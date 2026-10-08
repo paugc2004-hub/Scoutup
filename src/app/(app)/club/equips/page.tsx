@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Info, Trophy, Users, Shirt, Target } from "lucide-react";
+import { can } from "@/server/services/access";
 import { requireClubStaff } from "@/server/auth/session";
 import { all, get, parseJson } from "@/server/db/client";
 import { scopedTeams } from "@/server/services/club";
@@ -39,7 +40,7 @@ export default async function TeamsPage({ searchParams }: { searchParams: Promis
 
   return (
     <div>
-      <PageHeader eyebrow="Estructura esportiva" title="Equips i competició" subtitle={`Temporada ${season.label}. ${u.role === "coach" ? "Com a entrenador veus el teu equip." : `${teams.length} equips al club.`}`} />
+      <PageHeader eyebrow="Estructura esportiva" title="Equips i competició" subtitle={`Temporada ${season.label}. ${!can.allTeams(u) ? "Com a entrenador veus el teu equip." : `${teams.length} equips al club.`}`} />
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
           <Link key={c.t.id} href={`/club/equips?team=${c.t.id}`} className={cn("rounded-2xl border bg-surface p-4 shadow-card transition hover:border-line-strong", c.t.id === team.id ? "border-ink ring-1 ring-ink" : "border-line")}>
@@ -92,7 +93,7 @@ export default async function TeamsPage({ searchParams }: { searchParams: Promis
             {ts?.objectives && <p className="text-[13px] leading-relaxed text-ink-2">{ts.objectives}</p>}
             <div className="mt-3 space-y-2">
               {needs.map((n, i) => <div key={i} className="rounded-xl bg-bg p-2.5 text-[12.5px]"><Badge tone={n.priority === "alta" ? "danger" : "warn"}>{POSITION_LABEL[n.position as Position]}</Badge> <span className="ml-1">{n.text}</span></div>)}
-              {offers.map((o) => <Link key={o.id} href={`/club/ofertes/${o.id}`} className="block rounded-xl border border-line p-2.5 text-[12.5px] font-semibold hover:border-line-strong">Oferta oberta: {o.title} →</Link>)}
+              {offers.map((o) => <Link key={o.id} href={`/club/oportunitats/${o.id}`} className="block rounded-xl border border-line p-2.5 text-[12.5px] font-semibold hover:border-line-strong">Oportunitat oberta: {o.title} →</Link>)}
             </div>
             <Link href={`/club/plantilla?team=${team.id}`} className="mt-3 inline-block text-[12.5px] font-semibold text-accent-ink hover:underline">Veure la plantilla →</Link>
           </Card>

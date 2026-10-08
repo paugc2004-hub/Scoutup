@@ -17,6 +17,8 @@ export type ClubDef = {
 };
 
 export const HOME_CLUB_ID = "club_vn";
+/** Segon club amb usuari de demo, per demostrar l'aïllament entre clubs. */
+export const CLUB_B_ID = "club_mediterrani";
 
 export const CLUBS: ClubDef[] = [
   {
