@@ -1,14 +1,17 @@
-# Configuració per desplegar la demo a Render (pla gratuït).
+# Despliegue de la demo en Render (plan gratuito). El disco es efímero: la base de datos SQLite
+# se recrea con los datos de demo en cada arranque.
 services:
   - type: web
-    name: scoutup-demo
+    name: scoutup-club-demo
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build
+    buildCommand: npm ci && npm run build
     startCommand: npx next start
-    healthCheckPath: /
+    healthCheckPath: /demo
     envVars:
       - key: NODE_VERSION
         value: "22"
       - key: NEXT_TELEMETRY_DISABLED
         value: "1"
+      - key: SCOUTUP_DEMO_LOGIN
+        value: "on"

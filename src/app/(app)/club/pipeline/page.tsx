@@ -4,7 +4,7 @@ import { requireClubStaff } from "@/server/auth/session";
 import { all } from "@/server/db/client";
 import { club as getClub, pipelineRows, scopedTeams } from "@/server/services/club";
 import { clubOffers, offerRow, toMatchOffer } from "@/server/services/offers";
-import { playerCtx, playerRow, presentPlayer, toMatchPlayer } from "@/server/services/players";
+import { playerCtx, playerRowsByIds, presentPlayer, toMatchPlayer } from "@/server/services/players";
 import { computeMatch } from "@/lib/matching";
 import { EmptyState, LinkButton, PageHeader } from "@/components/ui";
 import { Kanban } from "@/components/club/kanban";
@@ -19,8 +19,9 @@ export default async function PipelinePage() {
   const ctx = playerCtx();
   const unread = new Set(all<{ player_id: string }>("SELECT DISTINCT c.player_id FROM messages m JOIN conversations c ON c.id = m.conversation_id WHERE c.club_id = ? AND m.sender_side = 'player' AND m.read_by_club_at IS NULL", u.club_id).map((r) => r.player_id));
   const offerCache = new Map<string, ReturnType<typeof toMatchOffer> | null>();
-  const cards: KanbanCard[] = rows.map((r) => {
-    const pr = playerRow(r.player_id)!;
+  const players = playerRowsByIds(rows.map((r) => r.player_id));
+  const cards: KanbanCard[] = rows.filter((r) => players.has(r.player_id)).map((r) => {
+    const pr = players.get(r.player_id)!;
     const p = presentPlayer(pr, ctx);
     let score: number | null = null;
     if (r.offer_id) {

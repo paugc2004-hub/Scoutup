@@ -29,8 +29,10 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const rel = clubRelations(u.club_id);
   const ctx = playerCtx();
   const offers = clubOffers(u.club_id).filter((o) => o.status === "oberta" && (can.allTeams(u) || o.team_id === u.team_id));
-  const offer = sp.offer ? offerRow(sp.offer) : null;
-  const om = offer && offer.club_id === u.club_id ? toMatchOffer(offer) : null;
+  // una oportunitat d'un altre club (ID manipulat a l'URL) s'ignora
+  const found = sp.offer ? offerRow(sp.offer) : null;
+  const offer = found && found.club_id === u.club_id && can.seeTeam(u, found.team_id) ? found : null;
+  const om = offer ? toMatchOffer(offer) : null;
   const stages = new Map(all<{ player_id: string; stage: Stage }>("SELECT player_id, stage FROM pipeline_entries WHERE club_id = ?", u.club_id).map((r) => [r.player_id, r.stage]));
   const center = sp.city ? placeByCity(sp.city) : null;
   const km = Number(sp.km ?? 30);

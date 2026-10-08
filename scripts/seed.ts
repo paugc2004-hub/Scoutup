@@ -11,7 +11,9 @@ for (const t of ["clubs", "teams", "players", "offers", "applications", "pipelin
   console.log(`  ${t.padEnd(24)} ${count(t)}`);
 }
 console.log("\nUsuaris de demo (contrasenya: demo):");
-console.log("  director@scoutup.demo  · Directora esportiva (CF Vallès Nord)");
-console.log("  coach@scoutup.demo     · Entrenador Juvenil A (CF Vallès Nord)");
-console.log("  player@scoutup.demo    · Jugador (Pol Serra Batlle)");
-console.log("  tutor@scoutup.demo     · Tutora legal (Anna Font, mare d'en Nil)\n");
+console.log("  director@scoutup.demo     · Directora esportiva (CF Vallès Nord)");
+console.log("  coordinacio@scoutup.demo  · Coordinador de futbol base (CF Vallès Nord)");
+console.log("  coach@scoutup.demo        · Entrenador Juvenil A (CF Vallès Nord)");
+console.log("  club-b@scoutup.demo       · Direcció del FC Mediterrani (Club B, per provar l'aïllament)");
+console.log("  player@scoutup.demo       · Jugador (Pol Serra Batlle) — per simular respostes");
+console.log("  tutor@scoutup.demo        · Tutora legal (Anna Font, mare d'en Nil)\n");

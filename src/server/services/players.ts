@@ -203,3 +203,10 @@ export function searchPlayerRows(f: PlayerSqlFilter): PlayerRow[] {
   if (f.freeOnly) add("p.club_id IS NULL");
   return all<PlayerRow>(`${PLAYER_SELECT} WHERE ${where.join(" AND ")}`, ...params);
 }
+
+/** Diversos jugadors en una sola consulta (evita N+1 en llistes com el pipeline o el comparador). */
+export function playerRowsByIds(ids: string[]): Map<string, PlayerRow> {
+  const uniq = [...new Set(ids)].slice(0, 500);
+  if (!uniq.length) return new Map();
+  return new Map(all<PlayerRow>(`${PLAYER_SELECT} WHERE p.id IN (${uniq.map(() => "?").join(",")})`, ...uniq).map((p) => [p.id, p]));
+}

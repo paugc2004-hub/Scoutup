@@ -21,7 +21,7 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeader eyebrow="Assistent de captació" title={<span className="inline-flex items-center gap-2.5">ScoutUp Intelligence <Sparkles className="size-6 text-accent-600" /></span>} subtitle="Descriu en llenguatge natural el jugador que necessites. L'assistent ho converteix en criteris, ordena els perfils visibles per al teu club i t'explica per què encaixen." />
+      <PageHeader eyebrow="Assistent de captació" title={<span className="inline-flex items-center gap-2.5">ScoutUp Intelligence <Sparkles className="size-6 text-accent-600" /><Badge tone="warn">IA demo · copilot</Badge></span>} subtitle="Descriu en llenguatge natural el jugador que necessites. L'assistent ho converteix en criteris, ordena els perfils visibles per al teu club i t'explica per què encaixen. És un copilot: proposa i explica, però la decisió és sempre del club i no inventa dades." />
       <IntelligenceBox initial={q ?? ""} autoFocus={!q} />
 
       {res && (
