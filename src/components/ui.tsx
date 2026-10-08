@@ -92,7 +92,7 @@ export function MatchRing({ score, size = 52, stroke = 5, label = true, classNam
   const off = len * (1 - Math.max(0, Math.min(100, score)) / 100);
   const col = matchColor(score);
   return (
-    <div className={cn("relative grid shrink-0 place-items-center", className)} style={{ width: size, height: size }} title={`${score}% de compatibilitat`}>
+    <div className={cn("relative grid shrink-0 place-items-center", className)} style={{ width: size, height: size }} title={`${score}% de compatibilidad`}>
       <svg width={size} height={size} className="-rotate-90">
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#ececE7" strokeWidth={stroke} />
         <circle className="ring-anim" cx={size / 2} cy={size / 2} r={r} fill="none" stroke={col} strokeWidth={stroke} strokeLinecap="round" strokeDasharray={len} strokeDashoffset={off} style={{ ["--ring-len" as string]: `${len}` }} />
@@ -190,9 +190,9 @@ export function StageBadge({ stage }: { stage: Stage }) {
 
 export function MinorBadge() {
   return (
-    <Badge tone="violet" title="Menor d'edat: perfil protegit i contacte amb autorització del tutor legal.">
+    <Badge tone="violet" title="Menor de edad: perfil protegido y contacto con autorización del tutor legal.">
       <Lock className="size-3" />
-      Menor protegit
+      Menor protegido
     </Badge>
   );
 }
@@ -223,7 +223,7 @@ export function Radar({ series, size = 220, labels = true }: { series: { name: s
     return [cx + Math.cos(a) * r * (v / 10), cy + Math.sin(a) * r * (v / 10)];
   };
   return (
-    <svg viewBox={`0 0 ${size} ${size}`} width="100%" style={{ maxWidth: size }} role="img" aria-label="Gràfic de radar d'atributs">
+    <svg viewBox={`0 0 ${size} ${size}`} width="100%" style={{ maxWidth: size }} role="img" aria-label="Gráfico de radar de atributos">
       {[2.5, 5, 7.5, 10].map((lv) => (
         <polygon key={lv} points={axes.map((_, i) => pt(i, lv).join(",")).join(" ")} fill={lv === 10 ? "#fafaf8" : "none"} stroke="#e4e4de" strokeWidth={1} />
       ))}
@@ -290,7 +290,7 @@ export function Skeleton({ className }: { className?: string }) {
 }
 
 /** Estat d'error recuperable dins d'una secció (no trenca la resta de la pàgina). */
-export function ErrorState({ title = "No hem pogut carregar aquesta secció", text = "La resta de l'aplicació continua funcionant. Torna-ho a provar d'aquí a una estona.", action }: { title?: string; text?: string; action?: ReactNode }) {
+export function ErrorState({ title = "No hemos podido cargar esta sección", text = "El resto de la aplicación sigue funcionando. Vuelve a intentarlo en un rato.", action }: { title?: string; text?: string; action?: ReactNode }) {
   return (
     <div role="alert" className="flex flex-col items-center justify-center rounded-2xl border border-danger-soft bg-danger-soft/40 px-6 py-10 text-center">
       <p className="text-[15px] font-bold text-ink">{title}</p>

@@ -11,7 +11,7 @@ type Team = { id: string; name: string };
 
 const initials = (n: string) => n.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
-/** Llista d'usuaris del club. Si `editable`, la direcció pot canviar rol, equip i estat (el servidor ho torna a validar). */
+/** Lista de usuarios del club. Si `editable`, la dirección puede cambiar rol, equipo y estado (el servidor lo vuelve a validar). */
 export function StaffManager({ staff, teams, meId, editable }: { staff: StaffItem[]; teams: Team[]; meId: string; editable: boolean }) {
   const { call, pending } = useApi();
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -19,7 +19,7 @@ export function StaffManager({ staff, teams, meId, editable }: { staff: StaffIte
     setBusyId(s.id);
     const role = patch.role ?? s.role;
     const body = { ...patch, ...(role === "coach" && !(patch.team_id ?? s.team_id) ? { team_id: teams[0]?.id ?? null } : {}) };
-    await call(`/api/club/users/${s.id}`, { method: "PATCH", body, ok: "Permisos actualitzats", okSub: "Les sessions obertes d'aquest usuari s'han tancat." });
+    await call(`/api/club/users/${s.id}`, { method: "PATCH", body, ok: "Permisos actualizados", okSub: "Se han cerrado las sesiones abiertas de este usuario." });
     setBusyId(null);
   };
   return (
@@ -32,7 +32,7 @@ export function StaffManager({ staff, teams, meId, editable }: { staff: StaffIte
             <Avatar initials={initials(s.name)} hue={s.avatar_hue} size={38} />
             <div className="min-w-0 flex-1">
               <p className="text-[13.5px] font-bold">
-                {s.name} {me && <span className="font-normal text-muted">(tu)</span>} {s.status === "disabled" && <Badge tone="danger">Desactivat</Badge>}
+                {s.name} {me && <span className="font-normal text-muted">(tú)</span>} {s.status === "disabled" && <Badge tone="danger">Desactivado</Badge>}
               </p>
               <p className="truncate text-[12px] text-muted">{s.email} · {s.lastAccess}</p>
             </div>
@@ -46,7 +46,7 @@ export function StaffManager({ staff, teams, meId, editable }: { staff: StaffIte
                 </div>
                 {s.role === "coach" && (
                   <>
-                    <label className="sr-only" htmlFor={`team-${s.id}`}>Equip de {s.name}</label>
+                    <label className="sr-only" htmlFor={`team-${s.id}`}>Equipo de {s.name}</label>
                     <div className="w-36">
                       <Select id={`team-${s.id}`} value={s.team_id ?? ""} disabled={disabled} onChange={(e) => save(s, { team_id: e.target.value })} className="h-9 text-[13px]">
                         {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -60,7 +60,7 @@ export function StaffManager({ staff, teams, meId, editable }: { staff: StaffIte
               </div>
             ) : (
               <Badge tone={s.role === "director" ? "dark" : s.role === "coordinator" ? "violet" : "info"}>
-                {s.role === "coach" ? `Entrenador · ${s.team_name ?? "sense equip"}` : CLUB_ROLE_LABEL[s.role]}
+                {s.role === "coach" ? `Entrenador · ${s.team_name ?? "sin equipo"}` : CLUB_ROLE_LABEL[s.role]}
               </Badge>
             )}
           </div>
@@ -76,7 +76,7 @@ export function InviteStaffButton({ teams }: { teams: Team[] }) {
   const [d, setD] = useState({ name: "", email: "", role: "coach" as ClubRole, team_id: teams[0]?.id ?? "" });
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const r = await call("/api/club/users", { body: { ...d, team_id: d.role === "coach" ? d.team_id : null }, ok: "Usuari afegit", okSub: "Invitació pendent: l'enviament de correus no està implementat a la demo." });
+    const r = await call("/api/club/users", { body: { ...d, team_id: d.role === "coach" ? d.team_id : null }, ok: "Usuario añadido", okSub: "Invitación pendiente: el envío de correos no está implementado en la demo." });
     if (r) {
       setOpen(false);
       setD({ name: "", email: "", role: "coach", team_id: teams[0]?.id ?? "" });
@@ -84,11 +84,11 @@ export function InviteStaffButton({ teams }: { teams: Team[] }) {
   };
   return (
     <>
-      <Button size="sm" icon={<UserPlus className="size-3.5" />} onClick={() => setOpen(true)}>Convidar usuari</Button>
-      <Modal open={open} onClose={() => setOpen(false)} title="Convidar un usuari del club" subtitle="Tindrà accés segons el rol que triïs. Pots canviar-lo quan vulguis.">
+      <Button size="sm" icon={<UserPlus className="size-3.5" />} onClick={() => setOpen(true)}>Invitar usuario</Button>
+      <Modal open={open} onClose={() => setOpen(false)} title="Invitar a un usuario del club" subtitle="Tendrá acceso según el rol que elijas. Puedes cambiarlo cuando quieras.">
         <form onSubmit={submit} className="space-y-4">
-          <Field label="Nom i cognoms"><Input required minLength={3} maxLength={80} value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} /></Field>
-          <Field label="Correu electrònic"><Input type="email" required maxLength={254} value={d.email} onChange={(e) => setD({ ...d, email: e.target.value })} /></Field>
+          <Field label="Nombre y apellidos"><Input required minLength={3} maxLength={80} value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} /></Field>
+          <Field label="Correo electrónico"><Input type="email" required maxLength={254} value={d.email} onChange={(e) => setD({ ...d, email: e.target.value })} /></Field>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Rol">
               <Select value={d.role} onChange={(e) => setD({ ...d, role: e.target.value as ClubRole })}>
@@ -96,17 +96,17 @@ export function InviteStaffButton({ teams }: { teams: Team[] }) {
               </Select>
             </Field>
             {d.role === "coach" && (
-              <Field label="Equip">
+              <Field label="Equipo">
                 <Select value={d.team_id} onChange={(e) => setD({ ...d, team_id: e.target.value })}>
                   {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </Select>
               </Field>
             )}
           </div>
-          <p className="rounded-xl bg-sunken px-3 py-2 text-[12px] text-muted">L&apos;enviament del correu d&apos;invitació està <strong>pendent de definir</strong>. A la demo, l&apos;usuari es crea però no pot iniciar sessió.</p>
+          <p className="rounded-xl bg-sunken px-3 py-2 text-[12px] text-muted">El envío del correo de invitación está <strong>pendiente de definir</strong>. En la demo, el usuario se crea pero no puede iniciar sesión.</p>
           <div className="flex justify-end gap-2">
-            <Button type="button" onClick={() => setOpen(false)}>Cancel·lar</Button>
-            <Button type="submit" variant="dark" loading={pending}>Afegir usuari</Button>
+            <Button type="button" onClick={() => setOpen(false)}>Cancelar</Button>
+            <Button type="submit" variant="dark" loading={pending}>Añadir usuario</Button>
           </div>
         </form>
       </Modal>

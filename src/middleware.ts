@@ -26,15 +26,15 @@ export function middleware(req: NextRequest) {
         try {
           originHost = new URL(origin).host;
         } catch {
-          return json(403, "Origen no permès.");
+          return json(403, "Origen no permitido.");
         }
-        if (originHost !== host) return json(403, "Origen no permès.");
+        if (originHost !== host) return json(403, "Origen no permitido.");
       } else if (req.headers.get("sec-fetch-site") === "cross-site") {
-        return json(403, "Origen no permès.");
+        return json(403, "Origen no permitido.");
       }
       const ct = req.headers.get("content-type") ?? "";
       const hasBody = req.method !== "DELETE" && Number(req.headers.get("content-length") ?? "0") > 0;
-      if (hasBody && !ct.toLowerCase().startsWith("application/json")) return json(415, "Format no admès: cal JSON.");
+      if (hasBody && !ct.toLowerCase().startsWith("application/json")) return json(415, "Formato no admitido: se requiere JSON.");
     }
     return NextResponse.next();
   }

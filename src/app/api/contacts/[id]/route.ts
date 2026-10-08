@@ -12,11 +12,11 @@ export const POST = api<Ctx>(async (req, { params }) => {
   const id = zId.parse((await params).id);
   const { action } = S.parse(await body(req));
   if (action === "cancel") {
-    if (!isClubRole(u.role) || !u.club_id) throw new ApiError(403, "No permès.");
+    if (!isClubRole(u.role) || !u.club_id) throw new ApiError(403, "No permitido.");
     cancelContactRequest(u as SessionUser & { club_id: string }, id);
     return { ok: true };
   }
   if (u.role === "player" && u.player_id) return { ok: true, ...respondContactAsPlayer(u as SessionUser & { player_id: string }, id, action === "accept") };
   if (u.role === "guardian") return { ok: true, ...respondContactAsGuardian(u, id, action === "accept") };
-  throw new ApiError(403, "No permès.");
+  throw new ApiError(403, "No permitido.");
 });

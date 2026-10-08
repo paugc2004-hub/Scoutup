@@ -1,13 +1,13 @@
 /**
- * Domini compartit (client + servidor + seed).
- * IMPORTANT: aquest fitxer no pot fer servir àlies (@/...) perquè també l'executa
- * `node --experimental-strip-types` des de scripts/seed.ts.
+ * Dominio compartido (cliente + servidor + seed).
+ * IMPORTANTE: este fichero no puede usar alias (@/...) porque también lo ejecuta
+ * `node --experimental-strip-types` desde scripts/seed.ts.
  */
 
 export type Role = "director" | "coordinator" | "coach" | "player" | "guardian";
 
 export const ROLE_LABEL: Record<Role, string> = {
-  director: "Director esportiu",
+  director: "Director deportivo",
   coordinator: "Coordinador",
   coach: "Entrenador",
   player: "Jugador",
@@ -19,16 +19,16 @@ export const POSITIONS = ["POR", "LD", "DC", "LE", "MCD", "MC", "MCO", "ED", "EE
 export type Position = (typeof POSITIONS)[number];
 
 export const POSITION_LABEL: Record<Position, string> = {
-  POR: "Porter",
-  LD: "Lateral dret",
+  POR: "Portero",
+  LD: "Lateral derecho",
   DC: "Defensa central",
-  LE: "Lateral esquerre",
-  MCD: "Pivot defensiu",
-  MC: "Migcampista",
-  MCO: "Mitjapunta",
-  ED: "Extrem dret",
-  EE: "Extrem esquerre",
-  DAV: "Davanter centre",
+  LE: "Lateral izquierdo",
+  MCD: "Pivote defensivo",
+  MC: "Centrocampista",
+  MCO: "Mediapunta",
+  ED: "Extremo derecho",
+  EE: "Extremo izquierdo",
+  DAV: "Delantero centro",
 };
 
 export const POSITION_GROUP: Record<Position, "POR" | "DEF" | "MIG" | "ATK"> = {
@@ -64,29 +64,29 @@ export const POSITION_PITCH: Record<Position, { x: number; y: number }> = {
 };
 
 // ─── Categories i nivells ─────────────────────────────────────────────────────
-export const CATEGORIES = ["Infantil", "Cadet", "Juvenil", "Amateur"] as const;
+export const CATEGORIES = ["Infantil", "Cadete", "Juvenil", "Amateur"] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 /** Edat (any de temporada − any de naixement) de cada categoria. */
 export const CATEGORY_AGE: Record<Category, { min: number; max: number; sub: string }> = {
   Infantil: { min: 12, max: 13, sub: "sub-14" },
-  Cadet: { min: 14, max: 15, sub: "sub-16" },
+  Cadete: { min: 14, max: 15, sub: "sub-16" },
   Juvenil: { min: 16, max: 18, sub: "sub-19" },
-  Amateur: { min: 19, max: 40, sub: "sènior" },
+  Amateur: { min: 19, max: 40, sub: "sénior" },
 };
 
 export const LEVELS: { rank: number; label: string }[] = [
-  { rank: 1, label: "Divisió d'Honor" },
+  { rank: 1, label: "División de Honor" },
   { rank: 2, label: "Nacional" },
-  { rank: 3, label: "Preferent" },
-  { rank: 4, label: "Primera Divisió" },
-  { rank: 5, label: "Segona Divisió" },
+  { rank: 3, label: "Preferente" },
+  { rank: 4, label: "Primera División" },
+  { rank: 5, label: "Segunda División" },
 ];
 export function levelLabel(rank: number | null | undefined): string {
   return LEVELS.find((l) => l.rank === rank)?.label ?? "—";
 }
 
-export const GENDER_LABEL: Record<string, string> = { M: "Masculí", F: "Femení" };
+export const GENDER_LABEL: Record<string, string> = { M: "Masculino", F: "Femenino" };
 
 // ─── Atributs ─────────────────────────────────────────────────────────────────
 export const ATTRS = [
@@ -97,83 +97,83 @@ export type AttrKey = (typeof ATTRS)[number] | "reflexos" | "sortides";
 export type Attrs = Partial<Record<AttrKey, number>>;
 
 export const ATTR_LABEL: Record<AttrKey, string> = {
-  velocitat: "Velocitat",
-  resistencia: "Resistència",
-  forca: "Força",
-  tecnica: "Tècnica",
-  passada: "Passada",
-  xut: "Definició",
-  regat: "Regat",
-  joc_aeri: "Joc aeri",
+  velocitat: "Velocidad",
+  resistencia: "Resistencia",
+  forca: "Fuerza",
+  tecnica: "Técnica",
+  passada: "Pase",
+  xut: "Definición",
+  regat: "Regate",
+  joc_aeri: "Juego aéreo",
   defensa: "Defensa",
-  visio: "Visió de joc",
-  posicionament: "Posicionament",
-  lideratge: "Lideratge",
-  reflexos: "Reflexos",
-  sortides: "Sortides",
+  visio: "Visión de juego",
+  posicionament: "Posicionamiento",
+  lideratge: "Liderazgo",
+  reflexos: "Reflejos",
+  sortides: "Salidas",
 };
 
 /** Eixos del radar (6) calculats a partir dels atributs. */
 export const RADAR_AXES: { key: string; label: string; from: AttrKey[] }[] = [
-  { key: "fisic", label: "Físic", from: ["velocitat", "resistencia", "forca"] },
-  { key: "tecnica", label: "Tècnica", from: ["tecnica", "regat"] },
-  { key: "passada", label: "Passada", from: ["passada", "visio"] },
-  { key: "atac", label: "Atac", from: ["xut", "regat"] },
+  { key: "fisic", label: "Físico", from: ["velocitat", "resistencia", "forca"] },
+  { key: "tecnica", label: "Técnica", from: ["tecnica", "regat"] },
+  { key: "passada", label: "Pase", from: ["passada", "visio"] },
+  { key: "atac", label: "Ataque", from: ["xut", "regat"] },
   { key: "defensa", label: "Defensa", from: ["defensa", "joc_aeri", "posicionament"] },
   { key: "mental", label: "Mental", from: ["lideratge", "posicionament", "visio"] },
 ];
 
 // ─── Característiques (traits) que pot demanar una oportunitat ─────────────────────
 export const TRAITS: { key: string; label: string; attr: AttrKey }[] = [
-  { key: "joc_aeri", label: "Joc aeri", attr: "joc_aeri" },
-  { key: "sortida_pilota", label: "Sortida de pilota", attr: "passada" },
-  { key: "defensa", label: "Solidesa defensiva", attr: "defensa" },
-  { key: "velocitat", label: "Velocitat", attr: "velocitat" },
-  { key: "regat", label: "1x1 / regat", attr: "regat" },
-  { key: "visio", label: "Visió de joc", attr: "visio" },
+  { key: "joc_aeri", label: "Juego aéreo", attr: "joc_aeri" },
+  { key: "sortida_pilota", label: "Salida de balón", attr: "passada" },
+  { key: "defensa", label: "Solidez defensiva", attr: "defensa" },
+  { key: "velocitat", label: "Velocidad", attr: "velocitat" },
+  { key: "regat", label: "1x1 / regate", attr: "regat" },
+  { key: "visio", label: "Visión de juego", attr: "visio" },
   { key: "gol", label: "Gol", attr: "xut" },
-  { key: "lideratge", label: "Lideratge", attr: "lideratge" },
-  { key: "resistencia", label: "Recorregut", attr: "resistencia" },
-  { key: "fisic", label: "Físic i duel", attr: "forca" },
-  { key: "tecnica", label: "Tècnica", attr: "tecnica" },
-  { key: "posicionament", label: "Lectura del joc", attr: "posicionament" },
-  { key: "reflexos", label: "Reflexos", attr: "reflexos" },
+  { key: "lideratge", label: "Liderazgo", attr: "lideratge" },
+  { key: "resistencia", label: "Recorrido", attr: "resistencia" },
+  { key: "fisic", label: "Físico y duelo", attr: "forca" },
+  { key: "tecnica", label: "Técnica", attr: "tecnica" },
+  { key: "posicionament", label: "Lectura del juego", attr: "posicionament" },
+  { key: "reflexos", label: "Reflejos", attr: "reflexos" },
 ];
 export function traitLabel(key: string): string {
   return TRAITS.find((t) => t.key === key)?.label ?? key;
 }
 
 export const FOOT_LABEL: Record<string, string> = {
-  dret: "Dret",
-  esquerre: "Esquerre",
-  ambdues: "Ambidextre",
-  indiferent: "Indiferent",
+  dret: "Diestro",
+  esquerre: "Zurdo",
+  ambdues: "Ambidiestro",
+  indiferent: "Indiferente",
 };
 
 // ─── Estats ───────────────────────────────────────────────────────────────────
 export const AVAILABILITY_LABEL: Record<string, string> = {
-  obert: "Obert a noves oportunitats",
-  escoltant: "Escoltant propostes",
+  obert: "Abierto a oportunidades",
+  escoltant: "Escuchando propuestas",
   no_disponible: "No disponible",
 };
 
 export const CONTRACT_LABEL: Record<string, string> = {
-  amb_fitxa: "Amb fitxa",
-  final_temporada: "Fitxa fins a final de temporada",
-  lliure: "Sense equip",
+  amb_fitxa: "Con ficha",
+  final_temporada: "Ficha hasta final de temporada",
+  lliure: "Sin equipo",
 };
 
 export const VERIFICATION_LABEL: Record<string, string> = {
-  verified: "Verificat",
-  pending: "Pendent",
-  self: "Autodeclarat",
-  updated: "Actualitzat",
+  verified: "Verificado",
+  pending: "Pendiente",
+  self: "Autodeclarado",
+  updated: "Actualizado",
 };
 export const VERIFICATION_HINT: Record<string, string> = {
-  verified: "Dada confirmada pel club emissor (simulat a la demo).",
-  pending: "Verificació sol·licitada, encara no confirmada.",
-  self: "Dada introduïda pel mateix jugador.",
-  updated: "Dada actualitzada recentment pel jugador o el club.",
+  verified: "Dato confirmado por el club emisor (simulado en la demo).",
+  pending: "Verificación solicitada, aún sin confirmar.",
+  self: "Dato introducido por el propio jugador.",
+  updated: "Dato actualizado recientemente por el jugador o el club.",
 };
 
 export const PIPELINE_STAGES = [
@@ -181,15 +181,15 @@ export const PIPELINE_STAGES = [
 ] as const;
 export type Stage = (typeof PIPELINE_STAGES)[number];
 export const STAGE_LABEL: Record<Stage, string> = {
-  nou: "Nou",
+  nou: "Nuevo",
   revisar: "Revisar",
-  interessant: "Interessant",
-  contactat: "Contactat",
-  en_conversa: "En conversa",
-  prova: "Prova",
+  interessant: "Interesante",
+  contactat: "Contactado",
+  en_conversa: "En conversación",
+  prova: "Prueba",
   en_espera: "En espera",
-  rebutjat: "Rebutjat",
-  incorporat: "Incorporat",
+  rebutjat: "Descartado",
+  incorporat: "Incorporado",
 };
 export const STAGE_COLOR: Record<Stage, string> = {
   nou: "#64748B",
@@ -209,14 +209,14 @@ export const APP_STATUSES = [
 ] as const;
 export type AppStatus = (typeof APP_STATUSES)[number];
 export const APP_STATUS_LABEL: Record<AppStatus, string> = {
-  enviada: "Sol·licitud enviada",
-  vista: "El club ha vist el perfil",
-  contacte: "Contacte",
-  prova: "Prova",
-  en_proces: "En procés",
-  acceptat: "Acceptat",
-  rebutjat: "No seleccionat",
-  tancat: "Tancat",
+  enviada: "Solicitud enviada",
+  vista: "El club ha visto el perfil",
+  contacte: "Contacto",
+  prova: "Prueba",
+  en_proces: "En proceso",
+  acceptat: "Aceptado",
+  rebutjat: "No seleccionado",
+  tancat: "Cerrado",
 };
 
 /** Traducció de l'etapa del pipeline del club a l'estat que veu el jugador. */
@@ -235,30 +235,30 @@ export function stageToAppStatus(stage: Stage): AppStatus | null {
 }
 
 export const CONTACT_STATUS_LABEL: Record<string, string> = {
-  pendent: "Pendent de resposta",
-  pendent_tutor: "Pendent del tutor",
-  acceptada: "Acceptada",
-  rebutjada: "Rebutjada",
-  cancel_lada: "Cancel·lada",
+  pendent: "Pendiente de respuesta",
+  pendent_tutor: "Pendiente del tutor",
+  acceptada: "Aceptada",
+  rebutjada: "Rechazada",
+  cancel_lada: "Cancelada",
 };
 
 export const CONTACT_REASONS: { key: string; label: string }[] = [
-  { key: "oferta", label: "Interès per una oportunitat concreta" },
-  { key: "prova", label: "Convidar a una prova" },
-  { key: "seguiment", label: "Seguiment de cara a la propera temporada" },
-  { key: "informacio", label: "Sol·licitar més informació" },
+  { key: "oferta", label: "Interés por una oportunidad concreta" },
+  { key: "prova", label: "Invitar a una prueba" },
+  { key: "seguiment", label: "Seguimiento de cara a la próxima temporada" },
+  { key: "informacio", label: "Solicitar más información" },
 ];
 
 export const EVENT_KINDS = ["partit", "entrenament", "prova", "reunio", "scouting", "trucada", "recordatori"] as const;
 export type EventKind = (typeof EVENT_KINDS)[number];
 export const EVENT_KIND_LABEL: Record<EventKind, string> = {
-  partit: "Partit",
-  entrenament: "Entrenament",
-  prova: "Prova",
-  reunio: "Reunió",
-  scouting: "Scouting",
-  trucada: "Trucada / videotrucada",
-  recordatori: "Recordatori",
+  partit: "Partido",
+  entrenament: "Entrenamiento",
+  prova: "Prueba",
+  reunio: "Reunión",
+  scouting: "Observación",
+  trucada: "Llamada / videollamada",
+  recordatori: "Recordatorio",
 };
 export const EVENT_KIND_COLOR: Record<EventKind, string> = {
   partit: "#0E1116",
@@ -272,42 +272,42 @@ export const EVENT_KIND_COLOR: Record<EventKind, string> = {
 
 // ─── Avaluacions ──────────────────────────────────────────────────────────────
 export const EVAL_AREAS: { key: string; label: string; criteria: { key: string; label: string }[] }[] = [
-  { key: "tecnica", label: "Tècnica", criteria: [
-    { key: "control", label: "Control orientat" }, { key: "passada", label: "Passada" }, { key: "conduccio", label: "Conducció" },
+  { key: "tecnica", label: "Técnica", criteria: [
+    { key: "control", label: "Control orientado" }, { key: "passada", label: "Pase" }, { key: "conduccio", label: "Conducción" },
   ] },
-  { key: "tactica", label: "Tàctica", criteria: [
-    { key: "posicionament", label: "Posicionament" }, { key: "lectura", label: "Lectura del joc" }, { key: "pressio", label: "Pressió i basculació" },
+  { key: "tactica", label: "Táctica", criteria: [
+    { key: "posicionament", label: "Posicionamiento" }, { key: "lectura", label: "Lectura del juego" }, { key: "pressio", label: "Presión y basculación" },
   ] },
   { key: "fisica", label: "Física", criteria: [
-    { key: "velocitat", label: "Velocitat" }, { key: "resistencia", label: "Resistència" }, { key: "duel", label: "Duel i força" },
+    { key: "velocitat", label: "Velocidad" }, { key: "resistencia", label: "Resistencia" }, { key: "duel", label: "Duelo y fuerza" },
   ] },
   { key: "mental", label: "Mental", criteria: [
-    { key: "concentracio", label: "Concentració" }, { key: "competitivitat", label: "Competitivitat" }, { key: "resiliencia", label: "Resposta a l'error" },
+    { key: "concentracio", label: "Concentración" }, { key: "competitivitat", label: "Competitividad" }, { key: "resiliencia", label: "Respuesta al error" },
   ] },
   { key: "social", label: "Social", criteria: [
-    { key: "companyonia", label: "Companyonia" }, { key: "comunicacio", label: "Comunicació" }, { key: "compromis", label: "Compromís" },
+    { key: "companyonia", label: "Compañerismo" }, { key: "comunicacio", label: "Comunicación" }, { key: "compromis", label: "Compromiso" },
   ] },
 ];
 export const EVAL_DECISIONS: Record<string, string> = {
-  seguir: "Seguir observant",
-  prova: "Convidar a prova",
-  fitxar: "Recomanar incorporació",
+  seguir: "Seguir observando",
+  prova: "Invitar a prueba",
+  fitxar: "Recomendar incorporación",
   descartar: "Descartar",
 };
 
 export const SCOUT_RECOMMENDATION: Record<string, string> = {
   seguir: "Seguir",
   contactar: "Contactar",
-  prova: "Prova",
+  prova: "Prueba",
   descartar: "Descartar",
 };
 
 export const ROSTER_STATUS_LABEL: Record<string, string> = {
   titular: "Titular",
-  rotacio: "Rotació",
-  jove: "Promoció",
-  baixa: "Baixa a final de temporada",
-  cedit: "Cedit",
+  rotacio: "Rotación",
+  jove: "Promoción",
+  baixa: "Baja a final de temporada",
+  cedit: "Cedido",
 };
 
 // ─── Privacitat ───────────────────────────────────────────────────────────────
@@ -330,20 +330,20 @@ export const DEFAULT_PRIVACY: Privacy = {
   notifyEmail: true,
 };
 export const PROFILE_VISIBILITY_LABEL: Record<string, string> = {
-  tots: "Tots els clubs",
-  verificats: "Només clubs verificats",
-  contactats: "Només clubs amb qui tinc contacte",
-  ocult: "Ocult (ningú no em pot trobar)",
+  tots: "Todos los clubes",
+  verificats: "Solo clubes verificados",
+  contactats: "Solo clubes con los que tengo contacto",
+  ocult: "Oculto (nadie me puede encontrar)",
 };
 export const CONTACT_PERMISSION_LABEL: Record<string, string> = {
-  tots: "Qualsevol club",
-  verificats: "Només clubs verificats",
-  ningu: "Ningú (no accepto contactes nous)",
+  tots: "Cualquier club",
+  verificats: "Solo clubes verificados",
+  ningu: "Nadie (no acepto contactos nuevos)",
 };
 export const LOCATION_LABEL: Record<string, string> = {
-  ciutat: "Municipi",
-  comarca: "Només comarca",
-  provincia: "Només província",
+  ciutat: "Municipio",
+  comarca: "Solo comarca",
+  provincia: "Solo provincia",
 };
 
 export type Preferences = {
@@ -356,10 +356,10 @@ export type Preferences = {
 export const DEFAULT_PREFERENCES: Preferences = { categories: [], maxKm: 30, interests: ["incorporacio", "prova"], levelMin: null, notes: "" };
 
 export const INTEREST_LABEL: Record<string, string> = {
-  incorporacio: "Incorporació per a la temporada",
-  prova: "Proves i entrenaments oberts",
-  seguent_temporada: "Pensant en la propera temporada",
-  estudis: "Compatible amb estudis",
+  incorporacio: "Incorporación para la temporada",
+  prova: "Pruebas y entrenamientos abiertos",
+  seguent_temporada: "Pensando en la próxima temporada",
+  estudis: "Compatible con estudios",
 };
 
 // ─── Temporades i edats ───────────────────────────────────────────────────────
@@ -387,7 +387,7 @@ export function isMinor(birthDate: string, now: Date = new Date()): boolean {
 export function categoryForBirthYear(birthYear: number, seasonStart: number): Category {
   const age = seasonStart - birthYear;
   if (age <= 13) return "Infantil";
-  if (age <= 15) return "Cadet";
+  if (age <= 15) return "Cadete";
   if (age <= 18) return "Juvenil";
   return "Amateur";
 }

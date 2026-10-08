@@ -21,12 +21,12 @@ export function RegisterForm({ initialType }: { initialType: "player" | "club" }
     if (now.getMonth() < b.getMonth() || (now.getMonth() === b.getMonth() && now.getDate() < b.getDate())) a--;
     return a < 18;
   }, [f.birth_date]);
-  const cities = [...PLACES].sort((a, b) => a.city.localeCompare(b.city, "ca"));
+  const cities = [...PLACES].sort((a, b) => a.city.localeCompare(b.city, "es"));
 
   return (
     <div>
       <div className="grid grid-cols-2 gap-2 rounded-2xl border border-line bg-surface p-1.5">
-        {([["player", "Soc jugador/a", UserRound], ["club", "Soc un club", Building2]] as const).map(([k, l, Icon]) => (
+        {([["player", "Soy jugador/a", UserRound], ["club", "Soy un club", Building2]] as const).map(([k, l, Icon]) => (
           <button key={k} type="button" onClick={() => setType(k)} className={cn("flex h-11 items-center justify-center gap-2 rounded-xl text-[13.5px] font-semibold transition", type === k ? "bg-ink text-white shadow" : "text-muted hover:bg-sunken")}>
             <Icon className="size-4" /> {l}
           </button>
@@ -41,7 +41,7 @@ export function RegisterForm({ initialType }: { initialType: "player" | "club" }
           const r = await fetch("/api/auth/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...f, type, accept }) });
           const d = await r.json().catch(() => ({}));
           if (!r.ok) {
-            setError(d.error ?? "No s'ha pogut crear el compte.");
+            setError(d.error ?? "No se ha podido crear la cuenta.");
             setBusy(false);
             return;
           }
@@ -51,50 +51,50 @@ export function RegisterForm({ initialType }: { initialType: "player" | "club" }
         {type === "player" ? (
           <>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Nom"><Input required value={f.first_name ?? ""} onChange={set("first_name")} /></Field>
-              <Field label="Cognoms"><Input required value={f.last_name ?? ""} onChange={set("last_name")} /></Field>
+              <Field label="Nombre"><Input required value={f.first_name ?? ""} onChange={set("first_name")} /></Field>
+              <Field label="Apellidos"><Input required value={f.last_name ?? ""} onChange={set("last_name")} /></Field>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Data de naixement"><Input type="date" required value={f.birth_date ?? ""} onChange={set("birth_date")} max="2014-12-31" min="1990-01-01" /></Field>
-              <Field label="Equip">
-                <Select value={f.gender} onChange={set("gender")}><option value="M">Masculí</option><option value="F">Femení</option></Select>
+              <Field label="Fecha de nacimiento"><Input type="date" required value={f.birth_date ?? ""} onChange={set("birth_date")} max="2014-12-31" min="1990-01-01" /></Field>
+              <Field label="Equipo">
+                <Select value={f.gender} onChange={set("gender")}><option value="M">Masculino</option><option value="F">Femenino</option></Select>
               </Field>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Municipi"><Select value={f.city} onChange={set("city")}>{cities.map((p) => <option key={p.city}>{p.city}</option>)}</Select></Field>
-              <Field label="Posició principal"><Select value={f.position} onChange={set("position")}>{POSITIONS.map((p) => <option key={p} value={p}>{POSITION_LABEL[p]}</option>)}</Select></Field>
+              <Field label="Municipio"><Select value={f.city} onChange={set("city")}>{cities.map((p) => <option key={p.city}>{p.city}</option>)}</Select></Field>
+              <Field label="Posición principal"><Select value={f.position} onChange={set("position")}>{POSITIONS.map((p) => <option key={p} value={p}>{POSITION_LABEL[p]}</option>)}</Select></Field>
             </div>
             {minor && (
               <div className="rounded-2xl border border-[#ddd6fe] bg-violet-soft p-4">
-                <p className="flex items-center gap-2 text-[13.5px] font-bold text-violet"><Lock className="size-4" /> Ets menor d'edat</p>
-                <p className="mt-1 text-[12.5px] leading-relaxed text-ink-2">El teu perfil no serà visible per a cap club fins que el teu pare, mare o tutor legal hi doni consentiment. Cap club no et podrà escriure sense la seva autorització.</p>
-                <Field label="Correu del tutor legal" className="mt-3"><Input type="email" required value={f.guardian_email ?? ""} onChange={set("guardian_email")} placeholder="tutor@exemple.cat" /></Field>
+                <p className="flex items-center gap-2 text-[13.5px] font-bold text-violet"><Lock className="size-4" /> Eres menor de edad</p>
+                <p className="mt-1 text-[12.5px] leading-relaxed text-ink-2">Tu perfil no será visible para ningún club hasta que tu padre, madre o tutor legal dé su consentimiento. Ningún club podrá escribirte sin su autorización.</p>
+                <Field label="Correo del tutor legal" className="mt-3"><Input type="email" required value={f.guardian_email ?? ""} onChange={set("guardian_email")} placeholder="tutor@exemple.cat" /></Field>
               </div>
             )}
           </>
         ) : (
           <>
-            <Field label="Nom del club"><Input required value={f.club_name ?? ""} onChange={set("club_name")} placeholder="CF Exemple" /></Field>
+            <Field label="Nombre del club"><Input required value={f.club_name ?? ""} onChange={set("club_name")} placeholder="CF Ejemplo" /></Field>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Municipi de la seu"><Select value={f.city} onChange={set("city")}>{cities.map((p) => <option key={p.city}>{p.city}</option>)}</Select></Field>
+              <Field label="Municipio de la sede"><Select value={f.city} onChange={set("city")}>{cities.map((p) => <option key={p.city}>{p.city}</option>)}</Select></Field>
               <Field label="Persona responsable"><Input required value={f.name ?? ""} onChange={set("name")} /></Field>
             </div>
             <p className="rounded-xl bg-warn-soft px-3 py-2.5 text-[12.5px] leading-relaxed text-ink-2">
-              Els clubs nous queden <strong>pendents de verificació</strong>: poden explorar la plataforma i publicar oportunitats, però no poden contactar jugadors fins que es verifiquen (a la demo, la verificació no es fa).
+              Los clubes nuevos quedan <strong>pendientes de verificación</strong>: pueden explorar la plataforma y publicar oportunidades, pero no pueden contactar jugadores hasta que se verifiquen (en la demo, la verificación no se hace).
             </p>
           </>
         )}
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Correu electrònic"><Input type="email" required value={f.email ?? ""} onChange={set("email")} /></Field>
-          <Field label="Contrasenya"><Input type="password" required minLength={4} value={f.password ?? ""} onChange={set("password")} /></Field>
+          <Field label="Correo electrónico"><Input type="email" required value={f.email ?? ""} onChange={set("email")} /></Field>
+          <Field label="Contraseña"><Input type="password" required minLength={4} value={f.password ?? ""} onChange={set("password")} /></Field>
         </div>
         <label className="flex items-start gap-2.5 text-[12.5px] leading-relaxed text-muted">
           <input type="checkbox" checked={accept} onChange={(e) => setAccept(e.target.checked)} className="mt-0.5 size-4 accent-[#00c768]" />
-          Entenc que és una demo: el compte es guarda només en aquesta instal·lació local i les dades es poden esborrar en restaurar la demo.
+          Entiendo que es una demo: la cuenta se guarda solo en esta instalación y los datos se pueden borrar al restaurar la demo.
         </label>
         {error && <p className="rounded-xl border border-[#fbd0d0] bg-danger-soft px-3 py-2 text-[13px] font-medium text-danger">{error}</p>}
         <button type="submit" disabled={busy || !accept} className={cn(btnClass("primary", "lg"), "w-full")}>
-          {busy && <Loader2 className="size-4 animate-spin" />} {type === "player" ? "Crear el meu perfil" : "Crear el compte del club"}
+          {busy && <Loader2 className="size-4 animate-spin" />} {type === "player" ? "Crear mi perfil" : "Crear la cuenta del club"}
         </button>
       </form>
     </div>

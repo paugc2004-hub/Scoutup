@@ -7,12 +7,12 @@ export default function ClubError({ error, reset }: { error: Error & { digest?: 
   return (
     <div className="pt-6">
       <ErrorState
-        title="No hem pogut carregar aquesta pantalla"
-        text={`La resta del software del club continua funcionant.${error.digest ? ` Codi: ${error.digest}.` : ""}`}
+        title="No hemos podido cargar esta pantalla"
+        text={`El resto del software del club sigue funcionando.${error.digest ? ` Código: ${error.digest}.` : ""}`}
         action={
           <div className="flex gap-2">
-            <button onClick={reset} className="inline-flex h-9 items-center rounded-xl bg-ink px-3.5 text-[13px] font-semibold text-white">Tornar-ho a provar</button>
-            <Link href="/club" className="inline-flex h-9 items-center rounded-xl border border-line bg-surface px-3.5 text-[13px] font-semibold">Tauler</Link>
+            <button onClick={reset} className="inline-flex h-9 items-center rounded-xl bg-ink px-3.5 text-[13px] font-semibold text-white">Reintentar</button>
+            <Link href="/club" className="inline-flex h-9 items-center rounded-xl border border-line bg-surface px-3.5 text-[13px] font-semibold">Panel</Link>
           </div>
         }
       />

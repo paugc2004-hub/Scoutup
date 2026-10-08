@@ -58,13 +58,13 @@ export function Thread({ conversationId, messages, me, readOnly, minor, otherNam
         <div ref={end} />
       </div>
       {readOnly ? (
-        <div className="border-t border-line bg-bg px-5 py-3 text-center text-[12.5px] text-muted">Com a tutor pots llegir la conversa, però no escriure-hi.</div>
+        <div className="border-t border-line bg-bg px-5 py-3 text-center text-[12.5px] text-muted">Como tutor puedes leer la conversación, pero no escribir en ella.</div>
       ) : (
         <div className="border-t border-line bg-surface p-3 md:p-4">
           {(risky || warn) && (
             <div className="mb-2 flex items-start gap-2 rounded-xl border border-[#fde68a] bg-warn-soft px-3 py-2 text-[12.5px] text-ink-2">
               <ShieldAlert className="mt-0.5 size-4 shrink-0 text-warn" />
-              <span>Per seguretat{minor ? " (és un menor)" : ""}, et recomanem mantenir la comunicació dins de ScoutUp i no compartir telèfons, correus ni xarxes socials. Els missatges amb dades de contacte queden marcats per a revisió.</span>
+              <span>Per seguretat{minor ? " (es menor)" : ""}, et recomanem mantenir la comunicació dins de ScoutUp i no compartir telèfons, correus ni xarxes socials. Els missatges amb dades de contacte queden marcats per a revisió.</span>
             </div>
           )}
           <form
@@ -89,7 +89,7 @@ export function Thread({ conversationId, messages, me, readOnly, minor, otherNam
                   (e.currentTarget.form as HTMLFormElement).requestSubmit();
                 }
               }}
-              placeholder={`Escriu a ${otherName}…`}
+              placeholder={`Escribe a ${otherName}…`}
               className="!min-h-11 max-h-40 resize-none"
             />
             <Button type="submit" variant="primary" loading={pending} disabled={!text.trim()} className="!h-11 !w-11 !px-0" aria-label="Enviar"><SendHorizonal className="size-4" /></Button>
@@ -111,21 +111,21 @@ export function ScheduleCallButton({ conversationId, playerId, playerName, teamI
   const toast = useToast();
   return (
     <>
-      <Button size="sm" icon={<Video className="size-3.5" />} onClick={() => setOpen(true)}>Programar videotrucada</Button>
-      <Modal open={open} onClose={() => setOpen(false)} title="Programar una trobada" subtitle={`S'afegirà al teu calendari i al de ${playerName}, i s'avisarà a la conversa.`} size="sm"
-        footer={<><Button onClick={() => setOpen(false)}>Cancel·lar</Button><Button variant="dark" loading={pending} onClick={async () => {
+      <Button size="sm" icon={<Video className="size-3.5" />} onClick={() => setOpen(true)}>Programar videollamada</Button>
+      <Modal open={open} onClose={() => setOpen(false)} title="Programar un encuentro" subtitle={`Se añadirá a tu calendario y al de ${playerName}, y se avisará en la conversación.`} size="sm"
+        footer={<><Button onClick={() => setOpen(false)}>Cancelar</Button><Button variant="dark" loading={pending} onClick={async () => {
           const starts = new Date(`${date}T${time}:00`);
-          const d = await call("/api/events", { body: { kind, title: `${kind === "trucada" ? "Videotrucada" : kind === "prova" ? "Prova" : "Reunió"} amb ${playerName}`, starts_at: starts.toISOString(), duration: dur, team_id: teamId, related_player_id: playerId, location: kind === "trucada" ? "Videotrucada (enllaç per ScoutUp)" : "Instal·lacions del club", conversation_id: conversationId } });
-          if (d) { setOpen(false); toast("Videotrucada programada", "ok", "Afegida als dos calendaris"); }
+          const d = await call("/api/events", { body: { kind, title: `${kind === "trucada" ? "Videollamada" : kind === "prova" ? "Prueba" : "Reunión"} con ${playerName}`, starts_at: starts.toISOString(), duration: dur, team_id: teamId, related_player_id: playerId, location: kind === "trucada" ? "Videollamada (enlace por ScoutUp)" : "Instalaciones del club", conversation_id: conversationId } });
+          if (d) { setOpen(false); toast("Videollamada programada", "ok", "Añadida a los dos calendarios"); }
         }}>Programar</Button></>}>
         <div className="space-y-4">
-          <Field label="Tipus"><Select value={kind} onChange={(e) => setKind(e.target.value)}><option value="trucada">Videotrucada</option><option value="reunio">Reunió presencial</option><option value="prova">Prova / entrenament</option></Select></Field>
+          <Field label="Tipo"><Select value={kind} onChange={(e) => setKind(e.target.value)}><option value="trucada">Videollamada</option><option value="reunio">Reunión presencial</option><option value="prova">Prueba / entrenamiento</option></Select></Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Dia"><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+            <Field label="Día"><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></Field>
             <Field label="Hora"><Input type="time" value={time} onChange={(e) => setTime(e.target.value)} /></Field>
           </div>
-          <Field label="Durada"><Select value={dur} onChange={(e) => setDur(Number(e.target.value))}>{[15, 30, 45, 60, 90].map((d) => <option key={d} value={d}>{d} min</option>)}</Select></Field>
-          <p className="rounded-xl bg-bg px-3 py-2 text-[12px] text-muted">A la demo no es genera cap enllaç real de videotrucada.</p>
+          <Field label="Duración"><Select value={dur} onChange={(e) => setDur(Number(e.target.value))}>{[15, 30, 45, 60, 90].map((d) => <option key={d} value={d}>{d} min</option>)}</Select></Field>
+          <p className="rounded-xl bg-bg px-3 py-2 text-[12px] text-muted">En la demo no se genera ningún enlace real de videollamada.</p>
         </div>
       </Modal>
     </>
@@ -135,8 +135,8 @@ export function ScheduleCallButton({ conversationId, playerId, playerName, teamI
 export function RequestInfoButton({ conversationId }: { conversationId: string }) {
   const { call, pending } = useApi();
   return (
-    <Button size="sm" loading={pending} icon={<FileQuestion className="size-3.5" />} onClick={() => call(`/api/conversations/${conversationId}/messages`, { body: { body: "Per poder valorar-te millor, ens podries compartir per ScoutUp el vídeo complet d'un partit recent i la teva disponibilitat d'horaris per entrenar? Gràcies!" }, ok: "Sol·licitud d'informació enviada" })}>
-      Sol·licitar informació
+    <Button size="sm" loading={pending} icon={<FileQuestion className="size-3.5" />} onClick={() => call(`/api/conversations/${conversationId}/messages`, { body: { body: "Para poder valorarte mejor, ¿podrías compartirnos por ScoutUp el vídeo completo de un partido reciente y tu disponibilidad de horarios para entrenar? ¡Gracias!" }, ok: "Solicitud de información enviada" })}>
+      Solicitar información
     </Button>
   );
 }

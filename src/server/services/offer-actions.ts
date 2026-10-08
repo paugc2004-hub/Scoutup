@@ -31,12 +31,12 @@ export const OfferInput = z.object({
   restrictions: zText(800).default(""),
   trial_date: zIsoDate.nullish(),
   expires_days: z.number().int().min(7).max(120).default(30),
-}).refine((d) => !d.birth_year_min || !d.birth_year_max || d.birth_year_min <= d.birth_year_max, { message: "la franja d'edat no és vàlida", path: ["birth_year_min"] });
+}).refine((d) => !d.birth_year_min || !d.birth_year_max || d.birth_year_min <= d.birth_year_max, { message: "la franja de edad no es válida", path: ["birth_year_min"] });
 export type OfferInputT = z.infer<typeof OfferInput>;
 
 export function buildMatchOffer(clubId: string, d: OfferInputT): { m: MatchOffer; team: { id: string; category: string; gender: string; name: string } } {
   const team = get<{ id: string; club_id: string; category: string; gender: string; name: string }>("SELECT * FROM teams WHERE id = ?", d.team_id);
-  if (!team || team.club_id !== clubId) throw new ApiError(400, "Equip no vàlid.");
+  if (!team || team.club_id !== clubId) throw new ApiError(400, "Equipo no válido.");
   const place = placeByCity(d.zone_city) ?? (() => {
     const c = clubById(clubId)!;
     return { city: c.city, lat: c.lat, lng: c.lng };
@@ -68,9 +68,9 @@ export function previewOffer(u: SessionUser & { club_id: string }, d: OfferInput
 }
 
 export function createOffer(u: SessionUser & { club_id: string }, d: OfferInputT) {
-  if (!can.manageOffers(u)) throw new ApiError(403, "Només direcció i coordinació poden publicar oportunitats.");
+  if (!can.manageOffers(u)) throw new ApiError(403, "Solo dirección y coordinación pueden publicar oportunidades.");
   const { m } = buildMatchOffer(u.club_id, d);
-  if (d.kind === "prova" && !d.trial_date) throw new ApiError(400, "Indica la data de la jornada de proves.");
+  if (d.kind === "prova" && !d.trial_date) throw new ApiError(400, "Indica la fecha de la jornada de pruebas.");
   const id = uid("o_");
   const now = new Date();
   insert("offers", {
@@ -83,14 +83,14 @@ export function createOffer(u: SessionUser & { club_id: string }, d: OfferInputT
   });
   audit({ actor: u, action: "opportunity.create", entity: { type: "opportunity", id }, detail: d.title });
   const pv = previewOffer(u, d);
-  if (pv.over80 > 0) notifyClub(u.club_id, d.team_id, "match", `${pv.over80} ${pv.over80 === 1 ? "perfil coincideix" : "perfils coincideixen"} amb la teva nova oportunitat.`, `«${d.title}» · compatibilitat superior al 80%.`, `/club/oportunitats/${id}`);
+  if (pv.over80 > 0) notifyClub(u.club_id, d.team_id, "match", `${pv.over80} ${pv.over80 === 1 ? "perfil coincide" : "perfiles coinciden"} con tu nueva oportunidad.`, `«${d.title}» · compatibilidad superior al 80%.`, `/club/oportunitats/${id}`);
   return { id, preview: pv };
 }
 
 export function setOfferStatus(u: SessionUser & { club_id: string }, offerId: string, status: "oberta" | "pausada" | "tancada") {
   const o = offerRow(offerId);
-  if (!o || o.club_id !== u.club_id) throw new ApiError(404, "Oportunitat no trobada.");
-  if (!can.manageOffers(u)) throw new ApiError(403, "Només direcció i coordinació poden modificar oportunitats.");
+  if (!o || o.club_id !== u.club_id) throw new ApiError(404, "Oportunidad no encontrada.");
+  if (!can.manageOffers(u)) throw new ApiError(403, "Solo dirección y coordinación pueden modificar oportunidades.");
   run("UPDATE offers SET status = ? WHERE id = ?", status, offerId);
   audit({ actor: u, action: "opportunity.status", entity: { type: "opportunity", id: offerId }, detail: `${o.title}: ${o.status} → ${status}` });
   if (status === "tancada") run("UPDATE applications SET status = 'tancat', updated_at = ? WHERE offer_id = ? AND status IN ('enviada','vista')", nowIso(), offerId);

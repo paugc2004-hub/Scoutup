@@ -61,10 +61,10 @@ test("crear una oportunitat genera candidats compatibles", async ({ page }) => {
   await loginAs(page, "director");
   await page.goto("/club/oportunitats/nova");
   await expect(page.getByRole("heading", { name: "Què necessita l'equip?" })).toBeVisible();
-  await page.getByPlaceholder(/^Busquem /).fill("Lateral dret per al Cadet A (E2E)");
+  await page.getByPlaceholder(/^Busquem /).fill("Lateral dret per al Cadete A (E2E)");
   await page.getByRole("button", { name: "Publicar oportunitat" }).click();
   await page.waitForURL(/\/club\/oportunitats\/o_[a-z0-9]+/);
-  await expect(page.getByText("Lateral dret per al Cadet A (E2E)").first()).toBeVisible();
+  await expect(page.getByText("Lateral dret per al Cadete A (E2E)").first()).toBeVisible();
   // hi ha candidats ordenats per compatibilitat (enllaços a perfils de jugadors)
   await expect(page.locator('a[href*="/club/jugadors/"]').first()).toBeVisible();
 });

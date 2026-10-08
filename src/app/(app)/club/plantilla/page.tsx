@@ -11,14 +11,14 @@ import type { Position } from "@/lib/domain";
 export const metadata = { title: "Plantilla" };
 
 type Entry = { id: string; player_id: string | null; name: string; shirt: number | null; position: Position; foot: string; status: string; rating: number | null; trend: number; birth_year: number | null };
-const GROUP_LABEL: Record<string, string> = { POR: "Porters", DEF: "Defenses", MIG: "Migcampistes", ATK: "Atacants" };
+const GROUP_LABEL: Record<string, string> = { POR: "Porteros", DEF: "Defensas", MIG: "Centrocampistas", ATK: "Atacantes" };
 const FORMATION: Position[] = ["POR", "LD", "DC", "DC", "LE", "MCD", "MC", "MCO", "ED", "DAV", "EE"];
 
 export default async function SquadPage({ searchParams }: { searchParams: Promise<{ team?: string; s?: string }> }) {
   const u = await requireClubStaff();
   const sp = await searchParams;
   const teams = scopedTeams(u);
-  if (!teams.length) return <EmptyState title="Sense equips" />;
+  if (!teams.length) return <EmptyState title="Sin equipos" />;
   const team = teams.find((t) => t.id === sp.team) ?? teams.find((t) => t.id === u.team_id) ?? teams.find((t) => t.name === "Juvenil A") ?? teams[0];
   const ss = [...seasons()].reverse();
   const season = ss.find((s) => s.id === sp.s) ?? ss[0];
@@ -41,14 +41,14 @@ export default async function SquadPage({ searchParams }: { searchParams: Promis
   // anàlisi automàtica
   const analysis: { level: "alta" | "mitjana"; text: string }[] = [];
   const dcs = entries.filter((e) => e.position === "DC");
-  if (dcs.length && !dcs.some((e) => e.foot === "esquerre")) analysis.push({ level: "alta", text: `Cap dels ${dcs.length} defenses centrals és esquerrà.` });
+  if (dcs.length && !dcs.some((e) => e.foot === "esquerre")) analysis.push({ level: "alta", text: `Ninguno de los ${dcs.length} defensas centrales es zurdo.` });
   const leaving = entries.filter((e) => e.status === "baixa");
   const leavingByPos = POSITIONS.map((p) => ({ p, n: leaving.filter((e) => e.position === p).length, total: entries.filter((e) => e.position === p).length })).filter((x) => x.n > 0);
-  const PLURAL: Record<Position, string> = { POR: "porters", LD: "laterals drets", DC: "defenses centrals", LE: "laterals esquerres", MCD: "pivots", MC: "migcampistes", MCO: "mitjapuntes", ED: "extrems drets", EE: "extrems esquerres", DAV: "davanters" };
-  for (const x of leavingByPos) if (x.n >= 2 && x.n / x.total >= 0.5) analysis.push({ level: "alta", text: `${x.n} de ${x.total} ${PLURAL[x.p]} acaben etapa aquesta temporada.` });
+  const PLURAL: Record<Position, string> = { POR: "porters", LD: "laterales derechos", DC: "defensas centrales", LE: "laterales izquierdos", MCD: "pivots", MC: "migcampistes", MCO: "mitjapuntes", ED: "extremos derechos", EE: "extremos izquierdos", DAV: "davanters" };
+  for (const x of leavingByPos) if (x.n >= 2 && x.n / x.total >= 0.5) analysis.push({ level: "alta", text: `${x.n} de ${x.total} ${PLURAL[x.p]} terminan etapa esta temporada.` });
   for (const p of ["POR", "LE", "LD", "DAV"] as Position[]) {
     const n = entries.filter((e) => e.position === p).length;
-    if (entries.length && n < 2) analysis.push({ level: "mitjana", text: `Només hi ha ${n} ${POSITION_LABEL[p].toLowerCase()} a la plantilla.` });
+    if (entries.length && n < 2) analysis.push({ level: "mitjana", text: `Solo hay ${n} ${POSITION_LABEL[p].toLowerCase()} en la plantilla.` });
   }
   const years = entries.map((e) => e.birth_year).filter(Boolean) as number[];
   const byYear = Array.from(new Set(years)).sort().map((y) => ({ y, n: years.filter((x) => x === y).length }));
@@ -65,14 +65,14 @@ export default async function SquadPage({ searchParams }: { searchParams: Promis
 
   return (
     <div>
-      <PageHeader eyebrow="Plantilla" title={`${team.name} · ${season.label}`} subtitle={ts?.coach_name ? `Entrenador: ${ts.coach_name}${ts.objectives ? ` · Objectiu: ${ts.objectives}` : ""}` : undefined} />
+      <PageHeader eyebrow="Plantilla" title={`${team.name} · ${season.label}`} subtitle={ts?.coach_name ? `Entrenador: ${ts.coach_name}${ts.objectives ? ` · Objetivo: ${ts.objectives}` : ""}` : undefined} />
       <div className="mb-5 flex flex-wrap items-center gap-2">
         {teams.map((t) => <Link key={t.id} href={query("team", t.id)} className={cn("h-8 rounded-full border px-3 text-[12.5px] font-semibold leading-8 transition", t.id === team.id ? "border-ink bg-ink text-white" : "border-line bg-surface hover:border-line-strong")}>{t.name}</Link>)}
         <span className="mx-1 h-5 w-px bg-line" />
         {ss.map((s) => <Link key={s.id} href={query("s", s.id)} className={cn("h-8 rounded-full border px-3 text-[12.5px] font-semibold leading-8 transition", s.id === season.id ? "border-accent-600 bg-accent-soft text-accent-ink" : "border-line bg-surface hover:border-line-strong")}>{s.label}{s.is_current ? " · actual" : ""}</Link>)}
       </div>
 
-      {entries.length === 0 ? <EmptyState icon={<Users className="size-5" />} title="Sense plantilla registrada per a aquesta temporada" /> : (
+      {entries.length === 0 ? <EmptyState icon={<Users className="size-5" />} title="Sin plantilla registrada para esta temporada" /> : (
         <div className="grid gap-5 xl:grid-cols-[440px_1fr]">
           <div className="space-y-5">
             <Card className="overflow-hidden" pad={false}>
@@ -96,10 +96,10 @@ export default async function SquadPage({ searchParams }: { searchParams: Promis
                   </div>
                 ))}
               </div>
-              <p className="px-4 py-3 text-[12px] text-muted">Onze orientatiu (1-4-3-3) amb els jugadors millor valorats per posició. Els contorns ataronjats acaben etapa.</p>
+              <p className="px-4 py-3 text-[12px] text-muted">Once orientativo (1-4-3-3) con los jugadores mejor valorados por posición. Los contornos naranjas terminan etapa.</p>
             </Card>
             <Card>
-              <CardHeader title="Distribució per any de naixement" />
+              <CardHeader title="Distribución por año de nacimiento" />
               <div className="flex h-28 items-end gap-2">
                 {byYear.map((b) => (
                   <div key={b.y} className="flex flex-1 flex-col items-center gap-1">
@@ -114,21 +114,21 @@ export default async function SquadPage({ searchParams }: { searchParams: Promis
           <div className="space-y-5">
             {season.is_current ? (
               <Card className="border-[#fde68a] bg-[#fffdf3]">
-                <CardHeader title="Anàlisi de necessitats" subtitle="Detecció automàtica a partir de la plantilla i necessitats definides per la direcció" icon={<AlertTriangle className="size-4 text-warn" />} />
+                <CardHeader title="Análisis de necesidades" subtitle="Detección automática a partir de la plantilla y de las necesidades definidas por la dirección" icon={<AlertTriangle className="size-4 text-warn" />} />
                 <div className="space-y-2">
                   {[...needs.map((n) => ({ level: n.priority as "alta" | "mitjana", text: `${POSITION_LABEL[n.position as Position]}: ${n.text}`, pos: n.position })), ...analysis.map((a) => ({ ...a, pos: null }))].map((a, i) => (
                     <div key={i} className="flex items-center gap-3 rounded-xl bg-surface px-3 py-2.5">
-                      <Badge tone={a.level === "alta" ? "danger" : "warn"}>{a.level === "alta" ? "Prioritat alta" : "Prioritat mitjana"}</Badge>
+                      <Badge tone={a.level === "alta" ? "danger" : "warn"}>{a.level === "alta" ? "Prioridad alta" : "Prioridad media"}</Badge>
                       <p className="flex-1 text-[13px]">{a.text}</p>
-                      {a.pos && <Link href={`/club/intelligence?q=${encodeURIComponent(`${POSITION_LABEL[a.pos as Position]} ${a.text.toLowerCase().includes("esquerr") ? "esquerrà" : ""} ${team.category === "Juvenil" ? "sub-19" : team.category.toLowerCase()}${team.gender === "F" ? " femenina" : ""}`)}`} className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-accent-ink hover:underline"><Sparkles className="size-3.5" /> Buscar</Link>}
+                      {a.pos && <Link href={`/club/intelligence?q=${encodeURIComponent(`${POSITION_LABEL[a.pos as Position]} ${a.text.toLowerCase().includes("esquerr") ? "zurdo" : ""} ${team.category === "Juvenil" ? "sub-19" : team.category.toLowerCase()}${team.gender === "F" ? " femenina" : ""}`)}`} className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-accent-ink hover:underline"><Sparkles className="size-3.5" /> Buscar</Link>}
                     </div>
                   ))}
-                  {needs.length + analysis.length === 0 && <p className="text-[13px] text-muted">No s'han detectat mancances.</p>}
+                  {needs.length + analysis.length === 0 && <p className="text-[13px] text-muted">No se han detectado carencias.</p>}
                 </div>
               </Card>
             ) : null}
             <Card>
-              <CardHeader title={`Plantilla (${entries.length})`} subtitle="Dades de demostració" />
+              <CardHeader title={`Plantilla (${entries.length})`} subtitle="Datos de demostración" />
               <div className="space-y-5">
                 {(["POR", "DEF", "MIG", "ATK"] as const).map((g) => {
                   const list = entries.filter((e) => POSITION_GROUP[e.position] === g);
@@ -140,10 +140,10 @@ export default async function SquadPage({ searchParams }: { searchParams: Promis
                           <div key={e.id} className="flex items-center gap-3 px-3 py-2 text-[13px]">
                             <span className="w-6 text-right font-extrabold tabular text-subtle">{e.shirt}</span>
                             <div className="min-w-0 flex-1">
-                              {e.player_id ? <Link href={`/club/jugadors/${e.player_id}`} className="font-semibold hover:underline">{e.name}</Link> : <span className="font-semibold">{e.name}</span>}
+                              {e.player_id ? <Link href={`/club/jugadores/${e.player_id}`} className="font-semibold hover:underline">{e.name}</Link> : <span className="font-semibold">{e.name}</span>}
                               <span className="ml-1.5 text-muted">· {POSITION_LABEL[e.position]} · {FOOT_LABEL[e.foot]?.toLowerCase()} · {e.birth_year}</span>
                             </div>
-                            {e.player_id && <Badge tone="accent">A ScoutUp</Badge>}
+                            {e.player_id && <Badge tone="accent">En ScoutUp</Badge>}
                             <Badge tone={e.status === "titular" ? "dark" : e.status === "baixa" ? "warn" : "neutral"}>{ROSTER_STATUS_LABEL[e.status]}</Badge>
                             <span className="flex w-12 items-center justify-end gap-1 font-bold tabular">{e.rating?.toFixed(1)}{e.trend > 0 ? <TrendingUp className="size-3.5 text-accent-600" /> : e.trend < 0 ? <TrendingDown className="size-3.5 text-danger" /> : <Minus className="size-3.5 text-subtle" />}</span>
                           </div>
@@ -155,13 +155,13 @@ export default async function SquadPage({ searchParams }: { searchParams: Promis
               </div>
             </Card>
             <Card>
-              <CardHeader title="Evolució entre temporades" />
+              <CardHeader title="Evolución entre temporadas" />
               <div className="grid grid-cols-3 gap-2">
                 {hist.map((h) => (
                   <Link key={h.s.id} href={query("s", h.s.id)} className={cn("rounded-xl border p-3 transition", h.s.id === season.id ? "border-ink" : "border-line hover:border-line-strong")}>
                     <p className="text-[12px] font-semibold text-muted">{h.s.label}</p>
                     <p className="mt-1 text-[20px] font-extrabold tabular">{h.n}</p>
-                    <p className="text-[11.5px] text-muted">jugadors · mitjana {h.r ? h.r.toFixed(1) : "—"}</p>
+                    <p className="text-[11.5px] text-muted">jugadores · mitjana {h.r ? h.r.toFixed(1) : "—"}</p>
                   </Link>
                 ))}
               </div>

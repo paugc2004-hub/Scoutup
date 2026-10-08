@@ -6,7 +6,7 @@ import { EmptyState, PageHeader, cn } from "@/components/ui";
 import { ActionButton } from "@/components/client/kit";
 import { fmtDateTime, fmtRelative } from "@/lib/time";
 
-export const metadata = { title: "Notificacions" };
+export const metadata = { title: "Notificaciones" };
 
 export default async function NotificationsPage() {
   const u = await requireUser();
@@ -14,8 +14,8 @@ export default async function NotificationsPage() {
   const unread = items.filter((n) => !n.read_at).length;
   return (
     <div className="mx-auto max-w-3xl">
-      <PageHeader title="Notificacions" subtitle={unread ? `${unread} sense llegir` : "Estàs al dia"} actions={unread ? <ActionButton url="/api/notifications/read" body={{}} ok="Totes marcades com a llegides" size="sm">Marcar-les totes com a llegides</ActionButton> : undefined} />
-      {items.length === 0 ? <EmptyState icon={<Bell className="size-5" />} title="No tens notificacions" /> : (
+      <PageHeader title="Notificaciones" subtitle={unread ? `${unread} sin leer` : "Estás al día"} actions={unread ? <ActionButton url="/api/notifications/read" body={{}} ok="Todas marcadas como leídas" size="sm">Marcarlas todas como leídas</ActionButton> : undefined} />
+      {items.length === 0 ? <EmptyState icon={<Bell className="size-5" />} title="No tienes notificaciones" /> : (
         <div className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
           {items.map((n) => {
             const inner = (

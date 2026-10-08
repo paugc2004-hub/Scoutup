@@ -183,7 +183,7 @@ export default async function ClubPlayerPage({ params, searchParams }: { params:
                         <AttrBars attrs={p.attrs} position={p.position} />
                         {p.prev && (
                           <div className="mt-5 grid grid-cols-3 gap-2 sm:grid-cols-6">
-                            {[["Conv.", p.prev.callups], ["Partits", p.prev.matches], ["Titular", p.prev.starts], ["Minuts", p.prev.minutes.toLocaleString("ca-ES")], [p.position === "POR" ? "Porteria 0" : "Gols", p.position === "POR" ? p.prev.clean_sheets : p.prev.goals], ["Targetes", p.prev.yellow + p.prev.red]].map(([k, v]) => (
+                            {[["Conv.", p.prev.callups], ["Partits", p.prev.matches], ["Titular", p.prev.starts], ["Minuts", p.prev.minutes.toLocaleString("es-ES")], [p.position === "POR" ? "Porteria 0" : "Gols", p.position === "POR" ? p.prev.clean_sheets : p.prev.goals], ["Targetes", p.prev.yellow + p.prev.red]].map(([k, v]) => (
                               <div key={k as string} className="rounded-xl bg-sunken p-2.5 text-center">
                                 <p className="text-[18px] font-extrabold tabular">{v}</p>
                                 <p className="text-[11px] text-muted">{k}</p>

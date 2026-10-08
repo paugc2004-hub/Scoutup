@@ -20,7 +20,7 @@ export function DemoLoginButton({ role, children, variant = "primary", size = "l
       }
       window.location.href = next ?? d.redirect;
     } catch (e) {
-      toast((e as Error).message || "No s'ha pogut entrar.", "error");
+      toast((e as Error).message || "No se ha podido entrar.", "error");
       setBusy(false);
     }
   };
@@ -39,8 +39,8 @@ export function ResetDemoButton({ className }: { className?: string }) {
   if (ask)
     return (
       <div className={cn("flex flex-wrap items-center gap-2", className)}>
-        <span className="text-[13px] text-muted">Es perdran els canvis fets durant la demo.</span>
-        <button className={btnClass("secondary", "sm")} onClick={() => setAsk(false)}>Cancel·lar</button>
+        <span className="text-[13px] text-muted">Se perderán los cambios hechos durante la demo.</span>
+        <button className={btnClass("secondary", "sm")} onClick={() => setAsk(false)}>Cancelar</button>
         <button
           className={btnClass("dark", "sm")}
           disabled={busy}
@@ -48,11 +48,11 @@ export function ResetDemoButton({ className }: { className?: string }) {
             setBusy(true);
             const r = await fetch("/api/demo/reset", { method: "POST" });
             if (r.ok) {
-              toast("Dades de demo restaurades", "ok");
+              toast("Datos de demo restaurados", "ok");
               try { localStorage.removeItem("su_guide"); } catch {}
               setTimeout(() => (window.location.href = "/demo"), 600);
             } else {
-              toast("No s'han pogut restaurar les dades.", "error");
+              toast("No se han podido restaurar los datos.", "error");
               setBusy(false);
             }
           }}
@@ -63,7 +63,7 @@ export function ResetDemoButton({ className }: { className?: string }) {
     );
   return (
     <button className={cn(btnClass("secondary", "sm"), className)} onClick={() => setAsk(true)}>
-      Restaurar dades de demo
+      Restaurar datos de demo
     </button>
   );
 }

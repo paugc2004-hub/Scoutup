@@ -7,7 +7,7 @@ import { CalendarView } from "@/components/calendar";
 import { dayKey } from "@/lib/time";
 import type { EventKind } from "@/lib/domain";
 
-export const metadata = { title: "Calendari" };
+export const metadata = { title: "Calendario" };
 
 export default async function ClubCalendar({ searchParams }: { searchParams: Promise<{ m?: string }> }) {
   const u = await requireClubStaff();
@@ -22,11 +22,11 @@ export default async function ClubCalendar({ searchParams }: { searchParams: Pro
     related: e.related_name ?? null, relatedId: e.related_player_id, canDelete: can.allTeams(u) || e.owner_user_id === u.id || (!!e.team_id && e.team_id === u.team_id),
   }));
   const teams = scopedTeams(u).map((t) => ({ id: t.id, name: t.name }));
-  const players = pipelineRows(u).map((r) => ({ id: r.player_id, name: get<{ n: string }>("SELECT first_name || ' ' || last_name AS n FROM players WHERE id = ?", r.player_id)!.n })).sort((a, b) => a.name.localeCompare(b.name, "ca"));
+  const players = pipelineRows(u).map((r) => ({ id: r.player_id, name: get<{ n: string }>("SELECT first_name || ' ' || last_name AS n FROM players WHERE id = ?", r.player_id)!.n })).sort((a, b) => a.name.localeCompare(b.name, "es"));
   const kinds: EventKind[] = ["partit", "entrenament", "prova", "reunio", "scouting", "trucada", "recordatori"];
   return (
     <div>
-      <PageHeader eyebrow={can.allTeams(u) ? "Tot el club" : u.title ?? "El teu equip"} title="Calendari" subtitle="Partits, entrenaments, proves, reunions, scouting i trucades. Les proves i trucades amb un jugador també apareixen al seu calendari." />
+      <PageHeader eyebrow={can.allTeams(u) ? "Todo el club" : u.title ?? "Tu equipo"} title="Calendario" subtitle="Partidos, entrenamientos, pruebas, reuniones, observación y llamadas. Las pruebas y llamadas con un jugador también aparecen en su calendario." />
       <CalendarView events={events} month={month} basePath="/club/calendari" canCreate teams={teams} players={players} kinds={kinds} todayKey={today} />
     </div>
   );

@@ -19,17 +19,17 @@ export function LoginForm() {
         const r = await fetch("/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
         const d = await r.json().catch(() => ({}));
         if (!r.ok) {
-          setError(d.error ?? "No s'ha pogut iniciar sessió.");
+          setError(d.error ?? "No se ha podido iniciar sesión.");
           setBusy(false);
           return;
         }
         window.location.href = d.redirect;
       }}
     >
-      <Field label="Correu electrònic">
+      <Field label="Correo electrónico">
         <Input type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nom@exemple.cat" />
       </Field>
-      <Field label="Contrasenya">
+      <Field label="Contraseña">
         <Input type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••" />
       </Field>
       {error && <p className="rounded-xl border border-[#fbd0d0] bg-danger-soft px-3 py-2 text-[13px] font-medium text-danger">{error}</p>}

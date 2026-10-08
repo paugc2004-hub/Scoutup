@@ -11,7 +11,7 @@ import { get } from "@/server/db/client";
 
 export function Logo({ dark = true, className }: { dark?: boolean; className?: string }) {
   return (
-    <Link href="/" className={`flex items-center gap-2 ${className ?? ""}`} aria-label="ScoutUp — inici">
+    <Link href="/" className={`flex items-center gap-2 ${className ?? ""}`} aria-label="ScoutUp — inicio">
       <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden>
         <rect width="32" height="32" rx="9" fill="#00E87A" />
         <path d="M9 19.5c0 2.3 2.4 3.8 6.6 3.8 4.4 0 7.2-1.8 7.2-5 0-2.9-2.2-4-6.1-4.7-2.6-.5-3.4-.9-3.4-1.8 0-.9 1-1.5 2.7-1.5 1.8 0 2.9.7 3.2 1.9h3.4c-.3-3-2.9-4.9-6.6-4.9-4 0-6.5 1.9-6.5 4.8 0 2.8 2.1 4 6 4.7 2.7.5 3.5.9 3.5 1.9 0 1-1.1 1.7-3.1 1.7-2.1 0-3.4-.8-3.6-2.1H9Z" fill="#0B0D13" />
@@ -37,7 +37,7 @@ export function AppShell({ user, items, children, search, bottomNav, clubId }: {
           <ClubCrest initials={club.initials} color={club.color_primary} size={34} />
           <div className="min-w-0">
             <p className="truncate text-[13px] font-bold text-white">{club.name}</p>
-            <p className="truncate text-[11.5px] text-night-muted">{user.role === "director" ? "Direcció esportiva · accés complet" : user.role === "coordinator" ? "Coordinació · tots els equips" : `${user.title ?? "Entrenador"} · accés d'equip`}</p>
+            <p className="truncate text-[11.5px] text-night-muted">{user.role === "director" ? "Dirección deportiva · acceso completo" : user.role === "coordinator" ? "Coordinación · todos los equipos" : `${user.title ?? "Entrenador"} · acceso de equipo`}</p>
           </div>
         </div>
       )}
@@ -45,7 +45,7 @@ export function AppShell({ user, items, children, search, bottomNav, clubId }: {
   );
   const footer = (
     <div className="rounded-xl bg-night-2 p-3">
-      <p className="text-[11.5px] leading-relaxed text-night-muted">Totes les dades són <span className="font-semibold text-night-text">fictícies</span>. Cap connexió amb la FCF ni amb fonts externes.</p>
+      <p className="text-[11.5px] leading-relaxed text-night-muted">Todos los datos son <span className="font-semibold text-night-text">ficticios</span>. Sin conexión con la FCF ni con fuentes externas.</p>
     </div>
   );
   return (
@@ -59,8 +59,8 @@ export function AppShell({ user, items, children, search, bottomNav, clubId }: {
           </div>
           {search && <TopSearch action={search.action} placeholder={search.placeholder} />}
           <div className="ml-auto flex items-center gap-1.5">
-            <Link href="/demo" className="mr-1 hidden items-center gap-1.5 rounded-full border border-[#fde68a] bg-warn-soft px-2.5 py-1 text-[11.5px] font-bold text-warn sm:inline-flex" title="Aquesta és una demo amb dades fictícies">
-              <span className="size-1.5 rounded-full bg-warn" /> Mode demo
+            <Link href="/demo" className="mr-1 hidden items-center gap-1.5 rounded-full border border-[#fde68a] bg-warn-soft px-2.5 py-1 text-[11.5px] font-bold text-warn sm:inline-flex" title="Esta es una demo con datos ficticios">
+              <span className="size-1.5 rounded-full bg-warn" /> Modo demo
             </Link>
             <NotificationBell unread={unread} />
             <UserMenu name={user.name} title={user.title} hue={user.avatar_hue} email={user.email} />

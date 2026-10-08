@@ -38,7 +38,7 @@ export function placeByCity(city: string): Place | undefined {
   return PLACES.find((p) => p.city.toLowerCase() === city.toLowerCase());
 }
 
-export const COMARQUES = Array.from(new Set(PLACES.map((p) => p.comarca))).sort((a, b) => a.localeCompare(b, "ca"));
+export const COMARQUES = Array.from(new Set(PLACES.map((p) => p.comarca))).sort((a, b) => a.localeCompare(b, "es"));
 
 export function distanceKm(aLat: number, aLng: number, bLat: number, bLng: number): number {
   const R = 6371;

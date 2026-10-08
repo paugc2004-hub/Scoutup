@@ -23,7 +23,7 @@ export default async function EditProfile({ searchParams }: { searchParams: Prom
   void all;
   return (
     <div>
-      <PageHeader eyebrow={p.onboarding_done ? "El meu perfil" : "Benvingut a ScoutUp"} title={p.onboarding_done ? "Editar el perfil" : "Crea el teu perfil esportiu"} subtitle="Vuit passos curts. Pots guardar i tornar-hi quan vulguis; la completesa s'actualitza a cada pas." />
+      <PageHeader eyebrow={p.onboarding_done ? "Mi perfil" : "Bienvenido a ScoutUp"} title={p.onboarding_done ? "Editar el perfil" : "Crea tu perfil deportivo"} subtitle="Ocho pasos cortos. Puedes guardar y volver cuando quieras; la completitud se actualiza en cada paso." />
       <ProfileWizard
         startStep={Number(sp.pas ?? 1)}
         initial={{

@@ -26,21 +26,21 @@ export type CompletenessItem = { key: string; label: string; weight: number; don
 
 export function completenessItems(p: CompletenessInput): CompletenessItem[] {
   return [
-    { key: "personal", label: "Dades personals", weight: 10, done: !!(p.first_name && p.last_name && p.birth_date && p.city), step: 1 },
-    { key: "posicio", label: "Posició i peu", weight: 10, done: !!(p.primary_position && p.foot), step: 2 },
-    { key: "secundaries", label: "Posicions secundàries", weight: 5, done: p.secondary_positions.length > 0, step: 2 },
-    { key: "alcada", label: "Alçada", weight: 4, done: !!p.height_cm, step: 2 },
-    { key: "descripcio", label: "Descripció del jugador", weight: 10, done: (p.description ?? "").trim().length >= 60, step: 2 },
-    { key: "estil", label: "Estil de joc", weight: 5, done: (p.style ?? "").trim().length > 0, step: 2 },
-    { key: "trajectoria", label: "Trajectòria (2+ temporades)", weight: 10, done: p.careerCount >= 2, step: 3 },
-    { key: "stats_prev", label: "Estadístiques de la temporada passada", weight: 10, done: p.prevStats, step: 4 },
-    { key: "stats_curr", label: "Estadístiques de la temporada actual", weight: 3, done: p.currentStats, step: 4 },
-    { key: "videos", label: "Almenys un vídeo", weight: 12, done: p.videoCount > 0, step: 5 },
-    { key: "disponibilitat", label: "Disponibilitat", weight: 6, done: !!p.availability, step: 6 },
-    { key: "preferencies", label: "Preferències", weight: 5, done: p.preferencesSet, step: 7 },
-    { key: "privacitat", label: "Privacitat revisada", weight: 5, done: p.privacyReviewed, step: 8 },
-    { key: "idiomes", label: "Idiomes", weight: 2, done: (p.languages ?? "").trim().length > 0, step: 1 },
-    { key: "assoliments", label: "Assoliments", weight: 3, done: p.achievementCount > 0, step: 3 },
+    { key: "personal", label: "Datos personales", weight: 10, done: !!(p.first_name && p.last_name && p.birth_date && p.city), step: 1 },
+    { key: "posicio", label: "Posición y pie", weight: 10, done: !!(p.primary_position && p.foot), step: 2 },
+    { key: "secundaries", label: "Posiciones secundarias", weight: 5, done: p.secondary_positions.length > 0, step: 2 },
+    { key: "alcada", label: "Altura", weight: 4, done: !!p.height_cm, step: 2 },
+    { key: "descripcio", label: "Descripción del jugador", weight: 10, done: (p.description ?? "").trim().length >= 60, step: 2 },
+    { key: "estil", label: "Estilo de juego", weight: 5, done: (p.style ?? "").trim().length > 0, step: 2 },
+    { key: "trajectoria", label: "Trayectoria (2+ temporadas)", weight: 10, done: p.careerCount >= 2, step: 3 },
+    { key: "stats_prev", label: "Estadísticas de la temporada pasada", weight: 10, done: p.prevStats, step: 4 },
+    { key: "stats_curr", label: "Estadísticas de la temporada actual", weight: 3, done: p.currentStats, step: 4 },
+    { key: "videos", label: "Al menos un vídeo", weight: 12, done: p.videoCount > 0, step: 5 },
+    { key: "disponibilitat", label: "Disponibilidad", weight: 6, done: !!p.availability, step: 6 },
+    { key: "preferencies", label: "Preferencias", weight: 5, done: p.preferencesSet, step: 7 },
+    { key: "privacitat", label: "Privacidad revisada", weight: 5, done: p.privacyReviewed, step: 8 },
+    { key: "idiomes", label: "Idiomas", weight: 2, done: (p.languages ?? "").trim().length > 0, step: 1 },
+    { key: "assoliments", label: "Logros", weight: 3, done: p.achievementCount > 0, step: 3 },
   ];
 }
 

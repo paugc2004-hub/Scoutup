@@ -53,11 +53,11 @@ export function CompareToggle({ id, name, initials, className, compact }: { id: 
         e.stopPropagation();
         toggle({ id, name, initials });
       }}
-      title={on ? "Treure del comparador" : "Afegir al comparador (màx. 3)"}
+      title={on ? "Quitar del comparador" : "Añadir al comparador (máx. 3)"}
       className={cn("inline-flex items-center gap-1.5 rounded-lg border text-[12px] font-semibold transition", compact ? "size-8 justify-center" : "h-8 px-2.5", on ? "border-ink bg-ink text-white" : "border-line bg-surface text-ink-2 hover:border-line-strong", className)}
     >
       {on ? <Check className="size-3.5" /> : <Plus className="size-3.5" />}
-      {!compact && (on ? "Al comparador" : "Comparar")}
+      {!compact && (on ? "En el comparador" : "Comparar")}
     </button>
   );
 }
@@ -72,7 +72,7 @@ export function CompareTray() {
         <Columns3 className="size-4 text-accent" />
         <div className="flex -space-x-1.5">
           {items.map((i) => (
-            <button key={i.id} onClick={() => toggle(i)} title={`Treure ${i.name}`} className="group relative grid size-8 place-items-center rounded-full border-2 border-night bg-night-3 text-[11px] font-bold">
+            <button key={i.id} onClick={() => toggle(i)} title={`Quitar a ${i.name}`} className="group relative grid size-8 place-items-center rounded-full border-2 border-night bg-night-3 text-[11px] font-bold">
               <span className="group-hover:hidden">{i.initials}</span>
               <X className="hidden size-3.5 group-hover:block" />
             </button>
@@ -82,7 +82,7 @@ export function CompareTray() {
         <Link href={`/club/comparar?ids=${items.map((i) => i.id).join(",")}`} className={cn("ml-1 inline-flex h-8 items-center rounded-xl px-3 text-[12.5px] font-bold", items.length >= 2 ? "bg-accent text-night" : "bg-night-3 text-night-muted pointer-events-none")}>
           Comparar
         </Link>
-        <button onClick={clear} className="grid size-8 place-items-center rounded-lg text-night-muted hover:bg-night-2 hover:text-white" aria-label="Buidar comparador">
+        <button onClick={clear} className="grid size-8 place-items-center rounded-lg text-night-muted hover:bg-night-2 hover:text-white" aria-label="Vaciar comparador">
           <X className="size-4" />
         </button>
       </div>

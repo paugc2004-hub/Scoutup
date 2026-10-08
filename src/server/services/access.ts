@@ -64,16 +64,16 @@ export type Visibility = { visible: boolean; reason?: string };
  */
 export function clubCanSee(p: PlayerRow, club: { id: string; verified: number }, rel: ClubRelations, now = new Date()): Visibility {
   if (p.club_id === club.id) return { visible: true };
-  if (rel.blockedBy.has(p.id)) return { visible: false, reason: "El jugador ha bloquejat el club." };
+  if (rel.blockedBy.has(p.id)) return { visible: false, reason: "El jugador ha bloqueado al club." };
   const minor = isMinor(p.birth_date, now);
-  if (minor && !p.guardian_consent) return { visible: false, reason: "Menor pendent del consentiment del tutor." };
+  if (minor && !p.guardian_consent) return { visible: false, reason: "Menor pendiente del consentimiento del tutor." };
   if (rel.applied.has(p.id) || rel.contacted.has(p.id)) return { visible: true };
   const priv = privacyOf(p);
   let level = priv.profile;
   if (minor && level === "tots") level = "verificats";
-  if (level === "ocult") return { visible: false, reason: "Perfil ocult." };
-  if (level === "contactats") return { visible: false, reason: "Només visible per a clubs amb contacte." };
-  if (level === "verificats" && !club.verified) return { visible: false, reason: "Només visible per a clubs verificats." };
+  if (level === "ocult") return { visible: false, reason: "Perfil oculto." };
+  if (level === "contactats") return { visible: false, reason: "Solo visible para clubes con contacto." };
+  if (level === "verificats" && !club.verified) return { visible: false, reason: "Solo visible para clubes verificados." };
   return { visible: true };
 }
 
@@ -82,13 +82,13 @@ export type ContactCheck = { ok: boolean; reason?: string; needsGuardian: boolea
 /** Pot aquest club enviar una sol·licitud de contacte al jugador? */
 export function clubCanContact(p: PlayerRow, club: { id: string; verified: number }, rel: ClubRelations, now = new Date()): ContactCheck {
   const minor = isMinor(p.birth_date, now);
-  if (!club.verified) return { ok: false, reason: "El teu club està pendent de verificació. Els clubs no verificats no poden contactar jugadors.", needsGuardian: minor };
-  if (rel.blockedBy.has(p.id)) return { ok: false, reason: "Aquest jugador no accepta contactes del teu club.", needsGuardian: minor };
-  if (rel.pending.has(p.id)) return { ok: false, reason: "Ja hi ha una sol·licitud pendent de resposta.", needsGuardian: minor };
-  if (rel.contacted.has(p.id)) return { ok: false, reason: "Ja teniu una conversa oberta.", needsGuardian: minor };
+  if (!club.verified) return { ok: false, reason: "Tu club está pendiente de verificación. Los clubes no verificados no pueden contactar jugadores.", needsGuardian: minor };
+  if (rel.blockedBy.has(p.id)) return { ok: false, reason: "Este jugador no acepta contactos de tu club.", needsGuardian: minor };
+  if (rel.pending.has(p.id)) return { ok: false, reason: "Ya hay una solicitud pendiente de respuesta.", needsGuardian: minor };
+  if (rel.contacted.has(p.id)) return { ok: false, reason: "Ya tenéis una conversación abierta.", needsGuardian: minor };
   const priv = privacyOf(p);
-  if (priv.contact === "ningu" && !rel.applied.has(p.id)) return { ok: false, reason: "El jugador no accepta contactes nous ara mateix.", needsGuardian: minor };
-  if (minor && !p.guardian_consent) return { ok: false, reason: "Menor sense consentiment del tutor.", needsGuardian: true };
+  if (priv.contact === "ningu" && !rel.applied.has(p.id)) return { ok: false, reason: "El jugador no acepta contactos nuevos ahora mismo.", needsGuardian: minor };
+  if (minor && !p.guardian_consent) return { ok: false, reason: "Menor sin consentimiento del tutor.", needsGuardian: true };
   return { ok: true, needsGuardian: minor };
 }
 
@@ -104,11 +104,11 @@ export function clubById(id: string) {
 export function assertPlayerVisible(u: SessionUser & { club_id: string }, playerId: string, action = "player.access"): PlayerRow {
   const p = playerRow(playerId);
   const club = clubById(u.club_id);
-  if (!p || !club) throw new ApiError(404, "Jugador no trobat.");
+  if (!p || !club) throw new ApiError(404, "Jugador no encontrado.");
   const vis = clubCanSee(p, club, clubRelations(u.club_id));
   if (!vis.visible) {
     audit({ actor: u, action, entity: { type: "player", id: playerId }, result: "denied", detail: vis.reason ?? "no visible" });
-    throw new ApiError(404, "Jugador no trobat.");
+    throw new ApiError(404, "Jugador no encontrado.");
   }
   return p;
 }

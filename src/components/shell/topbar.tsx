@@ -60,19 +60,19 @@ export function NotificationBell({ unread }: { unread: number }) {
   };
   return (
     <div className="relative" ref={ref}>
-      <button onClick={toggle} className="relative grid size-9 place-items-center rounded-xl text-ink-2 transition hover:bg-sunken" aria-label={`Notificacions${count ? ` (${count} sense llegir)` : ""}`}>
+      <button onClick={toggle} className="relative grid size-9 place-items-center rounded-xl text-ink-2 transition hover:bg-sunken" aria-label={`Notificaciones${count ? ` (${count} sin leer)` : ""}`}>
         <Bell className="size-[19px]" />
         {count > 0 && <span className="absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-danger px-1 text-[10px] font-bold text-white tabular ring-2 ring-surface">{count}</span>}
       </button>
       {open && (
         <div className="absolute right-0 top-11 z-50 w-[min(92vw,380px)] overflow-hidden rounded-2xl border border-line bg-surface shadow-pop animate-pop">
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
-            <p className="text-[14px] font-bold">Notificacions</p>
-            <button onClick={readAll} className="text-[12.5px] font-semibold text-accent-ink hover:underline">Marcar-les totes com a llegides</button>
+            <p className="text-[14px] font-bold">Notificaciones</p>
+            <button onClick={readAll} className="text-[12.5px] font-semibold text-accent-ink hover:underline">Marcarlas todas como leídas</button>
           </div>
           <div className="scroll-thin max-h-[420px] overflow-y-auto">
             {items === null && <div className="space-y-2 p-4">{[0, 1, 2].map((i) => <div key={i} className="skeleton h-12 rounded-xl" />)}</div>}
-            {items?.length === 0 && <p className="px-4 py-10 text-center text-[13px] text-muted">No tens notificacions.</p>}
+            {items?.length === 0 && <p className="px-4 py-10 text-center text-[13px] text-muted">No tienes notificaciones.</p>}
             {items?.map((n) => (
               <button key={n.id} onClick={() => openOne(n)} className={cn("flex w-full items-start gap-3 border-b border-line px-4 py-3 text-left transition last:border-0 hover:bg-bg", !n.read_at && "bg-accent-soft/40")}>
                 <span className={cn("mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg", !n.read_at ? "bg-accent-soft text-accent-ink" : "bg-sunken text-subtle")}>{KIND_ICON[n.kind] ?? <Bell className="size-4" />}</span>
@@ -86,7 +86,7 @@ export function NotificationBell({ unread }: { unread: number }) {
             ))}
           </div>
           <Link href="/notificacions" onClick={() => setOpen(false)} className="block border-t border-line px-4 py-3 text-center text-[13px] font-semibold text-ink hover:bg-bg">
-            Veure totes les notificacions
+            Ver todas las notificaciones
           </Link>
         </div>
       )}
@@ -121,10 +121,10 @@ export function UserMenu({ name, title, hue, email }: { name: string; title: str
           </div>
           <div className="my-1 h-px bg-line" />
           <Link href="/demo" className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13.5px] font-medium hover:bg-sunken">
-            <BookOpenCheck className="size-4 text-subtle" /> Guia de la demo i canvi de rol
+            <BookOpenCheck className="size-4 text-subtle" /> Guía de la demo y cambio de rol
           </Link>
           <button onClick={logout} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13.5px] font-medium text-danger hover:bg-danger-soft">
-            <LogOut className="size-4" /> Tancar sessió
+            <LogOut className="size-4" /> Cerrar sesión
           </button>
         </div>
       )}

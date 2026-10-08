@@ -1,12 +1,11 @@
 /**
- * Motor de compatibilitat (matching) de ScoutUp — determinista i explicable.
+ * Motor de compatibilidad (matching) de ScoutUp — determinista y explicable.
  *
- * Pesos (sumen 100):
- *   Posició 25 · Categoria i nivell 20 · Edat 15 · Ubicació 10 · Disponibilitat 10 · Característiques 10 · Experiència 10
+ * Pesos (suman 100):
+ *   Posición 25 · Categoría y nivel 20 · Edad 15 · Ubicación 10 · Disponibilidad 10 · Características 10 · Experiencia 10
  *
- * Cada factor retorna una puntuació, un estat (ok / parcial / no) i una explicació en català,
- * de manera que el club sempre pot veure PER QUÈ un jugador encaixa. Sense IA externa.
- * Sense àlies: també l'executa el seed.
+ * Cada factor devuelve una puntuación, un estado (ok / parcial / no) y una explicación en castellano,
+ * de modo que el club siempre ve POR QUÉ un jugador encaja. Sin IA externa. Sin alias: también lo usa el seed.
  */
 import type { Attrs, AttrKey } from "./domain.ts";
 import { ADJACENT_POSITIONS, POSITION_LABEL, FOOT_LABEL, TRAITS, levelLabel } from "./domain.ts";
@@ -70,13 +69,13 @@ export type MatchResult = {
 };
 
 export const WEIGHTS: Record<FactorKey, { label: string; weight: number }> = {
-  posicio: { label: "Posició", weight: 25 },
-  nivell: { label: "Categoria i nivell", weight: 20 },
-  edat: { label: "Edat", weight: 15 },
-  ubicacio: { label: "Ubicació", weight: 10 },
-  disponibilitat: { label: "Disponibilitat", weight: 10 },
-  caracteristiques: { label: "Característiques", weight: 10 },
-  experiencia: { label: "Experiència", weight: 10 },
+  posicio: { label: "Posición", weight: 25 },
+  nivell: { label: "Categoría y nivel", weight: 20 },
+  edat: { label: "Edad", weight: 15 },
+  ubicacio: { label: "Ubicación", weight: 10 },
+  disponibilitat: { label: "Disponibilidad", weight: 10 },
+  caracteristiques: { label: "Características", weight: 10 },
+  experiencia: { label: "Experiencia", weight: 10 },
 };
 
 function status(score: number, weight: number): Factor["status"] {
@@ -96,50 +95,50 @@ export function computeMatch(p: MatchPlayer, o: MatchOffer, now: Date = new Date
   const pos = o.position as Position;
   const adj = ADJACENT_POSITIONS[pos] ?? [];
   if (p.primary_position === o.position) {
-    factors.push(f("posicio", 25, `Posició principal: ${POSITION_LABEL[pos]}.`));
+    factors.push(f("posicio", 25, `Posición principal: ${POSITION_LABEL[pos]}.`));
   } else if (o.accepts_secondary && p.secondary_positions.includes(o.position)) {
-    factors.push(f("posicio", 17, `${POSITION_LABEL[pos]} és una posició secundària del jugador.`));
+    factors.push(f("posicio", 17, `${POSITION_LABEL[pos]} es una posición secundaria del jugador.`));
   } else if (adj.includes(p.primary_position as Position)) {
-    factors.push(f("posicio", 9, `Juga de ${POSITION_LABEL[p.primary_position as Position]}, posició propera.`));
+    factors.push(f("posicio", 9, `Juega de ${POSITION_LABEL[p.primary_position as Position].toLowerCase()}, una posición cercana.`));
   } else {
-    factors.push(f("posicio", 0, `Juga de ${POSITION_LABEL[p.primary_position as Position] ?? p.primary_position}, no de ${POSITION_LABEL[pos]}.`));
+    factors.push(f("posicio", 0, `Juega de ${(POSITION_LABEL[p.primary_position as Position] ?? p.primary_position).toLowerCase()}, no de ${POSITION_LABEL[pos].toLowerCase()}.`));
   }
 
   // 2 · Categoria i nivell (20) — rang 1 = nivell més alt
   const diff = p.division_rank - o.level_min;
   if (diff <= 0) {
-    factors.push(f("nivell", 20, `Competeix a ${levelLabel(p.division_rank)} (mínim demanat: ${levelLabel(o.level_min)}).`));
+    factors.push(f("nivell", 20, `Compite en ${levelLabel(p.division_rank)} (mínimo pedido: ${levelLabel(o.level_min)}).`));
   } else if (diff === 1) {
-    factors.push(f("nivell", 13, `Competeix a ${levelLabel(p.division_rank)}, un nivell per sota del demanat.`));
+    factors.push(f("nivell", 13, `Compite en ${levelLabel(p.division_rank)}, un nivel por debajo del pedido.`));
   } else if (diff === 2) {
-    factors.push(f("nivell", 6, `Competeix a ${levelLabel(p.division_rank)}, dos nivells per sota.`));
+    factors.push(f("nivell", 6, `Compite en ${levelLabel(p.division_rank)}, dos niveles por debajo.`));
   } else {
-    factors.push(f("nivell", 0, `Competeix a ${levelLabel(p.division_rank)}, lluny del nivell demanat.`));
+    factors.push(f("nivell", 0, `Compite en ${levelLabel(p.division_rank)}, lejos del nivel pedido.`));
   }
 
   // 3 · Edat (15)
   const by = p.birth_year;
   if (by >= o.birth_year_min && by <= o.birth_year_max) {
-    factors.push(f("edat", 15, `Nascut el ${by}, dins de la franja ${o.birth_year_min}–${o.birth_year_max}.`));
+    factors.push(f("edat", 15, `Nacido en ${by}, dentro de la franja ${o.birth_year_min}–${o.birth_year_max}.`));
   } else {
     const off = by < o.birth_year_min ? o.birth_year_min - by : by - o.birth_year_max;
-    factors.push(f("edat", off === 1 ? 6 : 0, `Nascut el ${by}, ${off} ${off === 1 ? "any" : "anys"} fora de la franja ${o.birth_year_min}–${o.birth_year_max}.`));
+    factors.push(f("edat", off === 1 ? 6 : 0, `Nacido en ${by}, ${off} ${off === 1 ? "año" : "años"} fuera de la franja ${o.birth_year_min}–${o.birth_year_max}.`));
   }
 
   // 4 · Ubicació (10)
   const km = distanceKm(p.lat, p.lng, o.zone_lat, o.zone_lng);
-  const kmTxt = km < 1 ? "al mateix municipi" : `a ${Math.round(km)} km de ${o.zone_city}`;
-  if (km <= o.max_km * 0.5) factors.push(f("ubicacio", 10, `Viu ${kmTxt}.`));
-  else if (km <= o.max_km) factors.push(f("ubicacio", 10 - 4 * ((km - o.max_km * 0.5) / (o.max_km * 0.5)), `Viu ${kmTxt} (radi ${o.max_km} km).`));
-  else if (km <= o.max_km * 1.6) factors.push(f("ubicacio", 3, `Viu ${kmTxt}, fora del radi de ${o.max_km} km.`));
-  else factors.push(f("ubicacio", 0, `Viu ${kmTxt}, molt fora del radi.`));
+  const kmTxt = km < 1 ? "en el mismo municipio" : `a ${Math.round(km)} km de ${o.zone_city}`;
+  if (km <= o.max_km * 0.5) factors.push(f("ubicacio", 10, `Vive ${kmTxt}.`));
+  else if (km <= o.max_km) factors.push(f("ubicacio", 10 - 4 * ((km - o.max_km * 0.5) / (o.max_km * 0.5)), `Vive ${kmTxt} (radio de ${o.max_km} km).`));
+  else if (km <= o.max_km * 1.6) factors.push(f("ubicacio", 3, `Vive ${kmTxt}, fuera del radio de ${o.max_km} km.`));
+  else factors.push(f("ubicacio", 0, `Vive ${kmTxt}, muy fuera del radio.`));
 
   // 5 · Disponibilitat (10)
   let disp = p.availability === "obert" ? 10 : p.availability === "escoltant" ? 7 : 0;
-  let dispTxt = p.availability === "obert" ? "Obert a oportunitats." : p.availability === "escoltant" ? "Escoltant propostes." : "Ara mateix no està disponible.";
+  let dispTxt = p.availability === "obert" ? "Abierto a oportunidades." : p.availability === "escoltant" ? "Escuchando propuestas." : "Ahora mismo no está disponible.";
   if (disp > 0 && o.availability_req === "immediata" && p.available_from && new Date(p.available_from) > now) {
     disp -= 3;
-    dispTxt += " Disponible més endavant, no immediatament.";
+    dispTxt += " Disponible más adelante, no de inmediato.";
   }
   factors.push(f("disponibilitat", disp, dispTxt));
 
@@ -148,12 +147,12 @@ export function computeMatch(p: MatchPlayer, o: MatchOffer, now: Date = new Date
   const bits: string[] = [];
   if (o.foot === "indiferent" || p.foot === o.foot || p.foot === "ambdues") {
     car += 4;
-    if (o.foot !== "indiferent") bits.push(`peu ${FOOT_LABEL[p.foot].toLowerCase()}`);
-  } else bits.push(`peu ${FOOT_LABEL[p.foot].toLowerCase()} (es demana ${FOOT_LABEL[o.foot].toLowerCase()})`);
+    if (o.foot !== "indiferent") bits.push(`${FOOT_LABEL[p.foot].toLowerCase()}`);
+  } else bits.push(`${FOOT_LABEL[p.foot].toLowerCase()} (se pide ${FOOT_LABEL[o.foot].toLowerCase()})`);
   if (!o.height_min) car += 2;
   else if (p.height_cm && p.height_cm >= o.height_min) { car += 2; bits.push(`${p.height_cm} cm`); }
-  else if (p.height_cm && p.height_cm >= o.height_min - 3) { car += 1; bits.push(`${p.height_cm} cm, just per sota de ${o.height_min}`); }
-  else bits.push(p.height_cm ? `${p.height_cm} cm (mínim ${o.height_min})` : "alçada no informada");
+  else if (p.height_cm && p.height_cm >= o.height_min - 3) { car += 1; bits.push(`${p.height_cm} cm, justo por debajo de ${o.height_min}`); }
+  else bits.push(p.height_cm ? `${p.height_cm} cm (mínimo ${o.height_min})` : "altura no informada");
   if (o.traits.length === 0) car += 4;
   else {
     const hits = o.traits.filter((t) => {
@@ -161,9 +160,9 @@ export function computeMatch(p: MatchPlayer, o: MatchOffer, now: Date = new Date
       return attr ? (p.attrs[attr] ?? 0) >= 7 : false;
     });
     car += (4 * hits.length) / o.traits.length;
-    bits.push(`${hits.length} de ${o.traits.length} trets destacats`);
+    bits.push(`${hits.length} de ${o.traits.length} rasgos destacados`);
   }
-  factors.push(f("caracteristiques", car, bits.length ? capital(bits.join(" · ")) + "." : "Sense requisits específics."));
+  factors.push(f("caracteristiques", car, bits.length ? capital(bits.join(" · ")) + "." : "Sin requisitos específicos."));
 
   // 7 · Experiència (10): minuts temporada anterior 6 · titularitats 2 · trajectòria 1 · dades verificades 1
   let exp = Math.min(6, (6 * p.prev_minutes) / 1800);
@@ -171,7 +170,7 @@ export function computeMatch(p: MatchPlayer, o: MatchOffer, now: Date = new Date
   exp += ratio >= 0.6 ? 2 : ratio >= 0.35 ? 1 : 0;
   exp += p.career_seasons >= 3 ? 1 : 0;
   exp += p.stats_verified ? 1 : 0;
-  factors.push(f("experiencia", exp, `${p.prev_minutes.toLocaleString("ca-ES")} min i ${p.prev_starts} titularitats la temporada passada${p.stats_verified ? " (dades verificades)" : " (autodeclarades)"}.`));
+  factors.push(f("experiencia", exp, `${p.prev_minutes.toLocaleString("es-ES")} min y ${p.prev_starts} titularidades la temporada pasada${p.stats_verified ? " (datos verificados)" : " (autodeclarados)"}.`));
 
   const raw = factors.reduce((a, x) => a + x.score, 0);
   const eligible = p.gender === o.gender;

@@ -90,7 +90,7 @@ export default async function ClubHome() {
                       <p className="text-[13.5px] font-semibold">{n.team_name} · {POSITION_LABEL[n.position as Position]}</p>
                       <p className="truncate text-[12.5px] text-muted">{n.text}</p>
                     </div>
-                    <Link href={`/club/intelligence?q=${encodeURIComponent(`${POSITION_LABEL[n.position as Position]} ${n.text.toLowerCase().includes("esquerr") ? "esquerrà " : ""}${n.team_name.includes("Cadet") ? "cadet" : n.team_name.includes("Amateur") ? "amateur" : "sub-19"}${n.team_name.includes("Femení") ? " femenina" : ""} a prop de ${club.city}`)}`} className="shrink-0 text-[12.5px] font-semibold text-accent-ink hover:underline">
+                    <Link href={`/club/intelligence?q=${encodeURIComponent(`${POSITION_LABEL[n.position as Position]} ${n.text.toLowerCase().includes("esquerr") ? "esquerrà " : ""}${n.team_name.includes("Cadete") ? "cadet" : n.team_name.includes("Amateur") ? "amateur" : "sub-19"}${n.team_name.includes("Femenino") ? " femenina" : ""} a prop de ${club.city}`)}`} className="shrink-0 text-[12.5px] font-semibold text-accent-ink hover:underline">
                       Buscar
                     </Link>
                   </div>
@@ -124,7 +124,7 @@ export default async function ClubHome() {
 
       <div className="grid gap-4 xl:grid-cols-3">
         <Card className="xl:col-span-2">
-          <CardHeader title="Sol·licituds noves" subtitle="Jugadors que s'han inscrit a les teves oportunitats." action={<LinkButton href="/club/oportunitats" size="sm" variant="ghost">Totes <ArrowRight className="size-3.5" /></LinkButton>} icon={<Inbox className="size-4" />} />
+          <CardHeader title="Sol·licituds noves" subtitle="Jugadors que s'han inscrit a les teves oportunitats." action={<LinkButton href="/club/oportunitats" size="sm" variant="ghost">Todas <ArrowRight className="size-3.5" /></LinkButton>} icon={<Inbox className="size-4" />} />
           {newApps.length === 0 ? (
             <EmptyState title="Estàs al dia" text="No hi ha sol·licituds pendents de revisar." />
           ) : (
@@ -145,7 +145,7 @@ export default async function ClubHome() {
         </Card>
 
         <Card>
-          <CardHeader title="Pipeline" subtitle={`${pipe.length} jugadors en seguiment`} action={<LinkButton href="/club/pipeline" size="sm" variant="ghost">Obrir <ArrowRight className="size-3.5" /></LinkButton>} icon={<KanbanSquare className="size-4" />} />
+          <CardHeader title="Pipeline" subtitle={`${pipe.length} jugadors en seguiment`} action={<LinkButton href="/club/pipeline" size="sm" variant="ghost">Abrir <ArrowRight className="size-3.5" /></LinkButton>} icon={<KanbanSquare className="size-4" />} />
           <div className="space-y-2">
             {PIPELINE_STAGES.map((s) => {
               const n = pipe.filter((p) => p.stage === s).length;
@@ -164,7 +164,7 @@ export default async function ClubHome() {
 
       <div className="grid gap-4 xl:grid-cols-2">
         <Card>
-          <CardHeader title="Agenda" subtitle="Pròxims 14 dies" action={<LinkButton href="/club/calendari" size="sm" variant="ghost">Calendari <ArrowRight className="size-3.5" /></LinkButton>} icon={<CalendarClock className="size-4" />} />
+          <CardHeader title="Agenda" subtitle="Pròxims 14 dies" action={<LinkButton href="/club/calendari" size="sm" variant="ghost">Calendario <ArrowRight className="size-3.5" /></LinkButton>} icon={<CalendarClock className="size-4" />} />
           {events.filter((e) => e.kind !== "entrenament").slice(0, 6).length === 0 ? (
             <EmptyState title="Sense esdeveniments" />
           ) : (

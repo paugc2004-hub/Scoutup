@@ -12,7 +12,7 @@ const Scores = z.record(z.enum(areaKeys), z.record(z.string().max(30), score)).r
     const area = EVAL_AREAS.find((x) => x.key === a)!;
     return Object.keys(crit).every((k) => area.criteria.some((c) => c.key === k));
   }),
-  "criteri d'avaluació desconegut",
+  "criterio de evaluación desconocido",
 );
 const S = z.object({ playerId: zId, scores: Scores, decision: z.enum(["seguir", "prova", "fitxar", "descartar"]), comment: zText(1500).default(""), context: zText(120).nullish() });
 export const POST = api(async (req) => {

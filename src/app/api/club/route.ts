@@ -4,7 +4,7 @@ import { update } from "@/server/db/client";
 import { audit } from "@/server/security/audit";
 import { zText } from "@/server/validation";
 
-const url = zText(200).refine((v) => v === "" || /^https?:\/\/[^\s<>"]+$/i.test(v), "ha de començar per http:// o https://");
+const url = zText(200).refine((v) => v === "" || /^https?:\/\/[^\s<>"]+$/i.test(v), "debe empezar por http:// o https://");
 const S = z.object({
   description: zText(1500).optional(),
   history: zText(2000).optional(),
@@ -14,8 +14,8 @@ const S = z.object({
   sporting_model: zText(1500).optional(),
   website: url.optional(),
   instagram: zText(100).optional(),
-  email: zText(200).refine((v) => v === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), "correu no vàlid").optional(),
-  phone: zText(40).refine((v) => /^[\d\s+().-]*$/.test(v), "telèfon no vàlid").optional(),
+  email: zText(200).refine((v) => v === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), "correo no válido").optional(),
+  phone: zText(40).refine((v) => /^[\d\s+().-]*$/.test(v), "teléfono no válido").optional(),
   office_hours: zText(200).optional(),
   color_primary: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
 }).strict();

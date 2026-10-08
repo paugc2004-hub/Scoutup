@@ -12,7 +12,7 @@ export type { CandidateLite };
 
 export function FactorStrip({ factors }: { factors: CandidateLite["factors"] }) {
   return (
-    <div className="flex gap-0.5" aria-label="Desglossament per factors">
+    <div className="flex gap-0.5" aria-label="Desglose por factores">
       {factors.map((f) => {
         const pct = (f.score / f.weight) * 100;
         return <span key={f.key} title={`${f.label}: ${Math.round(f.score * 10) / 10}/${f.weight} — ${f.detail}`} className="h-1.5 rounded-full" style={{ width: f.weight * 1.6, background: matchColor(pct), opacity: 0.35 + (pct / 100) * 0.65 }} />;
@@ -44,26 +44,26 @@ export function CandidatesList({ items, offerId, teamId, emptyText }: { items: C
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <span className="mr-1 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-muted"><SlidersHorizontal className="size-4" /> Filtres</span>
-        {[["tots", "Qualsevol peu"], ["esquerre", "Peu esquerre"], ["dret", "Peu dret"]].map(([k, l]) => <Chip key={k} active={foot === k} onClick={() => setFoot(k)}>{l}</Chip>)}
+        <span className="mr-1 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-muted"><SlidersHorizontal className="size-4" /> Filtros</span>
+        {[["tots", "Cualquier pie"], ["esquerre", "Zurdo"], ["dret", "Diestro"]].map(([k, l]) => <Chip key={k} active={foot === k} onClick={() => setFoot(k)}>{l}</Chip>)}
         <span className="mx-1 h-5 w-px bg-line" />
         {[50, 60, 70, 80].map((v) => <Chip key={v} active={min === v} onClick={() => setMin(v)}>≥ {v}%</Chip>)}
         <span className="mx-1 h-5 w-px bg-line" />
-        <Chip active={onlyNew} onClick={() => setOnlyNew((x) => !x)}>No al pipeline</Chip>
-        <Chip active={onlyApplied} onClick={() => setOnlyApplied((x) => !x)}>Només inscrits</Chip>
+        <Chip active={onlyNew} onClick={() => setOnlyNew((x) => !x)}>No en el pipeline</Chip>
+        <Chip active={onlyApplied} onClick={() => setOnlyApplied((x) => !x)}>Solo inscritos</Chip>
         <div className="ml-auto flex items-center gap-2">
           <span className="text-[12.5px] text-muted">Ordenar</span>
           <Select value={sort} onChange={(e) => setSort(e.target.value)} className="!h-8 !w-auto !text-[12.5px]">
-            <option value="match">Compatibilitat</option>
-            <option value="distancia">Distància</option>
-            <option value="edat">Edat (més jove)</option>
-            <option value="minuts">Minuts jugats</option>
+            <option value="match">Compatibilidad</option>
+            <option value="distancia">Distancia</option>
+            <option value="edat">Edad (más joven)</option>
+            <option value="minuts">Minutos jugados</option>
           </Select>
         </div>
       </div>
-      <p className="mb-2 text-[12.5px] text-muted"><strong className="text-ink">{list.length}</strong> {list.length === 1 ? "perfil" : "perfils"} · només es mostren jugadors la privacitat dels quals permet que el teu club els vegi</p>
+      <p className="mb-2 text-[12.5px] text-muted"><strong className="text-ink">{list.length}</strong> {list.length === 1 ? "perfil" : "perfiles"} · solo se muestran jugadores cuya privacidad permite que tu club los vea</p>
       {list.length === 0 ? (
-        <EmptyState icon={<Inbox className="size-5" />} title="Cap perfil amb aquests filtres" text={emptyText ?? "Prova de rebaixar el percentatge mínim o de treure algun filtre."} />
+        <EmptyState icon={<Inbox className="size-5" />} title="Ningún perfil con estos filtros" text={emptyText ?? "Prueba a bajar el porcentaje mínimo o a quitar algún filtro."} />
       ) : (
         <div className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
           {list.map((c, i) => (
@@ -75,7 +75,7 @@ export function CandidatesList({ items, offerId, teamId, emptyText }: { items: C
                   <div className="flex flex-wrap items-center gap-1.5">
                     <p className="truncate text-[14px] font-bold group-hover:underline">{c.name}</p>
                     <VerificationBadge status={c.verification} compact />
-                    {c.applied && <Badge tone="accent">Inscrit</Badge>}
+                    {c.applied && <Badge tone="accent">Inscrito</Badge>}
                     {c.minor && <Badge tone="violet">Menor</Badge>}
                   </div>
                   <p className="truncate text-[12.5px] text-muted">{c.position_label} · {c.age} anys · {c.club_name}{c.team_name ? ` ${c.team_name}` : ""} · {c.level_label}</p>
@@ -122,14 +122,14 @@ export function CandidatesList({ items, offerId, teamId, emptyText }: { items: C
 
 export function ApplicationActions({ id, status }: { id: string; status: string }) {
   const { call, pending } = useApi();
-  if (status === "rebutjat") return <Badge tone="danger">Rebutjada</Badge>;
+  if (status === "rebutjat") return <Badge tone="danger">Rechazada</Badge>;
   return (
     <div className="flex items-center gap-1.5">
-      <Button size="sm" variant="dark" loading={pending} icon={<Check className="size-3.5" />} onClick={() => call(`/api/applications/${id}`, { body: { action: "shortlist" }, ok: "Afegit al pipeline", okSub: "Etapa: Revisar · el jugador veu que el club ha vist el perfil" })}>
+      <Button size="sm" variant="dark" loading={pending} icon={<Check className="size-3.5" />} onClick={() => call(`/api/applications/${id}`, { body: { action: "shortlist" }, ok: "Añadido al pipeline", okSub: "Etapa: Revisar · el jugador ve que el club ha visto su perfil" })}>
         Preseleccionar
       </Button>
-      <Button size="sm" variant="ghost" loading={pending} onClick={() => call(`/api/applications/${id}`, { body: { action: "reject" }, ok: "Sol·licitud rebutjada", okSub: "S'ha notificat el jugador amb un missatge respectuós." })}>
-        Rebutjar
+      <Button size="sm" variant="ghost" loading={pending} onClick={() => call(`/api/applications/${id}`, { body: { action: "reject" }, ok: "Solicitud rechazada", okSub: "Se ha notificado al jugador con un mensaje respetuoso." })}>
+        Rechazar
       </Button>
     </div>
   );
@@ -139,9 +139,9 @@ export function OfferStatusControl({ id, status }: { id: string; status: string 
   const { call, pending } = useApi();
   return (
     <div className="flex items-center gap-2">
-      {status !== "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "oberta" }, ok: "Oportunitat reoberta" })}>Reobrir</Button>}
-      {status === "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "pausada" }, ok: "Oportunitat pausada", okSub: "Deixa de ser visible per als jugadors." })}>Pausar</Button>}
-      {status !== "tancada" && <Button size="sm" variant="danger" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "tancada" }, ok: "Oportunitat tancada" })}>Tancar</Button>}
+      {status !== "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "oberta" }, ok: "Oportunidad reabierta" })}>Reabrir</Button>}
+      {status === "oberta" && <Button size="sm" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "pausada" }, ok: "Oportunidad pausada", okSub: "Deja de ser visible para los jugadores." })}>Pausar</Button>}
+      {status !== "tancada" && <Button size="sm" variant="danger" loading={pending} onClick={() => call(`/api/offers/${id}`, { method: "PATCH", body: { status: "tancada" }, ok: "Oportunidad cerrada" })}>Cerrar</Button>}
     </div>
   );
 }

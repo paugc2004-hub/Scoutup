@@ -9,8 +9,8 @@ export function MatchBreakdown({ match, title, subtitle, dense }: { match: Match
       <div className="flex items-center gap-4">
         <MatchRing score={match.score} size={dense ? 60 : 76} stroke={dense ? 6 : 7} />
         <div className="min-w-0">
-          <p className="text-[15px] font-extrabold tracking-tight">{title ?? `${match.score}% de compatibilitat`}</p>
-          <p className="text-[12.5px] text-muted">{subtitle ?? `Compleix ${ok} de 7 factors · càlcul determinista i explicable`}</p>
+          <p className="text-[15px] font-extrabold tracking-tight">{title ?? `${match.score}% de compatibilidad`}</p>
+          <p className="text-[12.5px] text-muted">{subtitle ?? `Cumple ${ok} de 7 factores · cálculo determinista y explicable`}</p>
         </div>
       </div>
       <div className={cn("mt-4", dense ? "space-y-2.5" : "space-y-3")}>

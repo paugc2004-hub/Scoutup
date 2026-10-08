@@ -31,18 +31,18 @@ export function OpportunityList({ items }: { items: OppLite[] }) {
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        {[["tots", "Totes"], ["incorporacio", "Incorporació"], ["prova", "Proves"]].map(([k, l]) => <Chip key={k} active={kind === k} onClick={() => setKind(k)}>{l}</Chip>)}
+        {[["tots", "Todas"], ["incorporacio", "Incorporación"], ["prova", "Pruebas"]].map(([k, l]) => <Chip key={k} active={kind === k} onClick={() => setKind(k)}>{l}</Chip>)}
         <span className="mx-1 h-5 w-px bg-line" />
-        {[[0, "Qualsevol %"], [70, "≥ 70%"], [80, "≥ 80%"]].map(([v, l]) => <Chip key={v} active={min === v} onClick={() => setMin(v as number)}>{l}</Chip>)}
+        {[[0, "Cualquier %"], [70, "≥ 70%"], [80, "≥ 80%"]].map(([v, l]) => <Chip key={v} active={min === v} onClick={() => setMin(v as number)}>{l}</Chip>)}
         <span className="mx-1 h-5 w-px bg-line" />
-        <Chip active={onlyMine} onClick={() => setOnlyMine((x) => !x)}>La meva posició</Chip>
-        <Chip active={onlyFav} onClick={() => setOnlyFav((x) => !x)}><Star className="size-3.5" /> Desades</Chip>
+        <Chip active={onlyMine} onClick={() => setOnlyMine((x) => !x)}>Mi posición</Chip>
+        <Chip active={onlyFav} onClick={() => setOnlyFav((x) => !x)}><Star className="size-3.5" /> Guardadas</Chip>
         <div className="ml-auto flex items-center gap-2">
-          <Select value={maxKm} onChange={(e) => setMaxKm(Number(e.target.value))} className="!h-8 !w-auto !text-[12.5px]"><option value={0}>Qualsevol distància</option>{[15, 30, 50].map((k) => <option key={k} value={k}>Fins a {k} km</option>)}</Select>
-          <Select value={sort} onChange={(e) => setSort(e.target.value)} className="!h-8 !w-auto !text-[12.5px]"><option value="match">Millor encaix</option><option value="recent">Més recents</option><option value="km">Més a prop</option></Select>
+          <Select value={maxKm} onChange={(e) => setMaxKm(Number(e.target.value))} className="!h-8 !w-auto !text-[12.5px]"><option value={0}>Cualquier distancia</option>{[15, 30, 50].map((k) => <option key={k} value={k}>Fins a {k} km</option>)}</Select>
+          <Select value={sort} onChange={(e) => setSort(e.target.value)} className="!h-8 !w-auto !text-[12.5px]"><option value="match">Mejor encaje</option><option value="recent">Más recientes</option><option value="km">Más cerca</option></Select>
         </div>
       </div>
-      {list.length === 0 ? <EmptyState title="Cap oportunitat amb aquests filtres" /> : (
+      {list.length === 0 ? <EmptyState title="Ninguna oportunidad con estos filtros" /> : (
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {list.map((o, i) => (
             <Link key={o.id} href={`/jugador/oportunitats/${o.id}`} className="group flex flex-col rounded-2xl border border-line bg-surface p-4 shadow-card transition hover:-translate-y-0.5 hover:border-line-strong hover:shadow-pop" style={{ animation: `rise .35s ${Math.min(i, 10) * 0.03}s both` }}>
@@ -58,11 +58,11 @@ export function OpportunityList({ items }: { items: OppLite[] }) {
                 <Badge tone="dark">{o.team_name}</Badge>
                 <Badge>{o.position_label}</Badge>
                 <Badge>{o.level}+</Badge>
-                {o.kind === "prova" && <Badge tone="violet"><FlaskConical className="size-3" /> Prova</Badge>}
+                {o.kind === "prova" && <Badge tone="violet"><FlaskConical className="size-3" /> Prueba</Badge>}
               </div>
               <div className="mt-auto flex items-center justify-between gap-2 pt-4 text-[12px] text-subtle">
                 <span className="inline-flex items-center gap-1"><MapPin className="size-3.5" />{Math.round(o.km)} km · {fmtRelative(o.created_at)}</span>
-                {o.status ? <Badge tone="accent"><CheckCircle2 className="size-3" /> {APP_STATUS_LABEL[o.status as AppStatus]}</Badge> : o.favorite ? <Star className="size-4 fill-[#f5b301] text-[#f5b301]" /> : <span className="font-bold text-accent-ink">M'interessa →</span>}
+                {o.status ? <Badge tone="accent"><CheckCircle2 className="size-3" /> {APP_STATUS_LABEL[o.status as AppStatus]}</Badge> : o.favorite ? <Star className="size-4 fill-[#f5b301] text-[#f5b301]" /> : <span className="font-bold text-accent-ink">Me interesa →</span>}
               </div>
             </Link>
           ))}
@@ -76,7 +76,7 @@ const STEPS: AppStatus[] = ["enviada", "vista", "contacte", "prova", "acceptat"]
 
 export function ApplyPanel({ offerId, clubName, status, appliedAt, blocked, score, isTrial, trialDate }: { offerId: string; clubName: string; status: AppStatus | null; appliedAt: string | null; blocked?: boolean; score: number; isTrial: boolean; trialDate: string | null }) {
   const [open, setOpen] = useState(false);
-  const [msg, setMsg] = useState(`Hola! M'interessa molt ${isTrial ? "la jornada de proves" : "l'oportunitat"}. Estic disponible per parlar-ne quan us vagi bé.`);
+  const [msg, setMsg] = useState(`¡Hola! Me interesa mucho ${isTrial ? "la jornada de pruebas" : "la oportunidad"}. Estoy disponible para hablar cuando os vaya bien.`);
   const { call, pending } = useApi();
   const router = useRouter();
   if (status) {
@@ -84,7 +84,7 @@ export function ApplyPanel({ offerId, clubName, status, appliedAt, blocked, scor
     return (
       <div>
         <div className="flex items-center gap-2 rounded-xl bg-accent-soft px-3 py-2.5 text-[14px] font-bold text-accent-ink"><CheckCircle2 className="size-5" /> {APP_STATUS_LABEL[status]}</div>
-        {appliedAt && <p className="mt-2 text-[12px] text-muted">Sol·licitud enviada {fmtRelative(appliedAt)}.</p>}
+        {appliedAt && <p className="mt-2 text-[12px] text-muted">Solicitud enviada {fmtRelative(appliedAt)}.</p>}
         {status === "rebutjat" ? (
           <p className="mt-3 rounded-xl bg-bg p-3 text-[13px] leading-relaxed text-muted">{clubName} ha decidit no continuar amb aquesta oportunitat. No et desanimis: hi ha més clubs que busquen perfils com el teu.</p>
         ) : (
@@ -99,7 +99,7 @@ export function ApplyPanel({ offerId, clubName, status, appliedAt, blocked, scor
         )}
         {status !== "rebutjat" && status !== "tancat" && (
           <Button size="sm" variant="ghost" className="mt-4" onClick={() => router.refresh()}>
-            <Clock className="size-3.5" /> Actualitzar estat
+            <Clock className="size-3.5" /> Actualizar estado
           </Button>
         )}
       </div>
@@ -107,13 +107,13 @@ export function ApplyPanel({ offerId, clubName, status, appliedAt, blocked, scor
   }
   return (
     <>
-      <Button variant="primary" size="lg" className="w-full" disabled={blocked} icon={<Send className="size-4" />} onClick={() => setOpen(true)}>M'interessa</Button>
-      <p className="mt-2 text-center text-[12px] text-muted">{blocked ? "Has bloquejat aquest club." : `El club veurà el teu perfil i el teu ${score}% d'encaix.`}</p>
+      <Button variant="primary" size="lg" className="w-full" disabled={blocked} icon={<Send className="size-4" />} onClick={() => setOpen(true)}>Me interesa</Button>
+      <p className="mt-2 text-center text-[12px] text-muted">{blocked ? "Has bloqueado a este club." : `El club verá tu perfil y tu ${score}% de encaje.`}</p>
       {isTrial && trialDate && <p className="mt-1 text-center text-[12px] font-semibold text-violet">Prova: {fmtDateTime(trialDate)}</p>}
-      <Modal open={open} onClose={() => setOpen(false)} title={`Enviar sol·licitud a ${clubName}`} subtitle="Pots afegir un missatge breu (opcional)." size="sm"
-        footer={<><Button onClick={() => setOpen(false)}>Cancel·lar</Button><Button variant="primary" loading={pending} icon={<Send className="size-4" />} onClick={async () => { const d = await call(`/api/offers/${offerId}/apply`, { body: { message: msg }, ok: "Sol·licitud enviada", okSub: `${clubName} ja la pot veure.` }); if (d) setOpen(false); }}>Enviar sol·licitud</Button></>}>
+      <Modal open={open} onClose={() => setOpen(false)} title={`Enviar solicitud a ${clubName}`} subtitle="Puedes añadir un mensaje breve (opcional)." size="sm"
+        footer={<><Button onClick={() => setOpen(false)}>Cancelar</Button><Button variant="primary" loading={pending} icon={<Send className="size-4" />} onClick={async () => { const d = await call(`/api/offers/${offerId}/apply`, { body: { message: msg }, ok: "Solicitud enviada", okSub: `${clubName} ya puede verla.` }); if (d) setOpen(false); }}>Enviar solicitud</Button></>}>
         <Textarea rows={4} value={msg} onChange={(e) => setMsg(e.target.value)} maxLength={800} />
-        <p className="mt-2 text-[12px] text-subtle">No incloguis el teu telèfon ni xarxes socials: si el club hi està interessat, et contactarà per ScoutUp.</p>
+        <p className="mt-2 text-[12px] text-subtle">No incluyas tu teléfono ni redes sociales: si el club está interesado, te contactará por ScoutUp.</p>
       </Modal>
     </>
   );

@@ -65,32 +65,32 @@ export function parseQuery(text: string, club: { city: string; lat: number; lng:
       break;
     }
   }
-  if (posFound) chips.push({ key: "posicio", label: "Posició", value: POSITION_LABEL[position] });
+  if (posFound) chips.push({ key: "posicio", label: "Posición", value: POSITION_LABEL[position] });
 
   // gènere
-  const gender = /(femeni|femenina|jugadora|noia|chica|\bnena\b)/.test(q) ? "F" : "M";
-  if (gender === "F") chips.push({ key: "genere", label: "Equip", value: "Femení" });
+  const gender = /(femeni|femenina|femenino|jugadora|noia|chica|\bnena\b)/.test(q) ? "F" : "M";
+  if (gender === "F") chips.push({ key: "genere", label: "Equipo", value: "Femenino" });
 
   // peu
   let foot = "indiferent";
   if (/(esquerra|esquerre|zurdo|zurda|izquierd|cama esquerra|peu esquerre)/.test(rest)) foot = "esquerre";
-  else if (/(dreta\b|dreta |dreta$|diestro|peu dret|cama dreta|\bdreta\b|dretà)/.test(rest)) foot = "dret";
-  if (foot !== "indiferent") chips.push({ key: "peu", label: "Peu", value: FOOT_LABEL[foot] });
+  else if (/(dreta\b|dreta |dreta$|diestro|diestra|pie derecho|pierna derecha|peu dret|cama dreta|\bdreta\b|dretà)/.test(rest)) foot = "dret";
+  if (foot !== "indiferent") chips.push({ key: "peu", label: "Pie", value: FOOT_LABEL[foot] });
 
   // edat / categoria
   let by = { min: start - 18, max: start - 16 };
   let catLabel = "";
   const age = q.match(/(\d{2})\s*(anys|años|any)/);
   if (/(sub-?19|sub 19|juvenil)/.test(q)) { by = { min: start - 18, max: start - 16 }; catLabel = "Juvenil (sub-19)"; }
-  else if (/(sub-?16|sub 16|cadet)/.test(q)) { by = { min: start - 15, max: start - 14 }; catLabel = "Cadet (sub-16)"; }
-  else if (/(amateur|senior|primer equip)/.test(q)) { by = { min: start - 26, max: start - 19 }; catLabel = "Amateur"; }
+  else if (/(sub-?16|sub 16|cadet|cadete)/.test(q)) { by = { min: start - 15, max: start - 14 }; catLabel = "Cadete (sub-16)"; }
+  else if (/(amateur|senior|primer equip|primer equipo)/.test(q)) { by = { min: start - 26, max: start - 19 }; catLabel = "Amateur"; }
   else if (/(sub-?18|sub 18)/.test(q)) { by = { min: start - 17, max: start - 16 }; catLabel = "Sub-18"; }
   if (age) {
     const a = Number(age[1]);
     by = { min: start - a - (start >= 0 ? 0 : 0), max: start - a + 1 };
-    catLabel = `${a} anys`;
+    catLabel = `${a} años`;
   }
-  chips.push({ key: "edat", label: "Edat", value: catLabel ? `${catLabel} · nascuts ${by.min}–${by.max}` : `Juvenil per defecte · ${by.min}–${by.max}` });
+  chips.push({ key: "edat", label: "Edad", value: catLabel ? `${catLabel} · nacidos ${by.min}–${by.max}` : `Juvenil por defecto · ${by.min}–${by.max}` });
 
   // nivell
   let level = 4;
@@ -98,14 +98,14 @@ export function parseQuery(text: string, club: { city: string; lat: number; lng:
   else if (/(nacional|alt nivell|alto nivel|bon nivell|buen nivel)/.test(q)) level = 2;
   else if (/(preferent)/.test(q)) level = 3;
   else if (/(primera)/.test(q)) level = 4;
-  chips.push({ key: "nivell", label: "Nivell mínim", value: levelLabel(level) });
+  chips.push({ key: "nivell", label: "Nivel mínimo", value: levelLabel(level) });
 
   // zona
   let zone = { city: club.city, lat: club.lat, lng: club.lng };
-  let zoneLabel = `a prop de ${club.city}`;
+  let zoneLabel = `cerca de ${club.city}`;
   const comarca = COMARQUES.find((c) => q.includes(norm(c)) || (norm(c).startsWith("valles") && /\bvalles\b/.test(q) && norm(c) === "valles occidental"));
   const city = PLACES.find((p) => q.includes(norm(p.city)));
-  if (city) { zone = { city: city.city, lat: city.lat, lng: city.lng }; zoneLabel = `a prop de ${city.city}`; }
+  if (city) { zone = { city: city.city, lat: city.lat, lng: city.lng }; zoneLabel = `cerca de ${city.city}`; }
   else if (comarca) {
     const ps = PLACES.filter((p) => p.comarca === comarca);
     zone = { city: comarca, lat: ps.reduce((a, p) => a + p.lat, 0) / ps.length, lng: ps.reduce((a, p) => a + p.lng, 0) / ps.length };
@@ -120,14 +120,14 @@ export function parseQuery(text: string, club: { city: string; lat: number; lng:
   const hm = q.match(/(1[.,]\d{2})\s*m|(\d{3})\s*cm/);
   if (hm) height = hm[1] ? Math.round(Number(hm[1].replace(",", ".")) * 100) : Number(hm[2]);
   else if (/\b(alt|alto|corpulent|gran envergadura)\b/.test(q)) height = position === "POR" || position === "DC" ? 182 : 178;
-  if (height) chips.push({ key: "alcada", label: "Alçada mínima", value: `${height} cm` });
+  if (height) chips.push({ key: "alcada", label: "Altura mínima", value: `${height} cm` });
 
   // trets
   const traits = Array.from(new Set(TRAIT_RULES.filter(([re]) => re.test(q)).map(([, t]) => t))).slice(0, 4);
   for (const t of traits) chips.push({ key: "tret_" + t, label: "Característica", value: traitLabel(t) });
 
   const availability_req = /(immediat|inmediat|ara mateix|ja|lliure|sense equip|libre)/.test(q) ? "immediata" : "temporada";
-  if (availability_req === "immediata") chips.push({ key: "disp", label: "Disponibilitat", value: "Immediata" });
+  if (availability_req === "immediata") chips.push({ key: "disp", label: "Disponibilidad", value: "Inmediata" });
 
   return {
     offer: {
@@ -146,12 +146,12 @@ export function explainCandidate(c: Candidate): string {
   const ok = c.match.factors.filter((f) => f.status === "ok").map((f) => f.label.toLowerCase());
   const weak = c.match.factors.filter((f) => f.status !== "ok").sort((a, b) => a.score / a.weight - b.score / b.weight)[0];
   const trait = c.match.factors.find((f) => f.key === "caracteristiques");
-  let s = `${p.first_name} (${p.age} anys, ${p.position_label.toLowerCase()}, ${p.club_name}) encaixa en ${ok.length} de 7 factors`;
+  let s = `${p.first_name} (${p.age} años, ${p.position_label.toLowerCase()}, ${p.club_name}) encaja en ${ok.length} de 7 factores`;
   if (ok.length) s += `: ${ok.slice(0, 4).join(", ")}`;
   s += ".";
   if (trait && trait.status === "ok") s += ` ${trait.detail}`;
-  if (weak) s += ` A tenir en compte: ${weak.detail.charAt(0).toLowerCase() + weak.detail.slice(1)}`;
-  if (c.stage) s += " Ja és al teu pipeline.";
+  if (weak) s += ` A tener en cuenta: ${weak.detail.charAt(0).toLowerCase() + weak.detail.slice(1)}`;
+  if (c.stage) s += " Ya está en tu pipeline.";
   return s;
 }
 
@@ -162,10 +162,10 @@ export function runIntelligence(text: string, club: { id: string; verified: numb
   const over80 = all.filter((c) => c.match.score >= 80).length;
   const best = top[0];
   const summary = !parsed.understood
-    ? "No he identificat cap posició ni característica concreta. He fet servir un perfil genèric; prova d'indicar la posició (per exemple, «central esquerrà sub-19 amb joc aeri»)."
+    ? "No he identificado ninguna posición ni característica concreta. He usado un perfil genérico; prueba a indicar la posición (por ejemplo, «lateral derecho cadete rápido»)."
     : top.length === 0
-      ? "Cap perfil visible per al teu club compleix aquests criteris. Prova d'ampliar la zona o de rebaixar el nivell mínim."
-      : `He trobat ${all.length} ${all.length === 1 ? "perfil compatible" : "perfils compatibles"} ${parsed.zoneLabel}; ${over80} ${over80 === 1 ? "supera" : "superen"} el 80%. El millor encaix és ${best.player.name} (${best.match.score}%).`;
+      ? "Ningún perfil visible para tu club cumple estos criterios. Prueba a ampliar la zona o a bajar el nivel mínimo."
+      : `He encontrado ${all.length} ${all.length === 1 ? "perfil compatible" : "perfiles compatibles"} ${parsed.zoneLabel}; ${over80} ${over80 === 1 ? "supera" : "superan"} el 80%. El mejor encaje es ${best.player.name} (${best.match.score}%).`;
   return {
     chips: parsed.chips,
     summary,
@@ -178,9 +178,9 @@ export function runIntelligence(text: string, club: { id: string; verified: numb
 /** Resum en llenguatge natural del perfil d'un jugador (per a la fitxa del club). */
 export function profileSummary(p: PlayerView): string {
   const top = [...p.radar].sort((a, b) => b.value - a.value);
-  const s = `${p.position_label} de ${p.age} anys${p.foot !== "dret" ? `, ${p.foot === "esquerre" ? "esquerrà" : "ambidextre"}` : ""}, que competeix a ${p.level_label.toLowerCase() === "—" ? "un nivell no informat" : p.level_label} amb ${p.club_name}.`;
-  const strong = `Destaca en ${top[0].label.toLowerCase()} i ${top[1].label.toLowerCase()}`;
-  const stats = p.prev ? `; la temporada passada va jugar ${p.prev.matches} partits (${p.prev.starts} de titular) i ${p.prev.minutes.toLocaleString("ca-ES")} minuts` : "";
+  const s = `${p.position_label} de ${p.age} años${p.foot !== "dret" ? `, ${p.foot === "esquerre" ? "zurdo" : "ambidiestro"}` : ""}, que compite en ${p.level_label.toLowerCase() === "—" ? "un nivel no informado" : p.level_label} con ${p.club_name}.`;
+  const strong = `Destaca en ${top[0].label.toLowerCase()} y ${top[1].label.toLowerCase()}`;
+  const stats = p.prev ? `; la temporada pasada jugó ${p.prev.matches} partidos (${p.prev.starts} de titular) y ${p.prev.minutes.toLocaleString("es-ES")} minutos` : "";
   const av = `. ${AVAILABILITY_LABEL[p.availability]}.`;
   return `${s} ${strong}${stats}${av}`;
 }
@@ -193,15 +193,15 @@ export function compareSummary(players: PlayerView[], scores?: Record<string, nu
   for (const key of axes) {
     const vals = players.map((p) => ({ p, v: p.radar.find((r) => r.key === key)!.value }));
     vals.sort((a, b) => b.v - a.v);
-    if (vals[0].v - vals[1].v >= 1) lines.push(`${vals[0].p.first_name} és clarament superior en ${players[0].radar.find((r) => r.key === key)!.label.toLowerCase()} (${vals[0].v} vs ${vals[1].v}).`);
+    if (vals[0].v - vals[1].v >= 1) lines.push(`${vals[0].p.first_name} es claramente superior en ${players[0].radar.find((r) => r.key === key)!.label.toLowerCase()} (${vals[0].v} vs ${vals[1].v}).`);
   }
   const exp = players.filter((p) => p.prev).sort((a, b) => (b.prev!.minutes) - (a.prev!.minutes));
-  if (exp.length >= 2) lines.push(`${exp[0].first_name} arriba amb més rodatge: ${exp[0].prev!.minutes.toLocaleString("ca-ES")} minuts la temporada passada.`);
+  if (exp.length >= 2) lines.push(`${exp[0].first_name} llega con más rodaje: ${exp[0].prev!.minutes.toLocaleString("es-ES")} minutos la temporada pasada.`);
   const young = [...players].sort((a, b) => b.birth_year - a.birth_year || a.age - b.age);
-  if (young[0].birth_year !== young[1].birth_year) lines.push(`${young[0].first_name} és el més jove (nascut el ${young[0].birth_year}): més marge de creixement.`);
+  if (young[0].birth_year !== young[1].birth_year) lines.push(`${young[0].first_name} es el más joven (nacido en ${young[0].birth_year}): más margen de crecimiento.`);
   if (scores) {
     const best = [...players].sort((a, b) => (scores[b.id] ?? 0) - (scores[a.id] ?? 0))[0];
-    lines.push(`Per a l'oportunitat seleccionada, el millor encaix és ${best.first_name} (${scores[best.id]}%).`);
+    lines.push(`Para la oportunidad seleccionada, el mejor encaje es ${best.first_name} (${scores[best.id]}%).`);
   }
   return lines.slice(0, 5);
 }

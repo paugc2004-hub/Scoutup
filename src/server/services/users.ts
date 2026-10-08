@@ -15,7 +15,7 @@ import { zEmail, zId, zText } from "@/server/validation";
 export const StaffPatch = z
   .object({ role: z.enum(CLUB_ROLES).optional(), team_id: zId.nullable().optional(), status: z.enum(["active", "disabled"]).optional() })
   .strict()
-  .refine((d) => Object.keys(d).length > 0, "cap canvi");
+  .refine((d) => Object.keys(d).length > 0, "ningún cambio");
 
 export const StaffInvite = z.object({ name: zText(80, 3), email: zEmail, role: z.enum(CLUB_ROLES), team_id: zId.nullable().optional() }).strict();
 
@@ -24,7 +24,7 @@ type Target = { id: string; club_id: string | null; role: string; team_id: strin
 function teamOfClub(clubId: string, teamId: string | null | undefined): string | null {
   if (!teamId) return null;
   const t = get<{ club_id: string }>("SELECT club_id FROM teams WHERE id = ?", teamId);
-  if (!t || t.club_id !== clubId) throw new ApiError(400, "Equip no vàlid.");
+  if (!t || t.club_id !== clubId) throw new ApiError(400, "Equipo no válido.");
   return teamId;
 }
 
@@ -33,44 +33,44 @@ function activeDirectors(clubId: string): number {
 }
 
 export function updateStaffUser(actor: Staff, userId: string, patch: z.infer<typeof StaffPatch>) {
-  requirePermission(actor, "users.manage", "Només la direcció esportiva pot gestionar usuaris.");
+  requirePermission(actor, "users.manage", "Solo la dirección deportiva puede gestionar usuarios.");
   const t = get<Target>("SELECT id, club_id, role, team_id, status, name FROM users WHERE id = ?", userId);
   // un usuari d'un altre club respon com a inexistent (aïllament entre clubs)
   if (!t || t.club_id !== actor.club_id || !(CLUB_ROLES as readonly string[]).includes(t.role)) {
-    audit({ actor, action: "users.update", entity: { type: "user", id: userId }, result: "denied", detail: "usuari d'un altre club o inexistent" });
-    throw new ApiError(404, "Usuari no trobat.");
+    audit({ actor, action: "users.update", entity: { type: "user", id: userId }, result: "denied", detail: "usuario de otro club o inexistente" });
+    throw new ApiError(404, "Usuario no encontrado.");
   }
   if (t.id === actor.id && (patch.role !== undefined && patch.role !== t.role || patch.status === "disabled")) {
-    throw new ApiError(400, "No pots canviar el teu propi rol ni desactivar el teu compte.");
+    throw new ApiError(400, "No puedes cambiar tu propio rol ni desactivar tu cuenta.");
   }
   const role = (patch.role ?? t.role) as ClubRole;
   const status = patch.status ?? t.status;
   let teamId = patch.team_id !== undefined ? teamOfClub(actor.club_id, patch.team_id) : t.team_id;
-  if (role === "coach" && !teamId) throw new ApiError(400, "Un entrenador ha de tenir un equip assignat.");
+  if (role === "coach" && !teamId) throw new ApiError(400, "Un entrenador debe tener un equipo asignado.");
   if (role !== "coach") teamId = null;
   if (t.role === "director" && t.status === "active" && (role !== "director" || status !== "active") && activeDirectors(actor.club_id) <= 1) {
-    throw new ApiError(400, "El club ha de tenir sempre almenys una direcció esportiva activa.");
+    throw new ApiError(400, "El club debe tener siempre al menos una dirección deportiva activa.");
   }
   const teamName = teamId ? get<{ name: string }>("SELECT name FROM teams WHERE id = ?", teamId)?.name : null;
   run("UPDATE users SET role = ?, team_id = ?, status = ?, title = ? WHERE id = ?", role, teamId, status, role === "coach" ? `Entrenador · ${teamName}` : CLUB_ROLE_LABEL[role], t.id);
   // els canvis de permisos són efectius immediatament: es tanquen les sessions obertes de l'usuari
   if (role !== t.role || status !== t.status || teamId !== t.team_id) revokeUserSessions(t.id);
-  const changes = [role !== t.role && `rol ${t.role} → ${role}`, teamId !== t.team_id && `equip ${t.team_id ?? "—"} → ${teamId ?? "—"}`, status !== t.status && `estat ${t.status} → ${status}`].filter(Boolean).join(", ");
-  audit({ actor, action: "users.update", entity: { type: "user", id: t.id }, detail: `${t.name}: ${changes || "sense canvis"}` });
+  const changes = [role !== t.role && `rol ${t.role} → ${role}`, teamId !== t.team_id && `equipo ${t.team_id ?? "—"} → ${teamId ?? "—"}`, status !== t.status && `estado ${t.status} → ${status}`].filter(Boolean).join(", ");
+  audit({ actor, action: "users.update", entity: { type: "user", id: t.id }, detail: `${t.name}: ${changes || "sin cambios"}` });
   return { ok: true };
 }
 
 export function inviteStaffUser(actor: Staff, d: z.infer<typeof StaffInvite>) {
-  requirePermission(actor, "users.manage", "Només la direcció esportiva pot convidar usuaris.");
-  if (get("SELECT id FROM users WHERE lower(email) = lower(?)", d.email)) throw new ApiError(409, "Ja existeix un usuari amb aquest correu.");
+  requirePermission(actor, "users.manage", "Solo la dirección deportiva puede invitar usuarios.");
+  if (get("SELECT id FROM users WHERE lower(email) = lower(?)", d.email)) throw new ApiError(409, "Ya existe un usuario con este correo.");
   const teamId = d.role === "coach" ? teamOfClub(actor.club_id, d.team_id) : null;
-  if (d.role === "coach" && !teamId) throw new ApiError(400, "Un entrenador ha de tenir un equip assignat.");
+  if (d.role === "coach" && !teamId) throw new ApiError(400, "Un entrenador debe tener un equipo asignado.");
   const id = uid("u_");
   const teamName = teamId ? get<{ name: string }>("SELECT name FROM teams WHERE id = ?", teamId)?.name : null;
   // Sense contrasenya («!» no és un hash vàlid): l'usuari no pot entrar fins que accepti la invitació.
   // L'enviament del correu d'invitació està PENDENT DE DEFINIR (cap servei de correu a la demo).
   insert("users", { id, email: d.email, password_hash: "!", name: d.name, role: d.role, status: "active", title: d.role === "coach" ? `Entrenador · ${teamName}` : CLUB_ROLE_LABEL[d.role], club_id: actor.club_id, team_id: teamId, avatar_hue: Math.floor(Math.random() * 360), is_demo_login: 0, created_at: nowIso() });
-  audit({ actor, action: "users.invite", entity: { type: "user", id }, detail: `${d.name} com a ${CLUB_ROLE_LABEL[d.role]}` });
+  audit({ actor, action: "users.invite", entity: { type: "user", id }, detail: `${d.name} como ${CLUB_ROLE_LABEL[d.role]}` });
   return { id };
 }
 

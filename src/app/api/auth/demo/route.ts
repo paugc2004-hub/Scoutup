@@ -21,7 +21,7 @@ export const POST = api(async (req) => {
   rateLimit("demoLogin", await clientIp());
   const { role } = Schema.parse(await body(req));
   const u = get<{ id: string; role: Role }>("SELECT id, role FROM users WHERE email = ? AND is_demo_login = 1 AND status = 'active'", DEMO_ACCOUNTS[role]);
-  if (!u) throw new ApiError(404, "Usuari de demo no trobat. Restaura les dades de la demo.");
+  if (!u) throw new ApiError(404, "Usuario de demo no encontrado. Restaura los datos de la demo.");
   await destroySession();
   await createSession(u.id);
   return { ok: true, redirect: homeFor(u) };

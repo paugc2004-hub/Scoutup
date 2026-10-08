@@ -1,6 +1,6 @@
 /**
- * Dates i formats (zona horària Europe/Madrid, català). Sense àlies: també el fa servir el seed.
- * Servidor i client formategen igual per evitar diferències d'hidratació.
+ * Fechas y formatos (zona horaria Europe/Madrid, castellano). Sin alias: también lo usa el seed.
+ * Servidor y cliente formatean igual para evitar diferencias de hidratación.
  */
 export const TZ = "Europe/Madrid";
 
@@ -39,10 +39,10 @@ export function weekdayMon0(d: Date): number {
   return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(w);
 }
 
-const MONTHS = ["gener", "febrer", "març", "abril", "maig", "juny", "juliol", "agost", "setembre", "octubre", "novembre", "desembre"];
-const MONTHS_SHORT = ["gen.", "febr.", "març", "abr.", "maig", "juny", "jul.", "ag.", "set.", "oct.", "nov.", "des."];
-const DAYS = ["dilluns", "dimarts", "dimecres", "dijous", "divendres", "dissabte", "diumenge"];
-const DAYS_SHORT = ["dl.", "dt.", "dc.", "dj.", "dv.", "ds.", "dg."];
+const MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const MONTHS_SHORT = ["ene.", "feb.", "mar.", "abr.", "may.", "jun.", "jul.", "ago.", "sept.", "oct.", "nov.", "dic."];
+const DAYS = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
+const DAYS_SHORT = ["lun.", "mar.", "mié.", "jue.", "vie.", "sáb.", "dom."];
 
 export function monthName(m1: number): string {
   return MONTHS[m1 - 1];
@@ -52,7 +52,7 @@ export function dayName(mon0: number, short = false): string {
 }
 
 function de(month: string) {
-  return /^[aeiouàèéíòóú]/i.test(month) ? `d'${month}` : `de ${month}`;
+  return `de ${month}`;
 }
 
 export function fmtDate(v: string | Date, opts: { weekday?: boolean; year?: boolean; short?: boolean } = {}): string {
@@ -72,23 +72,23 @@ export function fmtDateTime(v: string | Date): string {
   return `${fmtDate(v, { short: true })} · ${fmtTime(v)}`;
 }
 
-/** "fa 5 min", "fa 3 h", "ahir", "fa 4 dies", "demà a les 18:30", "dijous"... */
+/** "hace 5 min", "hace 3 h", "ayer", "hace 4 días", "mañana a las 18:30", "jueves"... */
 export function fmtRelative(v: string | Date, now: Date = new Date()): string {
   const d = typeof v === "string" ? new Date(v) : v;
   const diff = (now.getTime() - d.getTime()) / 1000;
   const dayDiff = Math.round((Date.parse(dayKey(now)) - Date.parse(dayKey(d))) / 86400000);
   if (diff >= 0) {
-    if (diff < 60) return "ara mateix";
-    if (diff < 3600) return `fa ${Math.floor(diff / 60)} min`;
-    if (dayDiff === 0) return `fa ${Math.floor(diff / 3600)} h`;
-    if (dayDiff === 1) return "ahir";
-    if (dayDiff < 7) return `fa ${dayDiff} dies`;
-    if (dayDiff < 30) return `fa ${Math.floor(dayDiff / 7)} ${Math.floor(dayDiff / 7) === 1 ? "setmana" : "setmanes"}`;
-    if (dayDiff < 365) return `fa ${Math.floor(dayDiff / 30)} ${Math.floor(dayDiff / 30) === 1 ? "mes" : "mesos"}`;
+    if (diff < 60) return "ahora mismo";
+    if (diff < 3600) return `hace ${Math.floor(diff / 60)} min`;
+    if (dayDiff === 0) return `hace ${Math.floor(diff / 3600)} h`;
+    if (dayDiff === 1) return "ayer";
+    if (dayDiff < 7) return `hace ${dayDiff} días`;
+    if (dayDiff < 30) return `hace ${Math.floor(dayDiff / 7)} ${Math.floor(dayDiff / 7) === 1 ? "semana" : "semanas"}`;
+    if (dayDiff < 365) return `hace ${Math.floor(dayDiff / 30)} ${Math.floor(dayDiff / 30) === 1 ? "mes" : "meses"}`;
     return fmtDate(d, { year: true, short: true });
   }
-  if (dayDiff === 0) return `avui a les ${fmtTime(d)}`;
-  if (dayDiff === -1) return `demà a les ${fmtTime(d)}`;
-  if (dayDiff > -7) return `${DAYS[weekdayMon0(d)]} a les ${fmtTime(d)}`;
+  if (dayDiff === 0) return `hoy a las ${fmtTime(d)}`;
+  if (dayDiff === -1) return `mañana a las ${fmtTime(d)}`;
+  if (dayDiff > -7) return `${DAYS[weekdayMon0(d)]} a las ${fmtTime(d)}`;
   return fmtDate(d, { short: true });
 }

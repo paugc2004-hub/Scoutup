@@ -5,10 +5,10 @@ import { Sparkles, ArrowUp } from "lucide-react";
 import { cn } from "@/components/ui";
 
 export const EXAMPLES = [
-  "Necessito un central esquerrà sub-19 de la zona del Vallès amb bon joc aeri",
-  "Extrem dret ràpid i desequilibrant, juvenil, a menys de 25 km",
-  "Porter alt per a l'amateur amb bons reflexos",
-  "Migcampista femenina amb visió de joc a prop de Sabadell",
+  "Necesito un central zurdo sub-19 de la zona del Vallès con buen juego aéreo",
+  "Extremo derecho rápido y desequilibrante, juvenil, a menos de 25 km",
+  "Portero alto para el amateur con buenos reflejos",
+  "Centrocampista femenina con visión de juego cerca de Sabadell",
 ];
 
 export function IntelligenceBox({ initial = "", compact, autoFocus }: { initial?: string; compact?: boolean; autoFocus?: boolean }) {
@@ -39,10 +39,10 @@ export function IntelligenceBox({ initial = "", compact, autoFocus }: { initial?
             }
           }}
           rows={compact ? 2 : 3}
-          placeholder="Descriu el jugador que necessites… p. ex. «central esquerrà sub-19 de la zona del Vallès amb bon joc aeri»"
+          placeholder="Describe el jugador que necesitas… p. ej. «lateral derecho cadete rápido cerca de Sabadell»"
           className="w-full resize-none rounded-2xl bg-transparent py-3.5 pl-12 pr-14 text-[14.5px] leading-relaxed placeholder:text-subtle focus:outline-none"
         />
-        <button type="submit" className="absolute bottom-3 right-3 grid size-9 place-items-center rounded-xl bg-accent text-night transition hover:bg-accent-600 disabled:opacity-40" disabled={!q.trim()} aria-label="Cercar">
+        <button type="submit" className="absolute bottom-3 right-3 grid size-9 place-items-center rounded-xl bg-accent text-night transition hover:bg-accent-600 disabled:opacity-40" disabled={!q.trim()} aria-label="Buscar">
           <ArrowUp className="size-4" strokeWidth={2.5} />
         </button>
       </form>

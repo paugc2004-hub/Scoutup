@@ -16,7 +16,7 @@ import { QuickPipeline, FactorStrip } from "@/components/club/candidates-list";
 import { CompareToggle } from "@/components/club/compare-tray";
 import { fmtRelative } from "@/lib/time";
 
-export const metadata = { title: "Cercar jugadors" };
+export const metadata = { title: "Buscar jugadores" };
 const PAGE = 24;
 
 type SP = Record<string, string | undefined>;
@@ -77,7 +77,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     if (sort === "minuts") return (b.p.prev?.minutes ?? 0) - (a.p.prev?.minutes ?? 0);
     if (sort === "gols") return (b.p.prev?.goals ?? 0) - (a.p.prev?.goals ?? 0);
     if (sort === "edat") return a.p.age - b.p.age;
-    if (sort === "nom") return a.p.name.localeCompare(b.p.name, "ca");
+    if (sort === "nom") return a.p.name.localeCompare(b.p.name, "es");
     return b.p.updated_at.localeCompare(a.p.updated_at);
   });
   const page = Math.max(1, Number(sp.page ?? 1));
@@ -91,21 +91,21 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <div>
-      <PageHeader eyebrow="Descobrir" title="Cercar jugadors" subtitle="Filtra per posició, edat, nivell, zona, disponibilitat i dades. Tria una oportunitat per ordenar per compatibilitat." actions={<Link href="/club/intelligence" className={btnClass("secondary")}>Prova la cerca en llenguatge natural</Link>} />
+      <PageHeader eyebrow="Descubrir" title="Buscar jugadores" subtitle="Filtra por posición, edad, nivel, zona, disponibilidad y datos. Elige una oportunidad para ordenar por compatibilidad." actions={<Link href="/club/intelligence" className={btnClass("secondary")}>Prueba la búsqueda en lenguaje natural</Link>} />
       <div className="grid gap-5 lg:grid-cols-[300px_1fr]">
         <SearchFilters offers={offers.map((o) => ({ id: o.id, title: o.title }))} />
         <div className="min-w-0">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-[13.5px] text-muted"><strong className="text-ink">{items.length}</strong> jugadors{om && offer ? <> · compatibilitat amb <strong className="text-ink">«{offer.title}»</strong></> : null}</p>
+            <p className="text-[13.5px] text-muted"><strong className="text-ink">{items.length}</strong> jugadores{om && offer ? <> · compatibilidad con <strong className="text-ink">«{offer.title}»</strong></> : null}</p>
             <div className="flex items-center gap-2"><span className="text-[12.5px] text-muted">Ordenar</span><SortSelect hasOffer={!!om} /></div>
           </div>
           {shown.length === 0 ? (
-            <EmptyState icon={<Search className="size-5" />} title="Cap jugador amb aquests filtres" text="Amplia la zona, treu algun filtre o prova ScoutUp Intelligence." />
+            <EmptyState icon={<Search className="size-5" />} title="Ningún jugador con estos filtros" text="Amplía la zona, quita algún filtro o prueba ScoutUp Intelligence." />
           ) : (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
               {shown.map(({ p, m, km: dist }, i) => (
                 <div key={p.id} className="group relative flex min-w-0 flex-col rounded-2xl border border-line bg-surface p-4 shadow-card transition hover:-translate-y-0.5 hover:border-line-strong hover:shadow-pop" style={{ animation: `rise .35s ${Math.min(i, 12) * 0.025}s both` }}>
-                  <Link href={`/club/jugadors/${p.id}${om ? `?offer=${sp.offer}` : ""}`} className="absolute inset-0 z-0 rounded-2xl" aria-label={`Veure el perfil de ${p.name}`} />
+                  <Link href={`/club/jugadors/${p.id}${om ? `?offer=${sp.offer}` : ""}`} className="absolute inset-0 z-0 rounded-2xl" aria-label={`Ver el perfil de ${p.name}`} />
                   <div className="pointer-events-none relative flex items-start gap-3">
                     <Avatar initials={p.initials} hue={p.hue} size={46} />
                     <div className="min-w-0 flex-1">
@@ -123,7 +123,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   </div>
                   {p.prev && (
                     <div className="pointer-events-none relative mt-3 grid grid-cols-4 gap-1.5 text-center">
-                      {[["PJ", p.prev.matches], ["Min", p.prev.minutes], ["Gols", p.prev.goals], ["Tit.", p.prev.starts]].map(([k, v]) => (
+                      {[["PJ", p.prev.matches], ["Min", p.prev.minutes], ["Goles", p.prev.goals], ["Tit.", p.prev.starts]].map(([k, v]) => (
                         <div key={k as string} className="rounded-lg bg-sunken py-1.5"><p className="text-[13.5px] font-bold tabular">{typeof v === "number" && v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v}</p><p className="text-[10.5px] text-muted">{k}</p></div>
                       ))}
                     </div>
@@ -138,7 +138,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   </div>
                   <div className="pointer-events-none relative mt-2 flex items-center justify-between text-[11.5px] text-subtle">
                     <AvailabilityBadge value={p.availability} />
-                    <span>Actualitzat {fmtRelative(p.updated_at)}</span>
+                    <span>Actualizado {fmtRelative(p.updated_at)}</span>
                   </div>
                 </div>
               ))}
@@ -148,7 +148,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             <div className="mt-6 flex items-center justify-center gap-2">
               <Link href={pageHref(Math.max(1, page - 1))} className={cn(btnClass("secondary", "sm"), page === 1 && "pointer-events-none opacity-40")}><ChevronLeft className="size-4" /> Anterior</Link>
               <span className="text-[13px] text-muted tabular">Pàgina {page} de {pages}</span>
-              <Link href={pageHref(Math.min(pages, page + 1))} className={cn(btnClass("secondary", "sm"), page === pages && "pointer-events-none opacity-40")}>Següent <ChevronRight className="size-4" /></Link>
+              <Link href={pageHref(Math.min(pages, page + 1))} className={cn(btnClass("secondary", "sm"), page === pages && "pointer-events-none opacity-40")}>Siguiente <ChevronRight className="size-4" /></Link>
             </div>
           )}
           {hiddenMinors > 0 && <p className="mt-6 text-center text-[12px] text-subtle">{hiddenMinors} perfils de menors no es mostren perquè encara no tenen el consentiment del tutor legal.</p>}

@@ -32,10 +32,10 @@ export default async function Landing() {
         <header className="relative mx-auto flex max-w-[1200px] items-center justify-between px-5 py-5 md:px-8">
           <Logo />
           <nav className="flex items-center gap-2">
-            <a href="#com-funciona" className="hidden rounded-lg px-3 py-2 text-[13.5px] font-medium text-night-text hover:text-white md:block">Com funciona</a>
+            <a href="#com-funciona" className="hidden rounded-lg px-3 py-2 text-[13.5px] font-medium text-night-text hover:text-white md:block">Cómo funciona</a>
             <Link href="/demo" className="hidden rounded-lg px-3 py-2 text-[13.5px] font-medium text-night-text hover:text-white md:block">Demo guiada</Link>
             {me ? (
-              <Link href={homeFor(me)} className={btnClass("primary", "sm")}>Anar al meu espai <ArrowRight className="size-3.5" /></Link>
+              <Link href={homeFor(me)} className={btnClass("primary", "sm")}>Ir a mi espacio <ArrowRight className="size-3.5" /></Link>
             ) : (
               <Link href="/entrar" className="inline-flex h-8 items-center rounded-xl border border-night-line px-3 text-[12.5px] font-semibold text-white hover:bg-night-2">Entrar</Link>
             )}
@@ -45,24 +45,24 @@ export default async function Landing() {
         <div className="relative mx-auto grid max-w-[1200px] gap-12 px-5 pb-20 pt-10 md:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:pb-28 lg:pt-16">
           <div className="animate-rise">
             <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-night-line bg-night-2 px-3 py-1 text-[12px] font-semibold text-night-text">
-              <span className="size-1.5 rounded-full bg-accent animate-pulse-dot" /> Demo interactiva · dades fictícies
+              <span className="size-1.5 rounded-full bg-accent animate-pulse-dot" /> Demo interactiva · datos ficticios
             </p>
             <h1 className="text-[44px] font-extrabold leading-[1.02] tracking-[-0.035em] md:text-[64px]">
               <span className="text-accent">SCOUTUP</span>
               <br />
-              Connectant talent, clubs i oportunitats.
+              Conectando talento, clubes y oportunidades.
             </h1>
             <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-night-text">
-              La plataforma on els clubs de futbol base troben el jugador que necessiten, entenen <span className="font-semibold text-white">per què</span> encaixa i hi contacten de manera segura. I on cada jugador descobreix oportunitats reals per créixer.
+              El software con el que los clubes de fútbol base encuentran el jugador que necesitan, entienden <span className="font-semibold text-white">por qué</span> encaja, organizan el proceso con su equipo y contactan de forma segura.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <DemoLoginButton role="director" icon={<Building2 className="size-4" />}>Entrar com a Club</DemoLoginButton>
-              <DemoLoginButton role="player" variant="secondary" icon={<UserRound className="size-4" />} className="!border-night-line !bg-night-2 !text-white hover:!bg-night-3">Entrar com a Jugador</DemoLoginButton>
+              <DemoLoginButton role="director" icon={<Building2 className="size-4" />}>Entrar como club</DemoLoginButton>
+              <DemoLoginButton role="player" variant="secondary" icon={<UserRound className="size-4" />} className="!border-night-line !bg-night-2 !text-white hover:!bg-night-3">Entrar como jugador</DemoLoginButton>
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13.5px] font-semibold">
               <Link href="/demo" className="inline-flex items-center gap-1.5 text-white hover:text-accent"><Compass className="size-4" /> Explorar demo</Link>
-              <Link href="/registre" className="inline-flex items-center gap-1.5 text-white hover:text-accent">Crear compte</Link>
-              <a href="#com-funciona" className="inline-flex items-center gap-1.5 text-night-text hover:text-white">Veure com funciona <ArrowRight className="size-3.5" /></a>
+              <Link href="/registre" className="inline-flex items-center gap-1.5 text-white hover:text-accent">Crear cuenta</Link>
+              <a href="#com-funciona" className="inline-flex items-center gap-1.5 text-night-text hover:text-white">Ver cómo funciona <ArrowRight className="size-3.5" /></a>
             </div>
           </div>
 
@@ -94,7 +94,7 @@ export default async function Landing() {
                   ))}
                 </div>
                 <p className="mt-4 flex items-center gap-2 border-t border-night-line pt-4 text-[12.5px] text-night-text">
-                  <Sparkles className="size-4 text-accent" /> Compatibilitat explicable: el club sempre veu el perquè.
+                  <Sparkles className="size-4 text-accent" /> Compatibilidad explicable: el club siempre ve el porqué.
                 </p>
               </div>
             </div>
@@ -106,9 +106,9 @@ export default async function Landing() {
       <section className="border-b border-line bg-surface">
         <div className="mx-auto grid max-w-[1200px] grid-cols-3 divide-x divide-line px-5 md:px-8">
           {[
-            [counts.clubs, "clubs ficticis"],
-            [counts.players, "jugadors ficticis"],
-            [counts.offers, "oportunitats obertes"],
+            [counts.clubs, "clubes ficticios"],
+            [counts.players, "jugadores ficticios"],
+            [counts.offers, "oportunidades abiertas"],
           ].map(([n, l]) => (
             <div key={l as string} className="py-6 text-center">
               <p className="text-[28px] font-extrabold tracking-tight tabular md:text-[34px]">{n}</p>
@@ -120,14 +120,14 @@ export default async function Landing() {
 
       {/* COM FUNCIONA */}
       <section id="com-funciona" className="mx-auto max-w-[1200px] scroll-mt-10 px-5 py-20 md:px-8">
-        <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-accent-ink">Com funciona</p>
-        <h2 className="mt-2 max-w-2xl text-[32px] font-extrabold leading-tight tracking-[-0.025em] md:text-[40px]">De la necessitat del club al contacte, en quatre passos.</h2>
+        <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-accent-ink">Cómo funciona</p>
+        <h2 className="mt-2 max-w-2xl text-[32px] font-extrabold leading-tight tracking-[-0.025em] md:text-[40px]">De la necesidad del club al contacto, en cuatro pasos.</h2>
         <div className="mt-10 grid gap-4 md:grid-cols-4">
           {[
-            { icon: <Target className="size-5" />, t: "El club defineix la necessitat", d: "Una oportunitat amb posició, categoria, nivell, zona i característiques. O una petició en llenguatge natural." },
-            { icon: <Sparkles className="size-5" />, t: "ScoutUp calcula l'encaix", d: "Set factors ponderats i explicables. Sense caixes negres: cada percentatge té el seu perquè." },
-            { icon: <KanbanSquare className="size-5" />, t: "El club avalua i decideix", d: "Pipeline, comparador, avaluacions per àrees, notes privades i informes de scouting." },
-            { icon: <MessagesSquare className="size-5" />, t: "Contacte segur", d: "El jugador (o el seu tutor, si és menor) decideix si accepta. Missatgeria interna i moderada." },
+            { icon: <Target className="size-5" />, t: "El club define la necesidad", d: "Una oportunidad con posición, categoría, nivel, zona y características. O una petición en lenguaje natural." },
+            { icon: <Sparkles className="size-5" />, t: "ScoutUp calcula el encaje", d: "Siete factores ponderados y explicables. Sin cajas negras: cada porcentaje tiene su porqué." },
+            { icon: <KanbanSquare className="size-5" />, t: "El club evalúa y decide", d: "Pipeline, comparador, evaluaciones por áreas, notas privadas e informes de observación." },
+            { icon: <MessagesSquare className="size-5" />, t: "Contacto seguro", d: "El jugador (o su tutor, si es menor) decide si acepta. Mensajería interna y moderada." },
           ].map((s, i) => (
             <div key={s.t} className="relative rounded-2xl border border-line bg-surface p-5 shadow-card">
               <span className="absolute right-5 top-5 text-[12px] font-bold tabular text-subtle">0{i + 1}</span>
@@ -143,23 +143,23 @@ export default async function Landing() {
       <section className="mx-auto grid max-w-[1200px] gap-5 px-5 pb-20 md:px-8 lg:grid-cols-2">
         <div className="rounded-3xl bg-night p-7 text-white md:p-9">
           <Building2 className="size-6 text-accent" />
-          <h3 className="mt-4 text-[26px] font-extrabold tracking-tight">Per a clubs</h3>
+          <h3 className="mt-4 text-[26px] font-extrabold tracking-tight">ScoutUp Club</h3>
           <ul className="mt-5 space-y-3 text-[14.5px] text-night-text">
-            {["Cerca avançada i ScoutUp Intelligence", "Oportunitats amb candidats ordenats per compatibilitat", "Pipeline de captació amb nou etapes", "Comparador, avaluacions i notes privades", "Plantilla visual, equips i calendari", "Permisos per rol: direcció i entrenadors"].map((x) => (
+            {["Búsqueda avanzada y ScoutUp Intelligence", "Oportunidades con candidatos ordenados por compatibilidad", "Pipeline de captación con nueve etapas", "Comparador, evaluaciones y notas privadas", "Plantilla visual, equipos y calendario", "Permisos por rol: dirección, coordinación y entrenadores"].map((x) => (
               <li key={x} className="flex gap-2.5"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-accent" />{x}</li>
             ))}
           </ul>
-          <DemoLoginButton role="director" size="md" className="mt-7">Provar com a club <ArrowRight className="size-4" /></DemoLoginButton>
+          <DemoLoginButton role="director" size="md" className="mt-7">Probar como club <ArrowRight className="size-4" /></DemoLoginButton>
         </div>
         <div className="rounded-3xl border border-line bg-surface p-7 shadow-card md:p-9">
           <UserRound className="size-6 text-accent-ink" />
-          <h3 className="mt-4 text-[26px] font-extrabold tracking-tight">Per a jugadors</h3>
+          <h3 className="mt-4 text-[26px] font-extrabold tracking-tight">ScoutUp Player (el otro lado)</h3>
           <ul className="mt-5 space-y-3 text-[14.5px] text-muted">
-            {["Perfil esportiu complet, en 8 passos", "Oportunitats amb el teu % d'encaix", "M'interessa: sol·licitud en un clic", "Clubs interessats i seguiment de cada procés", "Missatges, calendari i recordatoris", "Controls de privacitat camp a camp"].map((x) => (
+            {["Perfil deportivo completo, en 8 pasos", "Oportunidades con tu % de encaje", "Me interesa: solicitud en un clic", "Clubes interesados y seguimiento de cada proceso", "Mensajes, calendario y recordatorios", "Controles de privacidad campo a campo"].map((x) => (
               <li key={x} className="flex gap-2.5"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-accent-ink" />{x}</li>
             ))}
           </ul>
-          <DemoLoginButton role="player" size="md" variant="dark" className="mt-7">Provar com a jugador <ArrowRight className="size-4" /></DemoLoginButton>
+          <DemoLoginButton role="player" size="md" variant="dark" className="mt-7">Probar como jugador <ArrowRight className="size-4" /></DemoLoginButton>
         </div>
       </section>
 
@@ -167,14 +167,14 @@ export default async function Landing() {
       <section className="border-y border-line bg-surface">
         <div className="mx-auto grid max-w-[1200px] gap-8 px-5 py-14 md:px-8 lg:grid-cols-[1fr_1.4fr] lg:items-center">
           <div>
-            <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-accent-ink">Protecció des del disseny</p>
-            <h2 className="mt-2 text-[28px] font-extrabold leading-tight tracking-tight">Treballem en un entorn on hi ha menors.</h2>
+            <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-accent-ink">Protección desde el diseño</p>
+            <h2 className="mt-2 text-[28px] font-extrabold leading-tight tracking-tight">Trabajamos en un entorno donde hay menores.</h2>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
             {[
-              { i: <Lock className="size-4" />, t: "Consentiment del tutor", d: "Un menor és invisible per als clubs fins que el tutor hi consent." },
-              { i: <ShieldCheck className="size-4" />, t: "Clubs verificats", d: "Un club no verificat no pot contactar ningú." },
-              { i: <Eye className="size-4" />, t: "Privacitat camp a camp", d: "El jugador decideix qui veu el perfil, els vídeos i les dades." },
+              { i: <Lock className="size-4" />, t: "Consentimiento del tutor", d: "Un menor es invisible para los clubes hasta que el tutor da su consentimiento." },
+              { i: <ShieldCheck className="size-4" />, t: "Clubes verificados", d: "Un club no verificado no puede contactar a nadie." },
+              { i: <Eye className="size-4" />, t: "Privacidad campo a campo", d: "El jugador decide quién ve el perfil, los vídeos y los datos." },
             ].map((x) => (
               <div key={x.t} className="rounded-2xl border border-line p-4">
                 <span className="grid size-8 place-items-center rounded-lg bg-violet-soft text-violet">{x.i}</span>
@@ -190,7 +190,7 @@ export default async function Landing() {
         <div className="flex flex-col justify-between gap-4 md:flex-row">
           <Logo dark={false} />
           <p className="max-w-2xl">
-            Demo de producte. Tots els clubs, jugadors, competicions, classificacions i estadístiques són <strong className="text-ink">ficticis</strong>. La demo no es connecta amb la Federació Catalana de Futbol ni amb cap font externa, i cap indicador de «verificat» representa una verificació oficial.
+            Demo de producto. Todos los clubes, jugadores, competiciones, clasificaciones y estadísticas son <strong className="text-ink">ficticis</strong>. La demo no se conecta con la Federació Catalana de Futbol ni con ninguna fuente externa, y ningún indicador de «verificado» representa una verificación oficial.
           </p>
         </div>
       </footer>

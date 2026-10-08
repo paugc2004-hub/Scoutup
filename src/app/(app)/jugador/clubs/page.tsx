@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/ui";
 import { ClubBrowser } from "@/components/player/club-browser";
 import type { ClubLite } from "@/components/player/club-browser";
 
-export const metadata = { title: "Descobrir clubs" };
+export const metadata = { title: "Descubrir clubes" };
 
 export default async function ClubsPage() {
   const u = await requirePlayer();
@@ -25,7 +25,7 @@ export default async function ClubsPage() {
   }));
   return (
     <div>
-      <PageHeader eyebrow="Explorar" title="Descobrir clubs i equips" subtitle="Busca clubs i equips de qualsevol categoria. Ordenats per proximitat al teu municipi." />
+      <PageHeader eyebrow="Explorar" title="Descubrir clubes y equipos" subtitle="Busca clubes y equipos de cualquier categoría. Ordenados por proximidad a tu municipio." />
       <ClubBrowser clubs={items} comarques={COMARQUES} />
     </div>
   );

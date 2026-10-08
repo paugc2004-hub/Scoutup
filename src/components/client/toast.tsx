@@ -24,7 +24,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <p className="text-[13.5px] font-semibold leading-snug">{t.text}</p>
               {t.sub && <p className="mt-0.5 text-[12.5px] text-night-text">{t.sub}</p>}
             </div>
-            <button onClick={() => setItems((x) => x.filter((y) => y.id !== t.id))} className="text-night-muted hover:text-white" aria-label="Tancar">
+            <button onClick={() => setItems((x) => x.filter((y) => y.id !== t.id))} className="text-night-muted hover:text-white" aria-label="Cerrar">
               <X className="size-4" />
             </button>
           </div>

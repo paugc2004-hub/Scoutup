@@ -43,16 +43,16 @@ export function CalendarView({ events, month, basePath, canCreate, teams, player
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="flex items-center gap-1">
           <button onClick={() => router.push(`${basePath}?m=${prev}`)} className="grid size-9 place-items-center rounded-xl border border-line bg-surface hover:bg-sunken" aria-label="Mes anterior"><ChevronLeft className="size-4" /></button>
-          <button onClick={() => router.push(`${basePath}?m=${next}`)} className="grid size-9 place-items-center rounded-xl border border-line bg-surface hover:bg-sunken" aria-label="Mes següent"><ChevronRight className="size-4" /></button>
+          <button onClick={() => router.push(`${basePath}?m=${next}`)} className="grid size-9 place-items-center rounded-xl border border-line bg-surface hover:bg-sunken" aria-label="Mes siguiente"><ChevronRight className="size-4" /></button>
         </div>
         <p className="min-w-44 text-[18px] font-extrabold capitalize tracking-tight">{monthName(m)} {y}</p>
-        <Link href={basePath} className="rounded-lg px-2.5 py-1.5 text-[12.5px] font-semibold text-muted hover:bg-sunken hover:text-ink">Avui</Link>
+        <Link href={basePath} className="rounded-lg px-2.5 py-1.5 text-[12.5px] font-semibold text-muted hover:bg-sunken hover:text-ink">Hoy</Link>
         <div className="ml-auto flex items-center gap-2">
           <div className="flex rounded-xl border border-line bg-surface p-0.5">
             <button onClick={() => setView("mes")} className={cn("flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[12.5px] font-semibold", view === "mes" ? "bg-ink text-white" : "text-muted")}><CalendarDays className="size-3.5" /> Mes</button>
             <button onClick={() => setView("agenda")} className={cn("flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[12.5px] font-semibold", view === "agenda" ? "bg-ink text-white" : "text-muted")}><List className="size-3.5" /> Agenda</button>
           </div>
-          {canCreate && <Button variant="primary" icon={<Plus className="size-4" />} onClick={() => setCreating(todayKey)}>Nou esdeveniment</Button>}
+          {canCreate && <Button variant="primary" icon={<Plus className="size-4" />} onClick={() => setCreating(todayKey)}>Nuevo evento</Button>}
         </div>
       </div>
       <div className="mb-4 flex flex-wrap gap-2">
@@ -77,7 +77,7 @@ export function CalendarView({ events, month, basePath, canCreate, teams, player
                     <>
                       <div className="mb-1 flex items-center justify-between">
                         <span className={cn("grid size-6 place-items-center rounded-full text-[12px] font-bold tabular", k === todayKey ? "bg-accent text-night" : "text-ink-2")}>{Number(k.slice(8))}</span>
-                        {canCreate && <button onClick={() => setCreating(k)} className="hidden size-5 place-items-center rounded text-subtle hover:bg-sunken md:grid" aria-label="Afegir"><Plus className="size-3" /></button>}
+                        {canCreate && <button onClick={() => setCreating(k)} className="hidden size-5 place-items-center rounded text-subtle hover:bg-sunken md:grid" aria-label="Añadir"><Plus className="size-3" /></button>}
                       </div>
                       <div className="space-y-0.5">
                         {evs.slice(0, 3).map((e) => (
@@ -98,7 +98,7 @@ export function CalendarView({ events, month, basePath, canCreate, teams, player
         </div>
       ) : (
         <div className="space-y-2">
-          {upcoming.length === 0 && <p className="rounded-2xl border border-dashed border-line-strong p-10 text-center text-[13px] text-muted">No hi ha esdeveniments pròxims aquest mes.</p>}
+          {upcoming.length === 0 && <p className="rounded-2xl border border-dashed border-line-strong p-10 text-center text-[13px] text-muted">No hay eventos próximos este mes.</p>}
           {upcoming.map((e) => (
             <button key={e.id} onClick={() => setSel(e)} className="flex w-full items-center gap-4 rounded-2xl border border-line bg-surface p-3.5 text-left shadow-card transition hover:border-line-strong">
               <div className="w-14 shrink-0 text-center"><p className="text-[11px] font-bold uppercase text-subtle">{fmtDate(e.starts_at, { short: true }).split(" ")[1]}</p><p className="text-[20px] font-extrabold leading-none tabular">{fmtDate(e.starts_at, { short: true }).split(" ")[0]}</p></div>
@@ -120,11 +120,11 @@ function EventModal({ ev, onClose }: { ev: CalEvent | null; onClose: () => void 
   if (!ev) return null;
   return (
     <Modal open onClose={onClose} title={ev.title} subtitle={`${EVENT_KIND_LABEL[ev.kind as EventKind]} · ${fmtDate(ev.starts_at, { weekday: true })}`} size="sm"
-      footer={ev.canDelete ? <Button variant="danger" size="sm" loading={pending} icon={<Trash2 className="size-3.5" />} onClick={async () => { const d = await call(`/api/events/${ev.id}`, { method: "DELETE", ok: "Esdeveniment eliminat" }); if (d) onClose(); }}>Eliminar</Button> : undefined}>
+      footer={ev.canDelete ? <Button variant="danger" size="sm" loading={pending} icon={<Trash2 className="size-3.5" />} onClick={async () => { const d = await call(`/api/events/${ev.id}`, { method: "DELETE", ok: "Evento eliminado" }); if (d) onClose(); }}>Eliminar</Button> : undefined}>
       <div className="space-y-3 text-[13.5px]">
         <p className="flex items-center gap-2"><span className="size-2.5 rounded-full" style={{ background: EVENT_KIND_COLOR[ev.kind as EventKind] }} /> {fmtTime(ev.starts_at)}{ev.ends_at ? ` – ${fmtTime(ev.ends_at)}` : ""}</p>
         {ev.location && <p className="flex items-center gap-2 text-muted"><MapPin className="size-4" /> {ev.location}</p>}
-        {ev.team && <p className="text-muted">Equip: <span className="font-semibold text-ink">{ev.team}</span></p>}
+        {ev.team && <p className="text-muted">Equipo: <span className="font-semibold text-ink">{ev.team}</span></p>}
         {ev.related && ev.relatedId && <p className="text-muted">Jugador: <Link href={`/club/jugadors/${ev.relatedId}`} className="font-semibold text-accent-ink hover:underline">{ev.related}</Link></p>}
         {ev.notes && <p className="rounded-xl bg-bg p-3 leading-relaxed text-ink-2">{ev.notes}</p>}
       </div>
@@ -138,27 +138,27 @@ function CreateEventModal({ day, onClose, teams, players, kinds }: { day: string
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setF((x) => ({ ...x, [k]: k === "duration" ? Number(e.target.value) : e.target.value }));
   const title = f.title || `${EVENT_KIND_LABEL[f.kind as EventKind]}${f.related_player_id ? `: ${players?.find((p) => p.id === f.related_player_id)?.name}` : ""}`;
   return (
-    <Modal open onClose={onClose} title="Nou esdeveniment" size="md"
-      footer={<><Button onClick={onClose}>Cancel·lar</Button><Button variant="dark" loading={pending} onClick={async () => {
-        const d = await call("/api/events", { body: { kind: f.kind, title, starts_at: new Date(`${f.date}T${f.time}:00`).toISOString(), duration: f.duration, team_id: f.team_id || null, related_player_id: f.related_player_id || null, location: f.location || null, notes: f.notes || null }, ok: "Esdeveniment creat", okSub: f.related_player_id && ["prova", "trucada", "reunio"].includes(f.kind) ? "També s'ha afegit al calendari del jugador." : undefined });
+    <Modal open onClose={onClose} title="Nuevo evento" size="md"
+      footer={<><Button onClick={onClose}>Cancelar</Button><Button variant="dark" loading={pending} onClick={async () => {
+        const d = await call("/api/events", { body: { kind: f.kind, title, starts_at: new Date(`${f.date}T${f.time}:00`).toISOString(), duration: f.duration, team_id: f.team_id || null, related_player_id: f.related_player_id || null, location: f.location || null, notes: f.notes || null }, ok: "Evento creado", okSub: f.related_player_id && ["prova", "trucada", "reunio"].includes(f.kind) ? "También se ha añadido al calendario del jugador." : undefined });
         if (d) onClose();
       }}>Crear</Button></>}>
       <div className="space-y-4">
-        <Field label="Tipus"><div className="flex flex-wrap gap-2">{kinds.map((k) => <Chip key={k} active={f.kind === k} onClick={() => setF((x) => ({ ...x, kind: k }))}><span className="size-2 rounded-full" style={{ background: EVENT_KIND_COLOR[k] }} />{EVENT_KIND_LABEL[k]}</Chip>)}</div></Field>
-        <Field label="Títol"><Input value={f.title} onChange={set("title")} placeholder={title} /></Field>
+        <Field label="Tipo"><div className="flex flex-wrap gap-2">{kinds.map((k) => <Chip key={k} active={f.kind === k} onClick={() => setF((x) => ({ ...x, kind: k }))}><span className="size-2 rounded-full" style={{ background: EVENT_KIND_COLOR[k] }} />{EVENT_KIND_LABEL[k]}</Chip>)}</div></Field>
+        <Field label="Título"><Input value={f.title} onChange={set("title")} placeholder={title} /></Field>
         <div className="grid grid-cols-3 gap-3">
-          <Field label="Dia"><Input type="date" value={f.date} onChange={set("date")} /></Field>
+          <Field label="Día"><Input type="date" value={f.date} onChange={set("date")} /></Field>
           <Field label="Hora"><Input type="time" value={f.time} onChange={set("time")} /></Field>
-          <Field label="Durada"><Select value={f.duration} onChange={set("duration")}>{[15, 30, 45, 60, 90, 120].map((d) => <option key={d} value={d}>{d} min</option>)}</Select></Field>
+          <Field label="Duración"><Select value={f.duration} onChange={set("duration")}>{[15, 30, 45, 60, 90, 120].map((d) => <option key={d} value={d}>{d} min</option>)}</Select></Field>
         </div>
         {teams && teams.length > 0 && (
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Equip"><Select value={f.team_id} onChange={set("team_id")}><option value="">Tot el club</option>{teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}</Select></Field>
-            {players && <Field label="Jugador relacionat"><Select value={f.related_player_id} onChange={set("related_player_id")}><option value="">Cap</option>{players.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</Select></Field>}
+            <Field label="Equipo"><Select value={f.team_id} onChange={set("team_id")}><option value="">Todo el club</option>{teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}</Select></Field>
+            {players && <Field label="Jugador relacionado"><Select value={f.related_player_id} onChange={set("related_player_id")}><option value="">Ninguno</option>{players.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</Select></Field>}
           </div>
         )}
-        <Field label="Lloc"><Input value={f.location} onChange={set("location")} placeholder="Camp, adreça o videotrucada" /></Field>
-        <Field label="Notes"><Textarea rows={3} value={f.notes} onChange={set("notes")} /></Field>
+        <Field label="Lugar"><Input value={f.location} onChange={set("location")} placeholder="Campo, dirección o videollamada" /></Field>
+        <Field label="Notas"><Textarea rows={3} value={f.notes} onChange={set("notes")} /></Field>
       </div>
     </Modal>
   );

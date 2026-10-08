@@ -43,7 +43,7 @@ describe("direcció esportiva", () => {
 
 describe("coordinació", () => {
   it("gestiona oportunitats de qualsevol equip", () => {
-    const r = createOffer(coordinator(), { ...newOffer, team_id: "t_vn_cada", title: "Porter per al Cadet A", position: "POR" });
+    const r = createOffer(coordinator(), { ...newOffer, team_id: "t_vn_cada", title: "Porter per al Cadete A", position: "POR" });
     setOfferStatus(coordinator(), r.id, "pausada");
     expect(get<{ status: string }>("SELECT status FROM offers WHERE id = ?", r.id)!.status).toBe("pausada");
   });
