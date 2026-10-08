@@ -13,7 +13,7 @@ import { CLUBS, CLUB_TEXTS, HOME_CLUB_ID, CLUB_B_ID } from "./clubs.ts";
 import type { ClubDef } from "./clubs.ts";
 import { MALE_NAMES, FEMALE_NAMES, SURNAMES, BLOCKED_COMBOS, FILLER_TEAMS, COACH_NAMES } from "./names.ts";
 import {
-  POSITIONS, POSITION_LABEL, levelLabel, currentSeasonStartYear, seasonLabel, seasonId, DEFAULT_PRIVACY,
+  levelLabel, currentSeasonStartYear, seasonLabel, seasonId, DEFAULT_PRIVACY,
   stageToAppStatus, STAGE_LABEL,
 } from "../../src/lib/domain.ts";
 import type { Position, Attrs, Privacy, Preferences, Stage } from "../../src/lib/domain.ts";
@@ -201,7 +201,6 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   const seasons = [start - 2, start - 1, start];
   const cur = seasonId(start);
   const prev = seasonId(start - 1);
-  const nowIso = iso(now);
 
   for (const y of seasons) ins(c, "seasons", { id: seasonId(y), label: seasonLabel(y), start_year: y, is_current: y === start ? 1 : 0 });
 
@@ -477,7 +476,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
   const place = (city: string) => placeByCity(city)!;
 
   // Jugadors protagonistes de la demo
-  const pol = makePlayer({
+  makePlayer({
     id: "p_pol", userId: U.player, first: "Pol", last: "Serra Batlle", gender: "M", birth: `${start - 18}-03-14`, birthYear: start - 18,
     basePlace: place("Terrassa"), place: place("Terrassa"), pos: "DC", sec: ["MCD"], foot: "esquerre", height: 186,
     clubId: "club_serralada", teamId: "t_serralada_juva", category: "Juvenil", rank: 3, availability: "obert", contract: "final_temporada",
@@ -491,7 +490,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     prev: { matches: 25, starts: 13, minutes: 1520, goals: 3, assists: 1, yellow: 5, red: 0, callups: 27, cs: 5, ver: "updated" },
     hasCurrentStats: false, careerSeasons: 3, videos: 0, achievements: 0,
   });
-  const biel = makePlayer({
+  makePlayer({
     id: "p_biel", first: "Biel", last: "Riera Coll", gender: "M", birth: `${start - 18}-02-02`, birthYear: start - 18,
     basePlace: place("Sant Cugat del Vallès"), place: place("Sant Cugat del Vallès"), pos: "DC", sec: ["LE"], foot: "esquerre", height: 183,
     clubId: "club_turo", teamId: "t_turo_juva", category: "Juvenil", rank: 2, availability: "escoltant", contract: "amb_fitxa",
@@ -504,7 +503,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     prev: { matches: 12, starts: 3, minutes: 400, goals: 1, assists: 0, yellow: 2, red: 0, callups: 22, cs: 1, ver: "self" },
     hasCurrentStats: true, careerSeasons: 2, videos: 2, achievements: 1,
   });
-  const arnau = makePlayer({
+  makePlayer({
     id: "p_arnau", first: "Arnau", last: "Soler Vives", gender: "M", birth: `${start - 18}-01-19`, birthYear: start - 18,
     basePlace: place("Granollers"), place: place("Granollers"), pos: "DC", sec: [], foot: "dret", height: 188,
     clubId: "club_serraverda", teamId: "t_serraverda_juva", category: "Juvenil", rank: 2, availability: "escoltant",
@@ -513,7 +512,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
     prev: { matches: 28, starts: 24, minutes: 2130, goals: 4, assists: 1, yellow: 6, red: 0, callups: 29, cs: 9, ver: "verified" },
     hasCurrentStats: true, careerSeasons: 4, videos: 3, achievements: 2,
   });
-  const nil = makePlayer({
+  makePlayer({
     id: "p_nil", first: "Nil", last: "Font Casals", gender: "M", birth: `${start - 16}-05-22`, birthYear: start - 16,
     basePlace: place("Cerdanyola del Vallès"), place: place("Cerdanyola del Vallès"), pos: "ED", sec: ["EE", "MCO"], foot: "dret", height: 172,
     clubId: "club_horitzo", teamId: "t_horitzo_juva", category: "Juvenil", rank: 3, availability: "obert",
@@ -845,7 +844,7 @@ export function seedDemo(db: DatabaseSync, now: Date): void {
       { side: "player" as const, body: "Hi seré. Haig de portar alguna cosa especial?", minsAgo: 7 * D },
       { side: "club" as const, body: `Només la teva roba d'entrenament i botes de gespa artificial. Et rebrà el cos tècnic del ${team}.`, minsAgo: 7 * D - 30 },
     ],
-    (n: string, team: string) => [
+    (n: string, _team: string) => [
       { side: "club" as const, body: `Hola ${n}, gràcies per acceptar la sol·licitud. Ens agradaria saber quins són els teus plans per a la propera temporada.`, minsAgo: 3 * D },
       { side: "player" as const, body: "Hola! Ara mateix estic bé al meu club, però estic obert a escoltar propostes per l'any vinent.", minsAgo: 2 * D },
       { side: "club" as const, body: "Entesos. Et seguirem durant la temporada i et tornarem a escriure més endavant. Molta sort!", minsAgo: 2 * D - 45 },

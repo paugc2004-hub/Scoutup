@@ -337,7 +337,7 @@ export function createEvent(u: SessionUser, input: { kind: string; title: string
       const p = playerRow(input.related_player_id);
       const club = mustClub(staff.club_id);
       if (p) {
-        insert("events", { id: uid("ev_"), club_id: null, team_id: null, player_id: p.id, owner_user_id: p.user_id, kind: input.kind, title: `${input.kind === "prova" ? "Prova" : input.kind === "trucada" ? "Videotrucada" : "Reunió"} amb ${club.name}`, starts_at: start.toISOString(), ends_at: end.toISOString(), location: input.location ?? null, opponent: null, notes: input.notes ?? null, related_player_id: null, created_at: nowIso() });
+        insert("events", { id: uid("ev_"), club_id: null, team_id: null, player_id: p.id, owner_user_id: p.user_id, kind: input.kind, title: `${input.kind === "prova" ? "Prova" : input.kind === "trucada" ? "Videotrucada" : "Reunió"} amb ${club.name}`, starts_at: start.toISOString(), ends_at: end.toISOString(), location: input.location ?? null, opponent: null, notes: null /* les notes internes del club no es copien mai al calendari del jugador */, related_player_id: null, created_at: nowIso() });
         notifyPlayer(p, "event", `${club.name} ha programat: ${input.title}`, `${fmtDateTime(start)}${input.location ? ` · ${input.location}` : ""}`, "/jugador/calendari", isMinor(p.birth_date));
         if (input.conversation_id) addSystemMessage(input.conversation_id, u.id, `📅 ${input.kind === "trucada" ? "Videotrucada programada" : input.kind === "prova" ? "Prova programada" : "Reunió programada"}: ${new Intl.DateTimeFormat("ca-ES", { timeZone: "Europe/Madrid", weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(start)}${input.location ? ` · ${input.location}` : ""}`);
       }

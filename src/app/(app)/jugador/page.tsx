@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Eye, Heart, Send, MessageSquare, ArrowRight, CalendarClock, Compass, CheckCircle2, Circle, Sparkles, Route } from "lucide-react";
+import { Eye, Heart, Send, MessageSquare, ArrowRight, CalendarClock, Compass, Circle, Sparkles, Route } from "lucide-react";
 import { requirePlayer } from "@/server/auth/session";
 import { get } from "@/server/db/client";
 import { playerCtx, playerRow, presentPlayer } from "@/server/services/players";
@@ -7,7 +7,7 @@ import { opportunitiesFor } from "@/server/services/offers";
 import { completenessOf } from "@/server/services/player-actions";
 import { applicationsOf, clubsInterested, playerEvents } from "@/server/services/player-home";
 import { requestsForPlayer } from "@/server/services/messages";
-import { Avatar, Badge, Card, CardHeader, ClubCrest, EmptyState, LinkButton, MatchRing, PageHeader, Stat, AvailabilityBadge, cn } from "@/components/ui";
+import { Badge, Card, CardHeader, ClubCrest, EmptyState, LinkButton, MatchRing, PageHeader, Stat, AvailabilityBadge, cn } from "@/components/ui";
 import { RequestCard } from "@/components/player/request-card";
 import { APP_STATUS_LABEL, EVENT_KIND_COLOR, EVENT_KIND_LABEL, POSITION_LABEL } from "@/lib/domain";
 import type { EventKind, Position } from "@/lib/domain";

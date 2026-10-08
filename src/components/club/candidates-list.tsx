@@ -2,11 +2,10 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { KanbanSquare, Check, SlidersHorizontal, MapPin, Inbox } from "lucide-react";
-import { Avatar, AvailabilityBadge, Badge, EmptyState, MatchRing, StageBadge, VerificationBadge, matchColor, cn } from "@/components/ui";
+import { Avatar, AvailabilityBadge, Badge, EmptyState, MatchRing, StageBadge, VerificationBadge, matchColor } from "@/components/ui";
 import { Chip, Select, useApi, Button } from "@/components/client/kit";
 import { CompareToggle } from "@/components/club/compare-tray";
 import { FOOT_LABEL } from "@/lib/domain";
-import type { Stage } from "@/lib/domain";
 
 import type { CandidateLite } from "@/components/club/candidate-lite";
 export type { CandidateLite };

@@ -23,9 +23,10 @@ export function FavoriteButton({ type, id, initial, label = true, size = "md" }:
       }}
       icon={<Star className={cn("size-4", on && "fill-[#f5b301] text-[#f5b301]")} />}
       aria-pressed={on}
-      title={on ? "Treure de favorits" : "Afegir a favorits"}
+      title={on ? "Treure de guardats" : "Guardar"}
+      aria-label={on ? "Treure de guardats" : "Guardar"}
     >
-      {label && (on ? "Favorit" : "Afegir a favorits")}
+      {label && (on ? "Guardat" : "Guardar")}
     </Button>
   );
 }

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, Plus, MapPin, Trash2, CalendarDays, List } from "lucide-react";
 import { Button, Chip, Field, Input, Modal, Select, Textarea, useApi } from "@/components/client/kit";
 import { cn } from "@/components/ui";
-import { EVENT_KINDS, EVENT_KIND_COLOR, EVENT_KIND_LABEL } from "@/lib/domain";
+import { EVENT_KIND_COLOR, EVENT_KIND_LABEL } from "@/lib/domain";
 import type { EventKind } from "@/lib/domain";
 import { dayKey, fmtDate, fmtTime, monthName } from "@/lib/time";
 
