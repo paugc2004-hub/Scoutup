@@ -81,7 +81,7 @@ export function CandidatesList({ items, offerId, teamId, emptyText }: { items: C
                   <p className="truncate text-[12.5px] text-muted">{c.position_label} · {c.age} años · {c.club_name}{c.team_name ? ` ${c.team_name}` : ""} · {c.level_label}</p>
                   <p className="mt-0.5 flex items-center gap-2 text-[12px] text-subtle">
                     <span className="inline-flex items-center gap-1"><MapPin className="size-3" />{c.location}{c.km ? ` · ${Math.round(c.km)} km` : ""}</span>
-                    <span>Peu {FOOT_LABEL[c.foot]?.toLowerCase()}</span>
+                    <span>Pie {FOOT_LABEL[c.foot]?.toLowerCase()}</span>
                     {c.height && <span>{c.height} cm</span>}
                   </p>
                 </div>

@@ -67,7 +67,7 @@ export default async function IntelligencePage({ searchParams }: { searchParams:
                       <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
                         <FactorStrip factors={c.match.factors} />
                         <VerificationBadge status={c.player.verification} />
-                        <Badge>Peu {FOOT_LABEL[c.player.foot].toLowerCase()}</Badge>
+                        <Badge>Pie {FOOT_LABEL[c.player.foot].toLowerCase()}</Badge>
                         {c.player.height && <Badge>{c.player.height} cm</Badge>}
                         <Badge>{c.player.location} · {Math.round(c.km)} km</Badge>
                         {c.player.minor && <Badge tone="violet">Menor</Badge>}

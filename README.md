@@ -8,7 +8,7 @@ ScoutUp tiene dos productos: **ScoutUp Club** y **ScoutUp Player**. Esta demo co
 NECESIDAD → OPORTUNIDAD → DESCUBRIMIENTO → MATCHING → ANÁLISIS → GUARDAR → PIPELINE → CONTACTO → EVALUACIÓN → DECISIÓN
 ```
 
-> ⚠️ **Todos los datos son ficticios.** Clubes, jugadores, competiciones, clasificaciones, estadísticas y mensajes son inventados (los municipios son reales solo como referencia geográfica). La demo **no se conecta con la FCF**, no hace scraping ni usa APIs externas, y ningún indicador «Verificat» representa una verificación oficial. La interfaz está en **catalán**.
+> ⚠️ **Todos los datos son ficticios.** Clubes, jugadores, competiciones, clasificaciones, estadísticas y mensajes son inventados (los municipios son reales solo como referencia geográfica). La demo **no se conecta con la FCF**, no hace scraping ni usa APIs externas, y ningún indicador «Verificado» representa una verificación oficial. La interfaz está en **castellano** (las rutas y algunos identificadores internos conservan nombres en catalán).
 
 ## Inicio rápido
 
@@ -35,16 +35,20 @@ Contraseña de todos: **`demo`**. También se puede entrar con un clic desde `/e
 
 ### Recorrido estrella (5 min)
 
-En `/demo` → «Recorregut estrella» se abre una guía flotante paso a paso:
+En `/demo` → «Recorrido estrella» se abre una guía flotante paso a paso:
 
 1. Entramos como directora deportiva del CF Vallès Nord.
-2. El panel muestra la necesidad: el Juvenil A necesita un central zurdo.
-3. Abrimos la oportunidad: ScoutUp ordena los jugadores compatibles.
-4. Abrimos a Biel Riera: **87 % de compatibilidad**, con el desglose de *por qué encaja*.
-5. Guardar → comparar → añadir al pipeline → evaluación privada → contacto seguro.
+2. El panel destaca la necesidad prioritaria: **el Cadete A necesita un lateral derecho**.
+3. Abrimos la oportunidad: ScoutUp encuentra **18 jugadores compatibles** (≥ 70 %).
+4. Abrimos a Hugo Navarro: **87 % de compatibilidad**, con el desglose de *por qué encaja*.
+5. Guardar → comparar → añadir al pipeline → evaluación privada → contacto (vía tutor, es menor).
 6. Volvemos al panel y la actividad refleja todo lo que acabamos de hacer.
 
-Hay otros recorridos: «Rols, permisos i aïllament», «Protecció de menors» y el lado del jugador.
+Hay otros recorridos: «Roles, permisos y aislamiento», «Central zurdo sub-19 con IA copiloto» y «Protección de menores».
+
+### Onboarding de un club nuevo
+
+Al registrar un club (`/registre`) se abre el asistente `/club/bienvenida`: club → equipos → primera necesidad → la oportunidad se crea y muestra al momento los primeros jugadores compatibles.
 
 ## Comandos
 
@@ -89,8 +93,8 @@ Más detalle:
 
 ## Calidad
 
-- **40 tests** unitarios y de integración: RBAC, motor de compatibilidad, validación, rate limiting, aislamiento entre clubes, permisos por rol, protección de menores y recorrido estrella a nivel de servicio.
-- **21 tests E2E** (Playwright): recorrido estrella completo, crear una oportunidad, búsqueda, «break my app» (sin sesión, CSRF, IDOR entre clubes, roles, entrada maliciosa, XSS, cabeceras) y ausencia de scroll horizontal a 1440, 1280, 1024 y 768 px.
+- **46 tests** unitarios y de integración: RBAC, motor de compatibilidad, validación, rate limiting, aislamiento entre clubes, permisos por rol, protección de menores, onboarding y recorrido estrella a nivel de servicio.
+- **Tests E2E** (Playwright): recorrido estrella completo, onboarding de un club nuevo, crear una oportunidad, búsqueda, «break my app» (sin sesión, CSRF, IDOR entre clubes, roles, entrada maliciosa, XSS, cabeceras) y ausencia de scroll horizontal a 1440, 1280, 1024 y 768 px.
 - **CI** en GitHub Actions: lint, typecheck, tests, `npm audit` de producción, build y E2E.
 
 ## Despliegue

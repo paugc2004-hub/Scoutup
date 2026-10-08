@@ -6,7 +6,7 @@ import { club as getClub } from "@/server/services/club";
 import { clubOffers, offerStats, rankCandidates, toMatchOffer } from "@/server/services/offers";
 import { playerCtx } from "@/server/services/players";
 import { Avatar, Badge, EmptyState, LinkButton, PageHeader, cn } from "@/components/ui";
-import { POSITION_LABEL, levelLabel, traitLabel } from "@/lib/domain";
+import { FOOT_LABEL, POSITION_LABEL, levelLabel, traitLabel } from "@/lib/domain";
 import type { Position } from "@/lib/domain";
 import { fmtDate, fmtRelative } from "@/lib/time";
 
@@ -41,7 +41,7 @@ export default async function OffersPage() {
         <p className="mt-1 text-[13px] text-muted">{POSITION_LABEL[o.position as Position]} · nascuts {o.birth_year_min}–{o.birth_year_max} · mínim {levelLabel(o.level_min)}</p>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {JSON.parse(o.traits ?? "[]").map((t: string) => <span key={t} className="rounded-md bg-sunken px-2 py-0.5 text-[11.5px] font-semibold text-ink-2">{traitLabel(t)}</span>)}
-          {o.foot !== "indiferent" && <span className="rounded-md bg-sunken px-2 py-0.5 text-[11.5px] font-semibold text-ink-2">Peu {o.foot}</span>}
+          {o.foot !== "indiferent" && <span className="rounded-md bg-sunken px-2 py-0.5 text-[11.5px] font-semibold text-ink-2">Pie {FOOT_LABEL[o.foot]?.toLowerCase() ?? o.foot}</span>}
         </div>
         <div className="mt-4 grid grid-cols-3 gap-2 border-t border-line pt-4 text-center">
           <div><p className="text-[20px] font-extrabold tabular">{r.cands.length}</p><p className="text-[11.5px] text-muted">≥70% compatibles</p></div>

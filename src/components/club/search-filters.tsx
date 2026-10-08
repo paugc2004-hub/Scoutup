@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { RotateCcw, SlidersHorizontal, X } from "lucide-react";
+import { ChevronDown, RotateCcw, SlidersHorizontal, X } from "lucide-react";
 import { Field, Input, Select, Toggle, Button } from "@/components/client/kit";
 import { POSITIONS, POSITION_LABEL, LEVELS } from "@/lib/domain";
 import { PLACES, COMARQUES } from "@/lib/geo";
@@ -24,6 +24,10 @@ export function SearchFilters({ offers }: { offers: { id: string; title: string 
   };
   const val = (k: string, d = "") => sp.get(k) ?? d;
   const active = [...sp.keys()].filter((k) => !["page", "sort", "offer"].includes(k)).length;
+
+  const advKeys = ["foot", "hmin", "comarca", "minmin", "ver", "video", "lliure", "sec"];
+  const advActive = advKeys.filter((k) => sp.has(k)).length;
+  const [advOpen, setAdvOpen] = useState(advActive > 0);
 
   const panel = (
     <div className="space-y-4">
@@ -52,13 +56,9 @@ export function SearchFilters({ offers }: { offers: { id: string; title: string 
         <Field label="Equipo">
           <Select value={val("g")} onChange={(e) => setParam("g", e.target.value)}><option value="">Todos</option><option value="M">Masculino</option><option value="F">Femenino</option></Select>
         </Field>
-        <Field label="Pie">
-          <Select value={val("foot")} onChange={(e) => setParam("foot", e.target.value)}><option value="">Cualquiera</option><option value="esquerre">Zurdo</option><option value="dret">Diestro</option><option value="ambdues">Ambidiestro</option></Select>
-        </Field>
         <Field label="Nivel mínimo">
           <Select value={val("lvl")} onChange={(e) => setParam("lvl", e.target.value)}><option value="">Cualquiera</option>{LEVELS.map((l) => <option key={l.rank} value={l.rank}>{l.label}+</option>)}</Select>
         </Field>
-        <Field label="Altura mínima"><Input type="number" min={150} max={205} value={val("hmin")} onChange={(e) => setParam("hmin", e.target.value)} placeholder="cm" /></Field>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <Field label="Cerca de">
@@ -68,18 +68,34 @@ export function SearchFilters({ offers }: { offers: { id: string; title: string 
           <Select value={val("km", "30")} onChange={(e) => setParam("km", e.target.value)} disabled={!val("city")}>{[10, 20, 30, 50, 80].map((k) => <option key={k}>{k}</option>)}</Select>
         </Field>
       </div>
-      <Field label="Comarca">
-        <Select value={val("comarca")} onChange={(e) => setParam("comarca", e.target.value)}><option value="">Todas</option>{COMARQUES.map((c) => <option key={c}>{c}</option>)}</Select>
-      </Field>
       <Field label="Disponibilidad">
         <Select value={val("disp")} onChange={(e) => setParam("disp", e.target.value)}><option value="">Todas</option><option value="obert">Abierto a oportunidades</option><option value="escoltant">Escuchando propuestas</option><option value="actius">Abierto o escuchando</option></Select>
       </Field>
-      <Field label="Minutos mínimos la temporada pasada"><Input type="number" min={0} step={100} value={val("minmin")} onChange={(e) => setParam("minmin", e.target.value)} placeholder="p. ex. 1000" /></Field>
-      <div className="divide-y divide-line rounded-xl border border-line px-3">
-        <Toggle checked={val("ver") === "1"} onChange={(v) => setParam("ver", v ? "1" : null)} label="Solo datos verificados" />
-        <Toggle checked={val("video") === "1"} onChange={(v) => setParam("video", v ? "1" : null)} label="Con vídeo" />
-        <Toggle checked={val("lliure") === "1"} onChange={(v) => setParam("lliure", v ? "1" : null)} label="Sin equipo ahora mismo" />
-        <Toggle checked={val("sec") === "1"} onChange={(v) => setParam("sec", v ? "1" : null)} label="Incluir posición secundaria" />
+      <div className="rounded-xl border border-line">
+        <button type="button" onClick={() => setAdvOpen((v) => !v)} aria-expanded={advOpen} className="flex w-full items-center justify-between px-3 py-2.5 text-[13.5px] font-semibold">
+          <span>Filtros avanzados {advActive > 0 && <span className="ml-1 rounded-full bg-ink px-1.5 text-[11px] text-white">{advActive}</span>}</span>
+          <ChevronDown className={cn("size-4 transition-transform", advOpen && "rotate-180")} />
+        </button>
+        {advOpen && (
+          <div className="space-y-4 border-t border-line p-3">
+            <div className="grid grid-cols-2 gap-3">
+            <Field label="Pie">
+              <Select value={val("foot")} onChange={(e) => setParam("foot", e.target.value)}><option value="">Cualquiera</option><option value="esquerre">Zurdo</option><option value="dret">Diestro</option><option value="ambdues">Ambidiestro</option></Select>
+            </Field>
+            <Field label="Altura mínima"><Input type="number" min={150} max={205} value={val("hmin")} onChange={(e) => setParam("hmin", e.target.value)} placeholder="cm" /></Field>
+            </div>
+            <Field label="Comarca">
+              <Select value={val("comarca")} onChange={(e) => setParam("comarca", e.target.value)}><option value="">Todas</option>{COMARQUES.map((c) => <option key={c}>{c}</option>)}</Select>
+            </Field>
+            <Field label="Minutos mínimos la temporada pasada"><Input type="number" min={0} step={100} value={val("minmin")} onChange={(e) => setParam("minmin", e.target.value)} placeholder="p. ej. 1000" /></Field>
+            <div className="divide-y divide-line rounded-xl border border-line px-3">
+              <Toggle checked={val("ver") === "1"} onChange={(v) => setParam("ver", v ? "1" : null)} label="Solo datos verificados" />
+              <Toggle checked={val("video") === "1"} onChange={(v) => setParam("video", v ? "1" : null)} label="Con vídeo" />
+              <Toggle checked={val("lliure") === "1"} onChange={(v) => setParam("lliure", v ? "1" : null)} label="Sin equipo ahora mismo" />
+              <Toggle checked={val("sec") === "1"} onChange={(v) => setParam("sec", v ? "1" : null)} label="Incluir posición secundaria" />
+            </div>
+          </div>
+        )}
       </div>
       <Button variant="ghost" icon={<RotateCcw className="size-4" />} onClick={() => router.replace(path)} className="w-full">Limpiar filtros</Button>
     </div>

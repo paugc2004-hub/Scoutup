@@ -14,8 +14,8 @@ export const dynamic = "force-dynamic";
 export default async function Landing() {
   const me = await currentUser();
   const ctx = playerCtx();
-  const pr = playerRow("p_biel");
-  const of = offerRow("o_vn_central");
+  const pr = playerRow("p_hugo");
+  const of = offerRow("o_vn_ld");
   const hero = pr && of ? { p: presentPlayer(pr, ctx), m: computeMatch(toMatchPlayer(pr, ctx.prev.get(pr.id), ctx.career.get(pr.id) ?? 0), toMatchOffer(of), ctx.now), o: of } : null;
   const counts = {
     clubs: get<{ n: number }>("SELECT COUNT(*) AS n FROM clubs")?.n ?? 0,
@@ -48,19 +48,18 @@ export default async function Landing() {
               <span className="size-1.5 rounded-full bg-accent animate-pulse-dot" /> Demo interactiva · datos ficticios
             </p>
             <h1 className="text-[44px] font-extrabold leading-[1.02] tracking-[-0.035em] md:text-[64px]">
-              <span className="text-accent">SCOUTUP</span>
+              <span className="text-accent">ScoutUp Club</span>
               <br />
-              Conectando talento, clubes y oportunidades.
+              Encuentra al jugador que tu equipo necesita.
             </h1>
             <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-night-text">
               El software con el que los clubes de fútbol base encuentran el jugador que necesitan, entienden <span className="font-semibold text-white">por qué</span> encaja, organizan el proceso con su equipo y contactan de forma segura.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <DemoLoginButton role="director" icon={<Building2 className="size-4" />}>Entrar como club</DemoLoginButton>
-              <DemoLoginButton role="player" variant="secondary" icon={<UserRound className="size-4" />} className="!border-night-line !bg-night-2 !text-white hover:!bg-night-3">Entrar como jugador</DemoLoginButton>
+              <Link href="/demo" className="inline-flex h-12 items-center gap-2 rounded-xl border border-night-line bg-night-2 px-5 text-[15px] font-semibold text-white transition hover:bg-night-3"><Compass className="size-4" /> Ver la demo guiada</Link>
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13.5px] font-semibold">
-              <Link href="/demo" className="inline-flex items-center gap-1.5 text-white hover:text-accent"><Compass className="size-4" /> Explorar demo</Link>
               <Link href="/registre" className="inline-flex items-center gap-1.5 text-white hover:text-accent">Crear cuenta</Link>
               <a href="#com-funciona" className="inline-flex items-center gap-1.5 text-night-text hover:text-white">Ver cómo funciona <ArrowRight className="size-3.5" /></a>
             </div>
@@ -72,7 +71,7 @@ export default async function Landing() {
               <div className="absolute -inset-4 rounded-[32px] bg-gradient-to-br from-accent/25 to-transparent blur-2xl" />
               <div className="relative rounded-3xl border border-night-line bg-night-2 p-5 shadow-pop">
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-night-muted">Oportunitat · {hero.o.club_name}</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-night-muted">Oportunidad · {hero.o.club_name}</p>
                   <Badge tone="dark" className="!border-night-line !bg-night-3 !text-night-text">{hero.o.team_name}</Badge>
                 </div>
                 <p className="text-[19px] font-extrabold tracking-tight">{hero.o.title}</p>

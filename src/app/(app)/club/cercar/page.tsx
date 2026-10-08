@@ -117,7 +117,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   </div>
                   <div className="pointer-events-none relative mt-3 flex flex-wrap gap-1.5">
                     <Badge>{p.category} · {p.level_label}</Badge>
-                    <Badge>Peu {FOOT_LABEL[p.foot].toLowerCase()}</Badge>
+                    <Badge>Pie {FOOT_LABEL[p.foot].toLowerCase()}</Badge>
                     {p.height && <Badge>{p.height} cm</Badge>}
                     {p.has_video && <Badge tone="info"><Video className="size-3" /> Vídeo</Badge>}
                   </div>

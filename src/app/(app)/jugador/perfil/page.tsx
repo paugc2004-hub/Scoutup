@@ -49,7 +49,7 @@ export default async function MyProfile({ searchParams }: { searchParams: Promis
                 <div className="mt-2 flex flex-wrap gap-2"><Badge>{p.club_name}{p.team_name ? ` · ${p.team_name}` : ""}</Badge><Badge>{p.category} · {p.level_label}</Badge><AvailabilityBadge value={p.availability} /></div>
                 <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-[13px] text-muted">
                   <span className="inline-flex items-center gap-1.5"><MapPin className="size-4" />{p.location}</span>
-                  <span className="inline-flex items-center gap-1.5"><Footprints className="size-4" />Peu {FOOT_LABEL[p.foot].toLowerCase()}</span>
+                  <span className="inline-flex items-center gap-1.5"><Footprints className="size-4" />Pie {FOOT_LABEL[p.foot].toLowerCase()}</span>
                   <span className="inline-flex items-center gap-1.5"><Ruler className="size-4" />{p.height ? `${p.height} cm` : "Altura oculta"}</span>
                   <span className="inline-flex items-center gap-1.5"><Languages className="size-4" />{p.languages ?? "—"}</span>
                 </div>

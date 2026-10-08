@@ -22,7 +22,7 @@ export function ScoutReportButton({ players, defaultPlayer }: { players: { id: s
           <Field label="Jugador" className="md:col-span-2"><Select value={f.player_id} onChange={(e) => { const p = players.find((x) => x.id === e.target.value); setF((x) => ({ ...x, player_id: e.target.value, position_observed: p?.pos ?? x.position_observed })); }}>{players.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</Select></Field>
           <Field label="Partido"><Input value={f.match_title} onChange={set("match_title")} placeholder="Equipo local – Equipo visitante" /></Field>
           <Field label="Fecha"><Input type="date" value={f.match_date} onChange={set("match_date")} /></Field>
-          <Field label="Competición"><Input value={f.competition} onChange={set("competition")} placeholder="p. ex. Juvenil Preferent" /></Field>
+          <Field label="Competición"><Input value={f.competition} onChange={set("competition")} placeholder="p. ej. Juvenil Preferent" /></Field>
           <Field label="Posición observada"><Select value={f.position_observed} onChange={set("position_observed")}>{POSITIONS.map((p) => <option key={p} value={p}>{POSITION_LABEL[p]}</option>)}</Select></Field>
           <Field label={`Valoración: ${f.rating}/10`} className="md:col-span-2"><input type="range" min={1} max={10} value={f.rating} onChange={set("rating")} className="w-full accent-[#00c768]" /></Field>
           <Field label="Observaciones" className="md:col-span-2"><Textarea rows={4} value={f.observations} onChange={set("observations")} placeholder="¿Qué has visto? Puntos fuertes, aspectos a mejorar, contexto del partido…" /></Field>
