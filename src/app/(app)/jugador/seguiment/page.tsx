@@ -24,7 +24,7 @@ export default async function TrackingPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Tus procesos" title="Seguiment" subtitle="El estado de cada solicitud, los contactos de los clubes y quién se ha interesado por tu perfil." />
+      <PageHeader eyebrow="Tus procesos" title="Seguimiento" subtitle="El estado de cada solicitud, los contactos de los clubes y quién se ha interesado por tu perfil." />
       <Card>
         <ClientTabs
           tabs={[
@@ -54,7 +54,7 @@ export default async function TrackingPage() {
                             ))}
                           </div>
                         )}
-                        <p className="mt-2 text-[11.5px] text-subtle">Última actualització {fmtRelative(a.updated_at)}</p>
+                        <p className="mt-2 text-[11.5px] text-subtle">Última actualización {fmtRelative(a.updated_at)}</p>
                       </Link>
                     );
                   })}

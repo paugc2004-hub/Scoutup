@@ -50,7 +50,7 @@ export default async function PlayerHome() {
             <MatchRing score={comp.score} size={96} stroke={9} />
             <div>
               <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-subtle">Tu perfil</p>
-              <p className="text-[22px] font-extrabold tracking-tight">Perfil {comp.score}% complet</p>
+              <p className="text-[22px] font-extrabold tracking-tight">Perfil {comp.score}% completo</p>
               <p className="text-[13px] text-muted">{missing.length ? `Te faltan ${missing.length} ${missing.length === 1 ? "detalle" : "detalles"} para llegar al 100%.` : "Perfil completo. ¡Genial!"}</p>
             </div>
           </div>

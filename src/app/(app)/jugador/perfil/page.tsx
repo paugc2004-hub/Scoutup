@@ -69,7 +69,7 @@ export default async function MyProfile({ searchParams }: { searchParams: Promis
         </div>
         <div className="space-y-5">
           <Card>
-            <div className="flex items-center gap-4"><MatchRing score={comp.score} size={70} stroke={7} /><div><p className="text-[16px] font-extrabold">Perfil {comp.score}% complet</p><p className="text-[12.5px] text-muted">Actualitzat {fmtRelative(row.updated_at)}</p></div></div>
+            <div className="flex items-center gap-4"><MatchRing score={comp.score} size={70} stroke={7} /><div><p className="text-[16px] font-extrabold">Perfil {comp.score}% completo</p><p className="text-[12.5px] text-muted">Actualizado {fmtRelative(row.updated_at)}</p></div></div>
             <ul className="mt-4 space-y-1.5 text-[13px]">
               {comp.items.map((i) => <li key={i.key} className={cn("flex items-center justify-between", i.done ? "text-muted" : "font-semibold")}><span>{i.done ? "✓" : "○"} {i.label}</span>{!i.done && <Link href={`/jugador/perfil/editar?pas=${i.step}`} className="text-[12px] text-accent-ink hover:underline">+{i.weight}%</Link>}</li>)}
             </ul>
