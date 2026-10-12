@@ -189,7 +189,7 @@ export default async function Landing() {
         <div className="flex flex-col justify-between gap-4 md:flex-row">
           <Logo dark={false} />
           <p className="max-w-2xl">
-            Demo de producto. Todos los clubes, jugadores, competiciones, clasificaciones y estadísticas son <strong className="text-ink">ficticis</strong>. La demo no se conecta con la Federació Catalana de Futbol ni con ninguna fuente externa, y ningún indicador de «verificado» representa una verificación oficial.
+            Demo de producto. Todos los clubes, jugadores, competiciones, clasificaciones y estadísticas son <strong className="text-ink">ficticios</strong>. La demo no se conecta con la Federació Catalana de Futbol ni con ninguna fuente externa, y ningún indicador de «verificado» representa una verificación oficial.
           </p>
         </div>
       </footer>

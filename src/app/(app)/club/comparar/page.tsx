@@ -115,7 +115,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
             <tbody>
               {offer && matches[0] && (
                 <>
-                  <tr><td colSpan={players.length + 1} className="pb-1 pt-3 text-[11.5px] font-bold uppercase tracking-wider text-subtle">Compatibilitat · {offer.title}</td></tr>
+                  <tr><td colSpan={players.length + 1} className="pb-1 pt-3 text-[11.5px] font-bold uppercase tracking-wider text-subtle">Compatibilidad · {offer.title}</td></tr>
                   <Row label="Total" vals={matches.map((m) => m!.score)} fmt={(v) => `${v}%`} />
                   {matches[0].factors.map((f, fi) => (
                     <tr key={f.key} className="border-b border-line">
